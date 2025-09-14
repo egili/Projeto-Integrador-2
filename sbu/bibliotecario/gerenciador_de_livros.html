@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br"> 
+<head> 
+    <meta charset="utf-8" /> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /> 
+    <link href="gerenciador_de_livros.css" rel="stylesheet" />
+     <title>Gerenciador de Livros</title> 
+</head> 
+<body> 
+   <main>
+    <div class="MenuAzul">Gerenciador de Livros</div>
+    <div class="livrosdispo">
+        <section class="titulo">
+            <h1 class="titulo">Livros Disponíveis</h1>
+        </section>
+    <div class="search-container">
+        <form action="/resultado" method="GET">
+            <input type="search" id="busca" name="query" placeholder="Pesquisar livros disponíveis" required>
+            <button type="submit">
+                <img src="lupa verde.PNG" alt="Buscar" style="width:24px; height:24px;">
+            </button>
+    </div>
+    <div class="carousel-wrapper">
+        <button class="carousel-btn prev">&#10094;</button>
+        <div class="anime-list-container">
+          <ul class="anime-list">
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+            <li>
+                <img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />               
+                <p class="legenda">Livro A</p>
+              <p class="legenda2">Autor</p>
+            </li>
+          </ul>
+        </div>
+        <button class="carousel-btn next">&#10095;</button>
+      </div>
+    </section>
+  </main>
+
+<script>
+  const prevBtn = document.querySelector('.carousel-btn.prev');
+  const nextBtn = document.querySelector('.carousel-btn.next');
+  const listContainer = document.querySelector('.anime-list');
+  const items = listContainer.querySelectorAll('li');
+
+  let position = 0;
+  const itemWidth = 330;
+  const visibleItems = 4;
+  const maxPosition = (items.length - visibleItems) * itemWidth;
+
+  function updatePosition() {
+    listContainer.style.transform = `translateX(-${position}px)`;
+  }
+
+  prevBtn.addEventListener('click', () => {
+    position -= itemWidth;
+    if (position < 0) {
+      position = maxPosition;
+    }
+    updatePosition();
+  });
+
+  nextBtn.addEventListener('click', () => {
+    position += itemWidth;
+    if (position > maxPosition) {
+      position = 0;
+    }
+    updatePosition();
+  });
+</script>
+</body>
+</html>
+<!--<img src="https://tosel.vtexassets.com/arquivos/ids/367392-800-800?v=638888811764300000&width=800&height=800&aspect=true" alt="Livro A" />-->
