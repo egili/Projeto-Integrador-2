@@ -1,0 +1,133 @@
+body {
+    margin: 0; 
+    padding: 0;
+    font-family: sans-serif;
+    background-color: #fff; 
+}
+
+.MenuAzul {
+    background-color: #2980B9;
+    width: 100%;
+    padding: 20px 30px;
+    color: white;
+    font-weight: bold;
+    font-size: 30px;
+}
+
+.titulo {
+    text-align: center;
+    margin-top: 90px;
+    font-size: 40px;
+    color: #2C3E50;
+    font-weight: bold;
+}
+
+/* Search */
+.search-container {
+    position: relative;
+    width: 400px; 
+    margin: 20px auto; 
+}
+
+input[type="search"] {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px 40px 10px 10px; 
+    border: 2px solid #6DBE45; 
+    outline: none;
+}
+
+.search-container button {
+    position: absolute;
+    right: 10px; 
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none; 
+    padding: 0;
+    cursor: pointer;
+}
+
+.search-container button img {
+    width: 24px;
+    height: 24px;
+}
+
+/* Carrossel */
+.carousel-wrapper {
+    position: relative; /* garante que os botões fiquem dentro do wrapper */
+    width: 95%;
+    margin: 50px auto;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: none;
+    color: #6DBE45;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px 15px;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.carousel-btn.prev {
+    left: 0; /* ajustado para encostar no início do carousel-wrapper */
+}
+
+.carousel-btn.next {
+    right: 0; /* ajustado para encostar no final do carousel-wrapper */
+}
+
+/* Container da lista */
+.anime-list-container {
+    overflow: hidden;
+    width: 100%;
+    padding: 10px 0; /* adiciona espaço em cima e embaixo */
+}
+
+/* Lista horizontal */
+.anime-list {
+    display: flex;
+    transition: transform 0.5s ease;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+/* Itens individuais */
+.anime-list li {
+    flex: 0 0 auto;
+    width: 150px;
+    text-align: center;
+    list-style: none; 
+}
+
+/* Imagens */
+.anime-list li img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+    transition: transform 0.3s;
+}
+
+.anime-list li img:hover {
+    transform: scale(1.05);
+}
+
+/* Legendas */
+.legenda {
+    font-size: 14px;
+    color: #2C3E50;
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+.legenda2 {
+    font-size: 12px;
+    color: gray;
+    margin-top: 4px;
+}
