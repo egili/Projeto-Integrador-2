@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Totem de Autoatendimento - Biblioteca Universitária</title>
+        <link rel="stylesheet" href="src/styles/style.css">
+        <link rel="stylesheet" href="src/styles/totem.css">
+    </head>
+    <body class="totem-screen">
+        <div class="container">
+            <header class="totem-header">
+                <h1>Totem de Autoatendimento</h1>
+            </header>
+            
+            <main class="totem-main">
+                <div class="welcome-section">
+                    <h2>Bem-vindo(a)</h2>
+                    <p>Selecione a operação desejada:</p>
+                </div>
+                
+                <div class="options-grid">
+                    <div class="option-card" onclick="navigateTo('src/pages/retirada.html')">
+                        <div class="option-icon">📚</div>
+                        <h3>Retirada de Livro</h3>
+                        <p>Realizar empréstimo de livros disponíveis</p>
+                    </div>
+                    
+                    <div class="option-card" onclick="navigateTo('src/pages/devolucao.html')">
+                        <div class="option-icon">↩️</div>
+                        <h3>Devolução de Livro</h3>
+                        <p>Devolver livros emprestados</p>
+                    </div>
+                </div>
+            </main>
+            
+            <footer class="totem-footer">
+                <p>Projeto Integrador 2 - Sbu</p>
+                <p>Desenvolvido com ❤️ pelos integrantes do time 3</p>
+            </footer>
+        </div>
+
+        <script src="src/js/index.js"></script>
+    </body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Devolução de Livro - Totem de Autoatendimento</title>
+        <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/totem.css">
+    </head>
+    <body class="totem-screen">
+        <div class="container">
+            <header class="totem-header">
+                <h1>Devolução de Livro</h1>
+                <button class="btn-voltar" onclick="navigateTo('index.html')">← Voltar</button>
+            </header>
+            
+            <main class="totem-main">
+                <!-- Passo 1: Identificação do aluno -->
+                <div id="step1" class="step active">
+                    <h2>Identificação do Aluno</h2>
+                    <div class="identification-section">
+                        <label for="raInputDevolucao">Informe seu RA:</label>
+                        <input type="text" id="raInputDevolucao" placeholder="Digite seu RA" class="input-field">
+                        <button onclick="buscarEmprestimos()" class="btn-primary">Buscar Empréstimos</button>
+                    </div>
+                    
+                    <div id="alunoInfoDevolucao" class="aluno-info"></div>
+                    
+                    <div id="cadastroSectionDevolucao" class="cadastro-section" style="display: none;">
+                        <p>Aluno não cadastrado.</p>
+                        <button onclick="navigateTo('cadastro-aluno.html')" class="btn-secondary">Fazer Cadastro</button>
+                    </div>
+                </div>
+                
+                <!-- Passo 2: Seleção do livro para devolução -->
+                <div id="step2" class="step">
+                    <h2>Selecionar Livro para Devolução</h2>
+                    <div id="alunoSelecionadoInfo" class="aluno-selected"></div>
+                    
+                    <div id="listaEmprestimos" class="emprestimos-section">
+                        <!-- Lista de empréstimos será carregada aqui -->
+                    </div>
+                    
+                    <div id="semEmprestimos" class="no-results" style="display: none;">
+                        <p>Nenhum livro em empréstimo encontrado para este aluno.</p>
+                        <button onclick="voltarParaIdentificacao()" class="btn-secondary">Voltar</button>
+                    </div>
+                </div>
+                
+                <!-- Passo 3: Confirmação da devolução -->
+                <div id="step3" class="step">
+                    <h2>Confirmação de Devolução</h2>
+                    <div class="confirmation-details">
+                        <div class="detail-item">
+                            <strong>Livro:</strong> <span id="confirmaDevolucaoLivro"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Aluno:</strong> <span id="confirmaDevolucaoAluno"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>RA:</strong> <span id="confirmaDevolucaoRA"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Data de empréstimo:</strong> <span id="confirmaDataEmprestimo"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Data de devolução:</strong> <span id="confirmaDataDevolucao"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button onclick="confirmarDevolucao()" class="btn-success">Confirmar Devolução</button>
+                        <button onclick="voltarParaSelecao()" class="btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+                
+                <!-- Passo 4: Comprovante de devolução -->
+                <div id="step4" class="step">
+                    <div class="success-message">
+                        <div class="success-icon">✅</div>
+                        <h2>Devolução Confirmada!</h2>
+                    </div>
+                    
+                    <div class="comprovante">
+                        <h3>Comprovante de Devolução</h3>
+                        <div class="comprovante-details">
+                            <div class="detail-item">
+                                <strong>Livro:</strong> <span id="comprovanteDevolucaoLivro"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Aluno:</strong> <span id="comprovanteDevolucaoAluno"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>RA:</strong> <span id="comprovanteDevolucaoRA"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Data de devolução:</strong> <span id="comprovanteDataDevolucao"></span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Código da devolução:</strong> <span id="codigoDevolucao"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="classification-update">
+                        <h4>Atualização de Classificação</h4>
+                        <p>Sua classificação como leitor foi atualizada:</p>
+                        <div id="novaClassificacao" class="classificacao-info"></div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button onclick="navigateTo('index.html')" class="btn-primary">Voltar ao Início</button>
+                        <button onclick="imprimirComprovanteDevolucao()" class="btn-secondary">Imprimir Comprovante</button>
+                    </div>
+                </div>
+            </main>
+            
+            <footer class="totem-footer">
+                <p>Totem de Autoatendimento - Biblioteca Universitária</p>
+            </footer>
+        </div>
+
+        <script src="../js/index.js"></script>
+        <script src="../js/devolucao.js"></script>
+    </body>
+</html>
