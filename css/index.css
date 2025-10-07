@@ -1,0 +1,75 @@
+/* =============================================== */
+/* ARQUIVO DA HOME (index.css)                        */
+/* Estilos que se aplicam APENAS à index.html.     */
+/* =============================================== */
+
+/* Grid que organiza os cartões de opção */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    margin-top: 2rem;
+}
+
+/* Estilo dos cartões de opção da página inicial */
+.option-card {
+    background: linear-gradient(135deg, var(--pure-white) 0%, var(--light-gray) 100%);
+    padding: 2.5rem;
+    border-radius: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.option-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-gold) 0%, var(--secondary-blue) 100%);
+}
+
+.option-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--accent-gold);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Conteúdo dos cartões */
+.option-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.option-card h3 {
+    color: var(--primary-blue);
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.option-card p {
+    color: var(--text-dark);
+    line-height: 1.5;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Regra de responsividade específica da home */
+@media (max-width: 768px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+}
