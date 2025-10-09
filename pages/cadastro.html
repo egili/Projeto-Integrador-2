@@ -1,90 +1,141 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cadastro de Aluno - Biblioteca</title>
-    <link rel="stylesheet" href="../css/style.css"> <link rel="stylesheet" href="../css/cadastro.css"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-</head>
-<body class="totem-screen">
-
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/cadastro.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+  </head>
+  <body class="general-screen">
     <div class="container">
-        <header class="totem-header">
-            <h1>Cadastro de Aluno</h1>
-        </header>
+      <header class="general-header">
+        <button
+          class="btn-primary btn-voltar"
+          onclick="navigateTo('../../index.html')"
+        >
+          ← Voltar
+        </button>
+        <h1>Cadastro de Aluno</h1>
+      </header>
 
-        <main class="totem-main">
-
-            <div id="step1-form" class="step active">
-                <div class="welcome-section">
-                    <h2>Crie sua conta</h2>
-                    <p>Preencha os campos abaixo para começar.</p>
-                </div>
-                <form id="registration-form" class="form-layout" novalidate>
-                    <div class="form-group">
-                        <label for="fullName">Nome Completo</label>
-                        <input type="text" id="fullName" class="form-input" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">E-mail Institucional</label>
-                        <input type="email" id="email" class="form-input" required placeholder="seu.nome@puccampinas.edu.br">
-                        <small class="error-message" id="email-error"></small>
-                    </div>
-
-                    <div class="form-group password-wrapper">
-                        <label for="password">Senha</label>
-                        <input type="password" id="password" class="form-input" required>
-                        <i class="fa-solid fa-eye-slash password-toggle-icon" id="togglePassword"></i>
-                        <small class="error-message" id="password-error">A senha deve ter no mínimo 8 caracteres.</small>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="confirmPassword">Confirme sua Senha</label>
-                        <input type="password" id="confirmPassword" class="form-input" required>
-                        <small class="error-message" id="confirmPassword-error"></small>
-                    </div>
-
-                    <button type="submit" id="register-btn" class="btn-primary" disabled>
-                        <span class="btn-text">Cadastrar</span>
-                        <span class="spinner" style="display: none;"></span>
-                    </button>
-                </form>
+      <main class="general-main">
+        <div id="step1-form" class="step active">
+          <div class="welcome-section">
+            <h2>Crie sua conta</h2>
+            <p>Preencha os campos abaixo para começar.</p>
+          </div>
+          <form id="registration-form" class="form-layout" novalidate>
+            <div class="form-group">
+              <label for="fullName">Nome Completo</label>
+              <input type="text" id="fullName" class="form-input" required />
             </div>
 
-            <div id="step2-code" class="step">
-                <div class="welcome-section">
-                    <h2>Verifique seu E-mail</h2>
-                    <p>Enviamos um código de 6 dígitos para <strong id="user-email-display"></strong>. Por favor, insira-o abaixo.</p>
-                </div>
-                <form id="code-form" class="form-layout">
-                    <div class="form-group">
-                        <label for="verificationCode">Código de Verificação</label>
-                        <input type="text" id="verificationCode" class="form-input" required maxlength="6">
-                        <small class="error-message" id="code-error"></small>
-                    </div>
-                    <button type="submit" id="verify-btn" class="btn-primary">Verificar código</button>
-                </form>
+            <div class="form-group">
+              <label for="email">E-mail Institucional</label>
+              <input
+                type="email"
+                id="email"
+                class="form-input"
+                required
+                placeholder="seu.nome@puccampinas.edu.br"
+              />
+              <small class="error-message" id="email-error"></small>
             </div>
 
-            <div id="step3-success" class="step">
-                <div class="success-message">
-                    <div class="success-icon">✅</div>
-                    <h2>Cadastro Concluído!</h2>
-                    <p>Sua conta foi criada com sucesso. Agora você já pode utilizar os recursos da biblioteca.</p>
-                    <button id="home-btn" class="btn-primary">Ir para a página inicial</button>
-                </div>
+            <div class="form-group password-wrapper">
+              <label for="password">Senha</label>
+              <input
+                type="password"
+                id="password"
+                class="form-input"
+                required
+              />
+              <i
+                class="fa-solid fa-eye-slash password-toggle-icon"
+                id="togglePassword"
+              ></i>
+              <small class="error-message" id="password-error"
+                >A senha deve ter no mínimo 8 caracteres.</small
+              >
             </div>
 
-        </main>
+            <div class="form-group">
+              <label for="confirmPassword">Confirme sua Senha</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                class="form-input"
+                required
+              />
+              <small class="error-message" id="confirmPassword-error"></small>
+            </div>
 
-        <footer class="totem-footer">
-            <p>Projeto Integrador 2 - Sistema de Biblioteca Universitária</p>
-            <p>Desenvolvido com ❤️ pelos integrantes do time 3</p>
-            <p>PUC-Campinas &copy; 2025</p>
-        </footer>
+            <button
+              type="submit"
+              id="register-btn"
+              class="btn-primary"
+              disabled
+            >
+              <span class="btn-text">Cadastrar</span>
+              <span class="spinner" style="display: none"></span>
+            </button>
+          </form>
+        </div>
+
+        <div id="step2-code" class="step">
+          <div class="welcome-section">
+            <h2>Verifique seu E-mail</h2>
+            <p>
+              Enviamos um código de 6 dígitos para
+              <strong id="user-email-display"></strong>. Por favor, insira-o
+              abaixo.
+            </p>
+          </div>
+          <form id="code-form" class="form-layout">
+            <div class="form-group">
+              <label for="verificationCode">Código de Verificação</label>
+              <input
+                type="text"
+                id="verificationCode"
+                class="form-input"
+                required
+                maxlength="6"
+              />
+              <small class="error-message" id="code-error"></small>
+            </div>
+            <button type="submit" id="verify-btn" class="btn-primary">
+              Verificar código
+            </button>
+          </form>
+        </div>
+
+        <div id="step3-success" class="step">
+          <div class="success-message">
+            <div class="success-icon">✅</div>
+            <h2>Cadastro Concluído!</h2>
+            <p>
+              Sua conta foi criada com sucesso. Agora você já pode utilizar os
+              recursos da biblioteca.
+            </p>
+            <button id="home-btn" class="btn-primary">
+              Ir para a página inicial
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <footer class="general-footer">
+        <p>Projeto Integrador 2 - Sistema de Biblioteca Universitária</p>
+        <p>Desenvolvido com ❤️ pelos integrantes do time 3</p>
+        <p>PUC-Campinas &copy; 2025</p>
+      </footer>
     </div>
 
     <script src="../js/cadastro.js"></script>
-</body>
+  </body>
 </html>
