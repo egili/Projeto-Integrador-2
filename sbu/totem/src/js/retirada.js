@@ -11,7 +11,7 @@ async function pesquisarLivros() {
     resultadosDiv.innerHTML = '<p>Pesquisando livros...</p>';
     
     try {
-        const livros = await mockAPI.buscarLivrosDisponiveis(termo);
+        const livros = await api.buscarLivrosDisponiveis(termo);
         
         if (livros.length === 0) {
             resultadosDiv.innerHTML = '<p class="no-results">Nenhum livro encontrado.</p>';
@@ -19,35 +19,32 @@ async function pesquisarLivros() {
         }
         
         resultadosDiv.innerHTML = livros.map(livro => `
-            <div class="livro-item" onclick="selecionarLivro(${livro.id})">
+            <div class="livro-item" onclick="selecionarLivro(${livro.id})" data-livro='${JSON.stringify(livro)}'>
                 <h4>${livro.titulo}</h4>
                 <p><strong>Autor:</strong> ${livro.autor}</p>
-                <p><strong>Editora:</strong> ${livro.editora} (${livro.ano})</p>
+                <p><strong>Editora:</strong> ${livro.editora} (${livro.anoPublicacao})</p>
+                <p><strong>ISBN:</strong> ${livro.isbn || 'N/A'}</p>
                 <p><strong>Status:</strong> <span style="color: #27ae60;">Disponível</span></p>
             </div>
         `).join('');
         
     } catch (error) {
         resultadosDiv.innerHTML = '<p class="no-results">Erro ao buscar livros. Tente novamente.</p>';
+        console.error('Erro:', error);
     }
 }
 
 // Selecionar livro para empréstimo
 function selecionarLivro(livroId) {
-    // Em um sistema real, buscaria os detalhes completos do livro
     const livroItem = event.target.closest('.livro-item');
-    const titulo = livroItem.querySelector('h4').textContent;
-    const autor = livroItem.querySelector('p').textContent.replace('Autor: ', '');
+    const livroData = JSON.parse(livroItem.getAttribute('data-livro'));
     
-    livroSelecionado = {
-        id: livroId,
-        titulo: titulo,
-        autor: autor
-    };
+    livroSelecionado = livroData;
     
     document.getElementById('livroSelecionadoInfo').innerHTML = `
-        <strong>${titulo}</strong><br>
-        <em>${autor}</em>
+        <strong>${livroData.titulo}</strong><br>
+        <em>${livroData.autor}</em><br>
+        <small>${livroData.editora} (${livroData.anoPublicacao})</small>
     `;
     
     // Avançar para o próximo passo
@@ -74,66 +71,59 @@ async function verificarAluno() {
     alunoInfoDiv.innerHTML = '<p>Verificando cadastro...</p>';
     
     try {
-        const aluno = await mockAPI.buscarAluno(ra);
+        const aluno = await api.buscarAluno(ra);
         
-        if (aluno) {
-            alunoVerificado = aluno;
-            alunoInfoDiv.innerHTML = `
-                <div style="color: #27ae60;">
-                    <h4>Aluno encontrado:</h4>
-                    <p><strong>Nome:</strong> ${aluno.nome}</p>
-                    <p><strong>RA:</strong> ${aluno.ra}</p>
-                    <p><strong>Curso:</strong> ${aluno.curso}</p>
-                    <p><strong>E-mail:</strong> ${aluno.email}</p>
-                </div>
-            `;
-            cadastroSection.style.display = 'none';
-            
-            // Preparar confirmação
-            document.getElementById('confirmaLivroTitulo').textContent = livroSelecionado.titulo;
-            document.getElementById('confirmaAlunoNome').textContent = aluno.nome;
-            document.getElementById('confirmaAlunoRA').textContent = aluno.ra;
-            document.getElementById('dataRetirada').textContent = formatarData(new Date());
-            document.getElementById('prazoDevolucao').textContent = formatarData(calcularPrazoDevolucao());
-            
-            // Avançar para confirmação
-            document.getElementById('step2').classList.remove('active');
-            document.getElementById('step3').classList.add('active');
-            
-        } else {
-            alunoVerificado = null;
-            alunoInfoDiv.innerHTML = '<p style="color: #e74c3c;">Aluno não encontrado no sistema.</p>';
-            cadastroSection.style.display = 'block';
-        }
+        alunoVerificado = aluno;
+        alunoInfoDiv.innerHTML = `
+            <div style="color: #27ae60;">
+                <h4>Aluno encontrado:</h4>
+                <p><strong>Nome:</strong> ${aluno.nome}</p>
+                <p><strong>RA:</strong> ${aluno.ra}</p>
+            </div>
+        `;
+        cadastroSection.style.display = 'none';
+        
+        // Preparar confirmação
+        document.getElementById('confirmaLivroTitulo').textContent = livroSelecionado.titulo;
+        document.getElementById('confirmaAlunoNome').textContent = aluno.nome;
+        document.getElementById('confirmaAlunoRA').textContent = aluno.ra;
+        document.getElementById('dataRetirada').textContent = formatarData(new Date());
+        document.getElementById('prazoDevolucao').textContent = formatarData(calcularPrazoDevolucao());
+        
+        // Avançar para confirmação
+        document.getElementById('step2').classList.remove('active');
+        document.getElementById('step3').classList.add('active');
         
     } catch (error) {
-        alunoInfoDiv.innerHTML = '<p style="color: #e74c3c;">Erro ao verificar aluno. Tente novamente.</p>';
+        alunoVerificado = null;
+        if (error.message.includes('não encontrado')) {
+            alunoInfoDiv.innerHTML = '<p style="color: #e74c3c;">Aluno não encontrado no sistema.</p>';
+            cadastroSection.style.display = 'block';
+        } else {
+            alunoInfoDiv.innerHTML = '<p style="color: #e74c3c;">Erro ao verificar aluno. Tente novamente.</p>';
+        }
     }
 }
 
 // Confirmar empréstimo
 async function confirmarEmprestimo() {
     try {
-        const resultado = await mockAPI.registrarEmprestimo(alunoVerificado.ra, livroSelecionado.id);
+        const resultado = await api.realizarEmprestimo(alunoVerificado.ra, livroSelecionado.id);
         
-        if (resultado.success) {
-            // Preencher comprovante
-            document.getElementById('comprovanteLivro').textContent = livroSelecionado.titulo;
-            document.getElementById('comprovanteAluno').textContent = alunoVerificado.nome;
-            document.getElementById('comprovanteRA').textContent = alunoVerificado.ra;
-            document.getElementById('comprovanteDataRetirada').textContent = formatarData(resultado.dataRetirada);
-            document.getElementById('comprovantePrazo').textContent = formatarData(resultado.prazoDevolucao);
-            document.getElementById('codigoEmprestimo').textContent = resultado.codigo;
-            
-            // Avançar para comprovante
-            document.getElementById('step3').classList.remove('active');
-            document.getElementById('step4').classList.add('active');
-        } else {
-            alert('Erro ao registrar empréstimo. Tente novamente.');
-        }
+        // Preencher comprovante
+        document.getElementById('comprovanteLivro').textContent = livroSelecionado.titulo;
+        document.getElementById('comprovanteAluno').textContent = alunoVerificado.nome;
+        document.getElementById('comprovanteRA').textContent = alunoVerificado.ra;
+        document.getElementById('comprovanteDataRetirada').textContent = formatarData(resultado.dataEmprestimo);
+        document.getElementById('comprovantePrazo').textContent = formatarData(resultado.dataDevolucaoPrevista);
+        document.getElementById('codigoEmprestimo').textContent = resultado.id;
+        
+        // Avançar para comprovante
+        document.getElementById('step3').classList.remove('active');
+        document.getElementById('step4').classList.add('active');
         
     } catch (error) {
-        alert('Erro ao processar empréstimo. Tente novamente.');
+        alert('Erro ao processar empréstimo: ' + error.message);
     }
 }
 

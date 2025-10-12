@@ -1,4 +1,7 @@
-// Funções comuns para o Totem de autoatendimento
+// Configuração da API
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// Funções comuns para o terminal de autoatendimento
 
 // Navegação entre páginas
 function navigateTo(page) {
@@ -7,7 +10,18 @@ function navigateTo(page) {
 
 // Formatação de datas
 function formatarData(data) {
+    if (!data) return 'N/A';
     return new Date(data).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
+// Formatação de data e hora
+function formatarDataHora(data) {
+    if (!data) return 'N/A';
+    return new Date(data).toLocaleString('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric',
@@ -20,7 +34,7 @@ function formatarData(data) {
 function calcularPrazoDevolucao() {
     const prazo = new Date();
     prazo.setDate(prazo.getDate() + 7);
-    return prazo;
+    return prazo.toISOString().split('T')[0];
 }
 
 // Gera código aleatório para comprovantes
@@ -28,111 +42,158 @@ function gerarCodigoComprovante() {
     return 'EMP' + Date.now().toString().slice(-8) + Math.random().toString(36).substr(2, 3).toUpperCase();
 }
 
-// Simulação de API - Em um sistema real, isso seria substituído por chamadas HTTP
-const mockAPI = {
-    // Buscar aluno por RA
+// API functions
+const api = {
+    // Alunos
     buscarAluno: async (ra) => {
-        // Simulação de delay de rede
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const alunos = [
-            { ra: '25009281', nome: 'Eliseu Pereira Gili', email: 'eliseu.gili@example.com', curso: 'Sistemas de Informação' },
-            { ra: '25008024', nome: 'Eduardo Fagundes da Silva', email: 'eduardo.silva@example.com', curso: 'Sistemas de Informação' },
-            { ra: '23011884', nome: 'Kaue Rodrigues Seixas', email: 'kaue.seixas@example.com', curso: 'Sistemas de Informação' },
-            { ra: '25002731', nome: 'Lucas Athanasio Bueno de Andrade', email: 'lucas.andrade@example.com', curso: 'Sistemas de Informação' },
-            { ra: '25002436', nome: 'Pietra Façanha Bortolatto', email: 'pietra.bortolatto@example.com', curso: 'Sistemas de Informação' }
-        ];
-        
-        return alunos.find(aluno => aluno.ra === ra) || null;
-    },
-
-    // Buscar livros disponíveis
-    buscarLivrosDisponiveis: async (termo = '') => {
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        const livros = [
-            { id: 1, titulo: 'Introdução à Programação', autor: 'João Silva', editora: 'Tecnologia Press', ano: 2023, disponivel: true },
-            { id: 2, titulo: 'Banco de Dados Relacional', autor: 'Maria Santos', editora: 'Data Books', ano: 2022, disponivel: true },
-            { id: 3, titulo: 'Desenvolvimento Web Moderno', autor: 'Pedro Costa', editora: 'Web Publishing', ano: 2024, disponivel: true },
-            { id: 4, titulo: 'Algoritmos e Estruturas de Dados', autor: 'Ana Oliveira', editora: 'Computação Ltda', ano: 2023, disponivel: true },
-            { id: 5, titulo: 'Engenharia de Software', autor: 'Carlos Mendes', editora: 'SoftPress', ano: 2022, disponivel: true }
-        ];
-
-        if (termo) {
-            const termoLower = termo.toLowerCase();
-            return livros.filter(livro => 
-                livro.titulo.toLowerCase().includes(termoLower) ||
-                livro.autor.toLowerCase().includes(termoLower)
-            );
-        }
-        
-        return livros;
-    },
-
-    // Buscar empréstimos ativos do aluno
-    buscarEmprestimosAtivos: async (ra) => {
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        const emprestimos = [
-            { 
-                id: 101, 
-                livroId: 1, 
-                livroTitulo: 'Introdução à Programação', 
-                livroAutor: 'João Silva',
-                dataEmprestimo: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 dias atrás
-                prazoDevolucao: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000) // 5 dias no futuro
-            },
-            { 
-                id: 102, 
-                livroId: 3, 
-                livroTitulo: 'Desenvolvimento Web Moderno', 
-                livroAutor: 'Pedro Costa',
-                dataEmprestimo: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 dia atrás
-                prazoDevolucao: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000) // 6 dias no futuro
+        try {
+            const response = await fetch(`${API_BASE_URL}/alunos/${ra}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Aluno não encontrado');
             }
-        ];
-
-        // Simulação - retorna apenas alguns empréstimos para RAs específicos
-        if (ra === '25009281') {
-            return emprestimos;
+        } catch (error) {
+            console.error('Erro ao buscar aluno:', error);
+            throw error;
         }
-        
-        return [];
     },
 
-    // Registrar empréstimo
-    registrarEmprestimo: async (ra, livroId) => {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        return {
-            success: true,
-            codigo: gerarCodigoComprovante(),
-            dataRetirada: new Date(),
-            prazoDevolucao: calcularPrazoDevolucao()
-        };
+    cadastrarAluno: async (aluno) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/alunos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(aluno)
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao cadastrar aluno');
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar aluno:', error);
+            throw error;
+        }
     },
 
-    // Registrar devolução
-    registrarDevolucao: async (emprestimoId) => {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        return {
-            success: true,
-            codigo: 'DEV' + Date.now().toString().slice(-8),
-            dataDevolucao: new Date(),
-            classificacaoAtual: 'Leitor Ativo',
-            livrosLidosSemestre: 15
-        };
+    // Livros
+    buscarLivrosDisponiveis: async (termo = '') => {
+        try {
+            let url = `${API_BASE_URL}/livros`;
+            if (termo) {
+                url += `?titulo=${encodeURIComponent(termo)}`;
+            }
+            
+            const response = await fetch(url);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao buscar livros');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar livros:', error);
+            throw error;
+        }
+    },
+
+    // Empréstimos
+    buscarEmprestimosAtivos: async (ra) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/emprestimos/ativos/${ra}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao buscar empréstimos');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar empréstimos:', error);
+            throw error;
+        }
+    },
+
+    realizarEmprestimo: async (raAluno, idLivro) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/emprestimos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    raAluno,
+                    idLivro
+                })
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao realizar empréstimo');
+            }
+        } catch (error) {
+            console.error('Erro ao realizar empréstimo:', error);
+            throw error;
+        }
+    },
+
+    registrarDevolucao: async (idEmprestimo) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/emprestimos/devolucao`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    idEmprestimo
+                })
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao registrar devolução');
+            }
+        } catch (error) {
+            console.error('Erro ao registrar devolução:', error);
+            throw error;
+        }
+    },
+
+    // Classificação
+    obterClassificacao: async (ra) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/classificacao/${ra}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao obter classificação');
+            }
+        } catch (error) {
+            console.error('Erro ao obter classificação:', error);
+            throw error;
+        }
     }
 };
 
 // Funções de impressão (simuladas)
 function imprimirComprovante() {
     alert('Funcionalidade de impressão seria implementada aqui. Em um ambiente real, isso acionaria a impressora do totem.');
-    // window.print(); // Para imprimir a página atual
 }
 
 function imprimirComprovanteDevolucao() {
     alert('Funcionalidade de impressão seria implementada aqui. Em um ambiente real, isso acionaria a impressora do totem.');
-    // window.print(); // Para imprimir a página atual
 }

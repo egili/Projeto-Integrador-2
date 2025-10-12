@@ -131,11 +131,9 @@
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
 }
 
-/* CORREÇÃO PRINCIPAL: Remover background-clip para os emojis ficarem visíveis */
 .option-icon {
     font-size: 4rem;
     margin-bottom: 1.5rem;
-    /* Removido o background-clip que estava tornando os emojis transparentes */
     display: block;
     filter: none;
 }
@@ -154,7 +152,6 @@
     margin: 0;
 }
 
-/* Estilos para as outras páginas (mantidos para consistência) */
 .step {
     display: none;
 }
