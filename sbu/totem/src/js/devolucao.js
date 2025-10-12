@@ -84,7 +84,6 @@ function selecionarEmprestimo(emprestimoId) {
     document.getElementById('confirmaDevolucaoAluno').textContent = alunoDevolucao.nome;
     document.getElementById('confirmaDevolucaoRA').textContent = alunoDevolucao.ra;
     document.getElementById('confirmaDataEmprestimo').textContent = formatarData(emprestimoData.dataEmprestimo);
-    document.getElementById('confirmaDataDevolucao').textContent = formatarData(new Date());
     
     // Avançar para confirmação
     document.getElementById('step2').classList.remove('active');
@@ -96,6 +95,11 @@ async function confirmarDevolucao() {
     try {
         const resultado = await api.registrarDevolucao(emprestimoSelecionado.id);
         
+        // Preencher mensagem de sucesso
+        document.getElementById('sucessoDevolucaoLivro').textContent = emprestimoSelecionado.livro_titulo;
+        document.getElementById('sucessoDevolucaoAluno').textContent = alunoDevolucao.nome;
+        document.getElementById('sucessoDevolucaoData').textContent = formatarData(new Date());
+        
         // Buscar classificação atualizada
         let classificacao = null;
         try {
@@ -103,13 +107,6 @@ async function confirmarDevolucao() {
         } catch (error) {
             console.log('Não foi possível obter classificação:', error);
         }
-        
-        // Preencher comprovante
-        document.getElementById('comprovanteDevolucaoLivro').textContent = emprestimoSelecionado.livro_titulo;
-        document.getElementById('comprovanteDevolucaoAluno').textContent = alunoDevolucao.nome;
-        document.getElementById('comprovanteDevolucaoRA').textContent = alunoDevolucao.ra;
-        document.getElementById('comprovanteDataDevolucao').textContent = formatarData(new Date());
-        document.getElementById('codigoDevolucao').textContent = resultado.emprestimo;
         
         // Mostrar classificação atualizada se disponível
         if (classificacao) {
@@ -122,7 +119,7 @@ async function confirmarDevolucao() {
             document.querySelector('.classification-update').style.display = 'none';
         }
         
-        // Avançar para comprovante
+        // Avançar para sucesso
         document.getElementById('step3').classList.remove('active');
         document.getElementById('step4').classList.add('active');
         

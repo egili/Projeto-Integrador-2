@@ -63,9 +63,6 @@
                         <div class="detail-item">
                             <strong>Data de empréstimo:</strong> <span id="confirmaDataEmprestimo"></span>
                         </div>
-                        <div class="detail-item">
-                            <strong>Data de devolução:</strong> <span id="confirmaDataDevolucao"></span>
-                        </div>
                     </div>
                     
                     <div class="action-buttons">
@@ -74,35 +71,18 @@
                     </div>
                 </div>
                 
-                <!-- Passo 4: Comprovante de devolução -->
+                <!-- Passo 4: Mensagem de sucesso -->
                 <div id="step4" class="step">
                     <div class="success-message">
                         <div class="success-icon">✅</div>
-                        <h2>Devolução Confirmada!</h2>
-                    </div>
-                    
-                    <div class="comprovante">
-                        <h3>Comprovante de Devolução</h3>
-                        <div class="comprovante-details">
-                            <div class="detail-item">
-                                <strong>Livro:</strong> <span id="comprovanteDevolucaoLivro"></span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Aluno:</strong> <span id="comprovanteDevolucaoAluno"></span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>RA:</strong> <span id="comprovanteDevolucaoRA"></span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Data de devolução:</strong> <span id="comprovanteDataDevolucao"></span>
-                            </div>
-                            <div class="detail-item">
-                                <strong>Código da devolução:</strong> <span id="codigoDevolucao"></span>
-                            </div>
+                        <h2>Devolução Realizada com Sucesso!</h2>
+                        <div class="success-details">
+                            <p>O livro <strong id="sucessoDevolucaoLivro"></strong> foi devolvido por <strong id="sucessoDevolucaoAluno"></strong>.</p>
+                            <p>Data: <strong id="sucessoDevolucaoData"></strong></p>
                         </div>
                     </div>
-                    
-                    <div class="classification-update">
+
+                    <div class="classification-update" style="display: none;">
                         <h4>Atualização de Classificação</h4>
                         <p>Sua classificação como leitor foi atualizada:</p>
                         <div id="novaClassificacao" class="classificacao-info"></div>
@@ -110,14 +90,13 @@
                     
                     <div class="action-buttons">
                         <button onclick="navigateTo('../../index.html')" class="btn-primary">Voltar ao Início</button>
-                        <button onclick="imprimirComprovanteDevolucao()" class="btn-secondary">Imprimir Comprovante</button>
+                        <button onclick="voltarParaIdentificacao()" class="btn-secondary">Nova Devolução</button>
                     </div>
                 </div>
             </main>
             
             <footer class="totem-footer">
-                <p>Projeto Integrador 2 - Sitema de Bibblioteca Universitária</p>
-                <p>Desenvolvido com ❤️ pelos integrantes do time 3</p>
+                <p>Totem de Autoatendimento - Biblioteca Universitária</p>
             </footer>
         </div>
 

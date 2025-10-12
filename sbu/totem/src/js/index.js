@@ -1,8 +1,6 @@
 // Configuração da API
 const API_BASE_URL = 'http://localhost:3000/api';
 
-// Funções comuns para o terminal de autoatendimento
-
 // Navegação entre páginas
 function navigateTo(page) {
     window.location.href = page;
@@ -16,30 +14,6 @@ function formatarData(data) {
         month: '2-digit',
         year: 'numeric'
     });
-}
-
-// Formatação de data e hora
-function formatarDataHora(data) {
-    if (!data) return 'N/A';
-    return new Date(data).toLocaleString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-// Calcula prazo de devolução (7 dias a partir de hoje)
-function calcularPrazoDevolucao() {
-    const prazo = new Date();
-    prazo.setDate(prazo.getDate() + 7);
-    return prazo.toISOString().split('T')[0];
-}
-
-// Gera código aleatório para comprovantes
-function gerarCodigoComprovante() {
-    return 'EMP' + Date.now().toString().slice(-8) + Math.random().toString(36).substr(2, 3).toUpperCase();
 }
 
 // API functions
@@ -188,12 +162,3 @@ const api = {
         }
     }
 };
-
-// Funções de impressão (simuladas)
-function imprimirComprovante() {
-    alert('Funcionalidade de impressão seria implementada aqui. Em um ambiente real, isso acionaria a impressora do totem.');
-}
-
-function imprimirComprovanteDevolucao() {
-    alert('Funcionalidade de impressão seria implementada aqui. Em um ambiente real, isso acionaria a impressora do totem.');
-}

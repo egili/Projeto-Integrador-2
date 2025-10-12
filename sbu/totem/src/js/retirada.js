@@ -88,7 +88,6 @@ async function verificarAluno() {
         document.getElementById('confirmaAlunoNome').textContent = aluno.nome;
         document.getElementById('confirmaAlunoRA').textContent = aluno.ra;
         document.getElementById('dataRetirada').textContent = formatarData(new Date());
-        document.getElementById('prazoDevolucao').textContent = formatarData(calcularPrazoDevolucao());
         
         // Avançar para confirmação
         document.getElementById('step2').classList.remove('active');
@@ -110,15 +109,12 @@ async function confirmarEmprestimo() {
     try {
         const resultado = await api.realizarEmprestimo(alunoVerificado.ra, livroSelecionado.id);
         
-        // Preencher comprovante
-        document.getElementById('comprovanteLivro').textContent = livroSelecionado.titulo;
-        document.getElementById('comprovanteAluno').textContent = alunoVerificado.nome;
-        document.getElementById('comprovanteRA').textContent = alunoVerificado.ra;
-        document.getElementById('comprovanteDataRetirada').textContent = formatarData(resultado.dataEmprestimo);
-        document.getElementById('comprovantePrazo').textContent = formatarData(resultado.dataDevolucaoPrevista);
-        document.getElementById('codigoEmprestimo').textContent = resultado.id;
+        // Preencher mensagem de sucesso
+        document.getElementById('sucessoLivro').textContent = livroSelecionado.titulo;
+        document.getElementById('sucessoAluno').textContent = alunoVerificado.nome;
+        document.getElementById('sucessoData').textContent = formatarData(new Date());
         
-        // Avançar para comprovante
+        // Avançar para sucesso
         document.getElementById('step3').classList.remove('active');
         document.getElementById('step4').classList.add('active');
         
