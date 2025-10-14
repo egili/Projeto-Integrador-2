@@ -30,13 +30,11 @@ sbu/
 │   └── script.sql           # Script do banco de dados
 │
 └── totem/                   # Frontend do totem
-    ├── src/
-    │   ├── assets/          # Recursos estáticos
-    │   ├── js/              # JavaScript do frontend
-    │   ├── pages/           # Telas do sistema
-    │   ├── styles/          # Arquivos CSS
-    │   └── index.html       # Página inicial
-    └── README.md
+    ├── js/              # JavaScript do frontend
+    ├── pages/           # Telas do sistema
+    ├── styles/          # Arquivos CSS
+    └── index.html       # Página inicial
+    └── README.md   
 ```
 
 ## 🚀 Como Executar o Sistema
@@ -92,7 +90,7 @@ cd totem
 # 3. Extensão Live Server no VSCode
 ```
 
-**Acesso direto:** Abra `totem/src/index.html` no navegador.
+**Acesso direto:** Abra `totem/index.html` no navegador.
 
 ## 🔧 Configuração do Banco de Dados
 
