@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Retirada de Livro - Totem de Autoatendimento</title>
+        <link rel="stylesheet" href="../styles/style.css">
+        <link rel="stylesheet" href="../styles/totem.css">
+    </head>
+    <body class="totem-screen">
+        <div class="container">
+            <header class="totem-header">
+                <button class="btn-voltar" onclick="navigateTo('../../index.html')">← Voltar</button>
+                <h1>Retirada de Livro</h1>
+            </header>
+            
+            <main class="totem-main">
+                <!-- Passo 1: Pesquisa de livros -->
+                <div id="step1" class="step active">
+                    <h2>Pesquisar Livros Disponíveis</h2>
+                    <div class="search-section">
+                        <input type="text" id="searchInput" placeholder="Digite o título ou autor do livro..." class="search-input">
+                        <button onclick="pesquisarLivros()" class="btn-primary">Pesquisar</button>
+                    </div>
+                    
+                    <div id="resultadosLivros" class="results-section">
+                        <!-- Resultados serão carregados aqui -->
+                    </div>
+                </div>
+                
+                <!-- Passo 2: Identificação do aluno -->
+                <div id="step2" class="step">
+                    <h2>Identificação do Aluno</h2>
+                    <div class="book-selected">
+                        <h3>Livro selecionado:</h3>
+                        <p id="livroSelecionadoInfo"></p>
+                    </div>
+                    
+                    <div class="identification-section">
+                        <label for="raInput">Informe seu RA:</label>
+                        <input type="text" id="raInput" placeholder="Digite seu RA" class="input-field">
+                        <div id="alunoInfo" class="aluno-info"></div>
+                        <button onclick="verificarAluno()" class="btn-primary">Verificar Cadastro</button>
+                    </div>
+                    
+                    <div id="cadastroSection" class="cadastro-section" style="display: none;">
+                        <p>Aluno não cadastrado. Deseja realizar o cadastro?</p>
+                        <button onclick="navigateTo('cadastro-aluno.html')" class="btn-secondary">Fazer Cadastro</button>
+                    </div>
+                </div>
+                
+                <!-- Passo 3: Confirmação do empréstimo -->
+                <div id="step3" class="step">
+                    <h2>Confirmação de Empréstimo</h2>
+                    <div class="confirmation-details">
+                        <div class="detail-item">
+                            <strong>Livro:</strong> <span id="confirmaLivroTitulo"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Aluno:</strong> <span id="confirmaAlunoNome"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>RA:</strong> <span id="confirmaAlunoRA"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Data de retirada:</strong> <span id="dataRetirada"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button onclick="confirmarEmprestimo()" class="btn-success">Confirmar Empréstimo</button>
+                        <button onclick="voltarParaPesquisa()" class="btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+                
+                <!-- Passo 4: Mensagem de sucesso -->
+                <div id="step4" class="step">
+                    <div class="success-message">
+                        <div class="success-icon">✅</div>
+                        <h2>Empréstimo Realizado com Sucesso!</h2>
+                        <div class="success-details">
+                            <p>O livro <strong id="sucessoLivro"></strong> foi emprestado para <strong id="sucessoAluno"></strong>.</p>
+                            <p>Data: <strong id="sucessoData"></strong></p>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button onclick="navigateTo('../../index.html')" class="btn-primary">Voltar ao Início</button>
+                        <button onclick="voltarParaPesquisa()" class="btn-secondary">Nova Retirada</button>
+                    </div>
+                </div>
+            </main>
+            
+            <footer class="totem-footer">
+                <p>Totem de Autoatendimento - Biblioteca Universitária</p>
+            </footer>
+        </div>
+
+        <script src="../js/index.js"></script>
+        <script src="../js/retirada.js"></script>
+    </body>
+</html>
