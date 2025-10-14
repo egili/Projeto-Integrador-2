@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Programa do Aluno - Biblioteca Universitária</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/index.css" />
+  </head>
+  <body class="general-screen">
+    <div class="container">
+      <header class="general-header">
+        <h1>Programa do Aluno</h1>
+      </header>
+
+      <main class="general-main">
+        <div class="welcome-section">
+          <h2>Olá, aluno(a)!</h2>
+          <p>O que você gostaria de fazer hoje?</p>
+        </div>
+
+        <div class="options-grid">
+          <div class="option-card" onclick="navigateTo('pages/cadastro.html')">
+            <div class="option-icon">🧑‍🎓</div>
+            <h3>Cadastro de Aluno</h3>
+            <p>Realize o seu cadastro na biblioteca</p>
+          </div>
+
+          <div
+            class="option-card"
+            onclick="navigateTo('pages/consulta_livros.html')"
+          >
+            <div class="option-icon">🔍</div>
+            <h3>Consultar Livros</h3>
+            <p>Verifique os livros disponíveis para empréstimo</p>
+          </div>
+
+          <div
+            class="option-card"
+            onclick="navigateTo('pages/pontuacao_leitor.html')"
+          >
+            <div class="option-icon">📊</div>
+            <h3>Minha Pontuação</h3>
+            <p>Veja sua classificação como leitor no semestre</p>
+          </div>
+        </div>
+      </main>
+
+      <footer class="general-footer">
+        <p>Projeto Integrador 2 - Sistema de Biblioteca Universitária</p>
+        <p>Desenvolvido com ❤️ pelos integrantes do time 3</p>
+        <p>PUC-Campinas &copy; 2025</p>
+      </footer>
+    </div>
+
+    <script src="js/index.js"></script>
+  </body>
+</html>
