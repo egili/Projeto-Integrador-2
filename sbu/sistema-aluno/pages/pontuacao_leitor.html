@@ -3,10 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Programa do Aluno - Biblioteca Universitária</title>
-    <link rel="stylesheet" href="../css/style.css" />
-    <link rel="stylesheet" href="../css/consulta_livros.css" />
+    <title>Classificação do Leitor - Programa do Aluno</title>
+    <link rel="stylesheet" href="../styles/style.css" />
+    <link rel="stylesheet" href="../styles/pontuacao_leitor.css" />
   </head>
+
   <body class="general-screen">
     <div class="container">
       <header class="general-header">
@@ -20,23 +21,20 @@
       </header>
 
       <main class="general-main">
-        <section class="consulta-section">
-          <h2>Buscar Livros</h2>
+        <section class="pontuacao-section">
+          <h2>Pontuação do Leitor</h2>
+
           <div class="search-bar">
             <input
               type="text"
-              id="campoBusca"
-              placeholder="Digite o título ou autor do livro..."
+              id="campoBuscaLeitor"
+              placeholder="Digite o nome ou RA do aluno..."
             />
-            <button id="botaoBuscar" class="btn-primary">Buscar</button>
+            <button id="btnBuscarLeitor" class="btn-primary">Pesquisar</button>
           </div>
 
-          <div class="carrossel-container">
-            <button class="seta seta-esquerda">&#10094;</button>
-            <div id="carrosselLivros" class="carrossel">
-              <!-- Livros serão inseridos via JS -->
-            </div>
-            <button class="seta seta-direita">&#10095;</button>
+          <div id="resultadoPontuacao" class="resultado-container">
+            <!-- Resultado será exibido via JS -->
           </div>
         </section>
       </main>
@@ -49,6 +47,6 @@
     </div>
 
     <script src="../js/index.js"></script>
-    <script src="../js/consulta_livros.js"></script>
+    <script src="../js/pontuacao_leitor.js"></script>
   </body>
 </html>
