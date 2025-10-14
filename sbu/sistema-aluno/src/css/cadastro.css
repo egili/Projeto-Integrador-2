@@ -1,0 +1,104 @@
+/* =============================================== */
+/* ARQUIVO DO CADASTRO (cadastro.css)              */
+/* Estilos que se aplicam APENAS ao cadastro.html. */
+/* =============================================== */
+
+/* Layout do formulário */
+.form-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.form-input {
+  padding: 1rem;
+  border: 2px solid var(--border-light);
+  border-radius: 10px;
+  font-size: 1.1rem;
+  background: var(--pure-white);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--secondary-blue);
+  box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.2);
+}
+
+/* Mensagens de erro */
+.error-message {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  display: none; /* Oculta por padrão */
+  text-align: left;
+}
+
+/* Estilo para o ícone de senha */
+.password-wrapper {
+  position: relative;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  top: 70%;
+  right: 15px;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #7f8c8d;
+}
+
+/* Esconde/mostra as etapas do formulário */
+.step {
+  display: none;
+}
+.step.active {
+  display: block;
+}
+
+/* Estilo da mensagem de sucesso */
+.success-message {
+  text-align: center;
+}
+.success-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Botão primário (herdado do style.css) e estado desabilitado */
+.btn-primary:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+/* Animação do Spinner */
+.spinner {
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--pure-white);
+  width: 20px;
+  height: 20px;
+  animation: spin 1s ease-in-out infinite;
+  display: inline-block;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

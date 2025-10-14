@@ -1,0 +1,57 @@
+/* ========================================================*/
+/* ARQUIVO DA PONTUAÇÃO DO LEITOR (pontuacao_leitor.css)   */
+/* Estilos que se aplicam APENAS ao pontuacao_leitor.html. */
+/* ========================================================*/
+
+.pontuacao-section {
+  max-width: 900px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.pontuacao-section h2 {
+  color: var(--primary-blue);
+  margin-bottom: 0.5rem;
+  font-size: 2rem;
+}
+
+.resultado-container {
+  margin-top: 30px;
+  background-color: #f9f9f9;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.resultado-container h3 {
+  color: var(--primary-blue);
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.resultado-container p {
+  font-size: 1.1rem;
+  color: var(--text-dark);
+}
+
+.pontuacao-tag {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-weight: 600;
+  color: var(--pure-white);
+}
+
+.tag-iniciante {
+  background-color: #858484;
+}
+.tag-regular {
+  background-color: #3b82f6;
+}
+.tag-ativo {
+  background-color: #16a34a;
+}
+.tag-extremo {
+  background-color: #c2410c;
+}
