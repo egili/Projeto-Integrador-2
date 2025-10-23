@@ -36,43 +36,15 @@
             </div>
 
             <div class="form-group">
-              <label for="email">E-mail Institucional</label>
+              <label for="ra">RA (Registro Acadêmico)</label>
               <input
-                type="email"
-                id="email"
+                type="text"
+                id="ra"
                 class="form-input"
                 required
-                placeholder="seu.nome@puccampinas.edu.br"
+                placeholder="Ex: 25009281"
               />
-              <small class="error-message" id="email-error"></small>
-            </div>
-
-            <div class="form-group password-wrapper">
-              <label for="password">Senha</label>
-              <input
-                type="password"
-                id="password"
-                class="form-input"
-                required
-              />
-              <i
-                class="fa-solid fa-eye-slash password-toggle-icon"
-                id="togglePassword"
-              ></i>
-              <small class="error-message" id="password-error"
-                >A senha deve ter no mínimo 8 caracteres.</small
-              >
-            </div>
-
-            <div class="form-group">
-              <label for="confirmPassword">Confirme sua Senha</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                class="form-input"
-                required
-              />
-              <small class="error-message" id="confirmPassword-error"></small>
+              <small class="error-message" id="ra-error"></small>
             </div>
 
             <button
@@ -87,39 +59,13 @@
           </form>
         </div>
 
-        <div id="step2-code" class="step">
-          <div class="welcome-section">
-            <h2>Verifique seu E-mail</h2>
-            <p>
-              Enviamos um código de 6 dígitos para
-              <strong id="user-email-display"></strong>. Por favor, insira-o
-              abaixo.
-            </p>
-          </div>
-          <form id="code-form" class="form-layout">
-            <div class="form-group">
-              <label for="verificationCode">Código de Verificação</label>
-              <input
-                type="text"
-                id="verificationCode"
-                class="form-input"
-                required
-                maxlength="6"
-              />
-              <small class="error-message" id="code-error"></small>
-            </div>
-            <button type="submit" id="verify-btn" class="btn-primary">
-              Verificar código
-            </button>
-          </form>
-        </div>
 
-        <div id="step3-success" class="step">
+        <div id="step2-success" class="step">
           <div class="success-message">
             <div class="success-icon">✅</div>
             <h2>Cadastro Concluído!</h2>
             <p>
-              Sua conta foi criada com sucesso. Agora você já pode utilizar os
+              Seu cadastro foi realizado com sucesso. Agora você já pode utilizar os
               recursos da biblioteca.
             </p>
             <button id="home-btn" class="btn-primary">

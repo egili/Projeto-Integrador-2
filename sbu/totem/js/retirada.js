@@ -3,33 +3,53 @@
 let livroSelecionado = null;
 let alunoVerificado = null;
 
-// Pesquisar livros disponíveis
+// Pesquisar exemplares disponíveis
 async function pesquisarLivros() {
     const termo = document.getElementById('searchInput').value;
     const resultadosDiv = document.getElementById('resultadosLivros');
     
-    resultadosDiv.innerHTML = '<p>Pesquisando livros...</p>';
+    resultadosDiv.innerHTML = '<p>Pesquisando exemplares disponíveis...</p>';
     
     try {
-        const livros = await api.buscarLivrosDisponiveis(termo);
+        const exemplares = await api.buscarExemplaresDisponiveis(termo);
         
-        if (livros.length === 0) {
-            resultadosDiv.innerHTML = '<p class="no-results">Nenhum livro encontrado.</p>';
+        if (exemplares.length === 0) {
+            resultadosDiv.innerHTML = '<p class="no-results">Nenhum exemplar disponível encontrado.</p>';
             return;
         }
         
-        resultadosDiv.innerHTML = livros.map(livro => `
+        // Agrupar exemplares por livro
+        const livrosUnicos = {};
+        exemplares.forEach(exemplar => {
+            const livroId = exemplar.idLivro;
+            if (!livrosUnicos[livroId]) {
+                livrosUnicos[livroId] = {
+                    id: exemplar.idLivro,
+                    titulo: exemplar.livro_titulo,
+                    autor: exemplar.autor,
+                    editora: exemplar.editora,
+                    anoPublicacao: exemplar.anoPublicacao,
+                    isbn: exemplar.isbn,
+                    exemplares: []
+                };
+            }
+            livrosUnicos[livroId].exemplares.push(exemplar);
+        });
+        
+        resultadosDiv.innerHTML = Object.values(livrosUnicos).map(livro => `
             <div class="livro-item" onclick="selecionarLivro(${livro.id})" data-livro='${JSON.stringify(livro)}'>
                 <h4>${livro.titulo}</h4>
                 <p><strong>Autor:</strong> ${livro.autor}</p>
                 <p><strong>Editora:</strong> ${livro.editora} (${livro.anoPublicacao})</p>
                 <p><strong>ISBN:</strong> ${livro.isbn || 'N/A'}</p>
+                <p><strong>Exemplares disponíveis:</strong> ${livro.exemplares.length}</p>
+                <p><strong>Códigos:</strong> ${livro.exemplares.map(ex => ex.codigo).join(', ')}</p>
                 <p><strong>Status:</strong> <span style="color: #27ae60;">Disponível</span></p>
             </div>
         `).join('');
         
     } catch (error) {
-        resultadosDiv.innerHTML = '<p class="no-results">Erro ao buscar livros. Tente novamente.</p>';
+        resultadosDiv.innerHTML = '<p class="no-results">Erro ao buscar exemplares. Tente novamente.</p>';
         console.error('Erro:', error);
     }
 }
@@ -39,12 +59,17 @@ function selecionarLivro(livroId) {
     const livroItem = event.target.closest('.livro-item');
     const livroData = JSON.parse(livroItem.getAttribute('data-livro'));
     
-    livroSelecionado = livroData;
+    // Selecionar o primeiro exemplar disponível
+    livroSelecionado = {
+        ...livroData,
+        exemplarSelecionado: livroData.exemplares[0]
+    };
     
     document.getElementById('livroSelecionadoInfo').innerHTML = `
         <strong>${livroData.titulo}</strong><br>
         <em>${livroData.autor}</em><br>
-        <small>${livroData.editora} (${livroData.anoPublicacao})</small>
+        <small>${livroData.editora} (${livroData.anoPublicacao})</small><br>
+        <small><strong>Exemplar:</strong> ${livroData.exemplares[0].codigo}</small>
     `;
     
     // Avançar para o próximo passo
@@ -107,10 +132,10 @@ async function verificarAluno() {
 // Confirmar empréstimo
 async function confirmarEmprestimo() {
     try {
-        const resultado = await api.realizarEmprestimo(alunoVerificado.ra, livroSelecionado.id);
+        const resultado = await api.realizarEmprestimo(alunoVerificado.ra, livroSelecionado.exemplarSelecionado.id);
         
         // Preencher mensagem de sucesso
-        document.getElementById('sucessoLivro').textContent = livroSelecionado.titulo;
+        document.getElementById('sucessoLivro').textContent = `${livroSelecionado.titulo} (${livroSelecionado.exemplarSelecionado.codigo})`;
         document.getElementById('sucessoAluno').textContent = alunoVerificado.nome;
         document.getElementById('sucessoData').textContent = formatarData(new Date());
         

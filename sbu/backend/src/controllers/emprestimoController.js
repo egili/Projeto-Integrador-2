@@ -1,12 +1,13 @@
 const Emprestimo = require('../models/emprestimo');
 const Aluno = require('../models/aluno');
 const Livro = require('../models/livro');
+const Exemplar = require('../models/exemplar');
 const Classificacao = require('../models/classificacao');
 const Semestre = require('../models/semestre');
 
 exports.realizarEmprestimo = async (req, res) => {
     try {
-        const { raAluno, idLivro } = req.body;
+        const { raAluno, idExemplar } = req.body;
 
         // Verificar se aluno existe
         const aluno = await Aluno.buscarPorRa(raAluno);
@@ -17,21 +18,21 @@ exports.realizarEmprestimo = async (req, res) => {
             });
         }
 
-        // Verificar se livro existe
-        const livro = await Livro.buscarPorId(idLivro);
-        if (!livro) {
+        // Verificar se exemplar existe
+        const exemplar = await Exemplar.buscarPorId(idExemplar);
+        if (!exemplar) {
             return res.status(404).json({
                 success: false,
-                error: 'Livro não encontrado'
+                error: 'Exemplar não encontrado'
             });
         }
 
-        // Verificar se livro está disponível
-        const livroDisponivel = await Emprestimo.verificarLivroDisponivel(idLivro);
-        if (!livroDisponivel) {
+        // Verificar se exemplar está disponível
+        const exemplarDisponivel = await Emprestimo.verificarExemplarDisponivel(idExemplar);
+        if (!exemplarDisponivel) {
             return res.status(400).json({
                 success: false,
-                error: 'Livro já emprestado'
+                error: 'Exemplar já emprestado'
             });
         }
 
@@ -44,10 +45,13 @@ exports.realizarEmprestimo = async (req, res) => {
         // Registrar empréstimo
         const result = await Emprestimo.criar({
             idAluno: aluno.id,
-            idLivro,
+            idExemplar,
             dataEmprestimo,
             dataDevolucaoPrevista: dataDevolucaoPrevistaStr
         });
+
+        // Atualizar status do exemplar para emprestado
+        await Exemplar.atualizarStatus(idExemplar, 'emprestado');
 
         res.status(201).json({
             success: true,
@@ -55,7 +59,8 @@ exports.realizarEmprestimo = async (req, res) => {
             data: {
                 id: result.insertId,
                 aluno: aluno.nome,
-                livro: livro.titulo,
+                exemplar: exemplar.codigo,
+                livro: exemplar.livro_titulo,
                 dataEmprestimo,
                 dataDevolucaoPrevista: dataDevolucaoPrevistaStr
             }
@@ -94,6 +99,9 @@ exports.registrarDevolucao = async (req, res) => {
         // Registrar devolução
         const dataDevolucaoReal = new Date().toISOString().split('T')[0];
         await Emprestimo.registrarDevolucao(idEmprestimo, dataDevolucaoReal);
+
+        // Atualizar status do exemplar para disponível
+        await Exemplar.atualizarStatus(emprestimo.idExemplar, 'disponivel');
 
         // Atualizar classificação do aluno
         const semestreAtivo = await Semestre.buscarAtivo();

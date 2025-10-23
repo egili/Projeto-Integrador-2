@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Empréstimo de Livros - Biblioteca Universitária</title>
+    <link rel="stylesheet" href="../styles/style.css" />
+    <link rel="stylesheet" href="../styles/emprestimo.css" />
+  </head>
+  <body class="general-screen">
+    <div class="container">
+      <header class="general-header">
+        <button
+          class="btn-primary btn-voltar"
+          onclick="navigateTo('../../index.html')"
+        >
+          ← Voltar
+        </button>
+        <h1>Empréstimo de Livros</h1>
+      </header>
+
+      <main class="general-main">
+        <!-- Passo 1: Identificação do aluno -->
+        <div id="step1" class="step active">
+          <div class="welcome-section">
+            <h2>Identificação do Aluno</h2>
+            <p>Digite seu RA para continuar com o empréstimo.</p>
+          </div>
+          
+          <div class="identification-section">
+            <label for="raInput">RA (Registro Acadêmico):</label>
+            <input type="text" id="raInput" placeholder="Digite seu RA" class="form-input">
+            <button onclick="verificarAluno()" class="btn-primary">Verificar</button>
+          </div>
+          
+          <div id="alunoInfo" class="aluno-info"></div>
+        </div>
+
+        <!-- Passo 2: Seleção de livros -->
+        <div id="step2" class="step">
+          <div class="welcome-section">
+            <h2>Selecionar Livros</h2>
+            <p>Escolha os livros que deseja emprestar.</p>
+          </div>
+          
+          <div class="search-section">
+            <input type="text" id="searchInput" placeholder="Pesquisar por título ou autor..." class="form-input">
+            <button onclick="pesquisarLivros()" class="btn-primary">Pesquisar</button>
+          </div>
+          
+          <div id="resultadosLivros" class="results-section">
+            <!-- Resultados serão carregados aqui -->
+          </div>
+          
+          <div id="livrosSelecionados" class="selected-books" style="display: none;">
+            <h3>Livros Selecionados:</h3>
+            <div id="listaSelecionados"></div>
+            <button onclick="confirmarEmprestimo()" class="btn-success">Confirmar Empréstimo</button>
+          </div>
+        </div>
+
+        <!-- Passo 3: Confirmação -->
+        <div id="step3" class="step">
+          <div class="success-message">
+            <div class="success-icon">✅</div>
+            <h2>Empréstimo Realizado com Sucesso!</h2>
+            <div class="success-details">
+              <p>Os livros foram emprestados com sucesso.</p>
+              <div id="detalhesEmprestimo"></div>
+            </div>
+          </div>
+          
+          <div class="action-buttons">
+            <button onclick="navigateTo('../../index.html')" class="btn-primary">Voltar ao Início</button>
+            <button onclick="novoEmprestimo()" class="btn-secondary">Novo Empréstimo</button>
+          </div>
+        </div>
+      </main>
+
+      <footer class="general-footer">
+        <p>Projeto Integrador 2 - Sistema de Biblioteca Universitária</p>
+        <p>Desenvolvido com ❤️ pelos integrantes do time 3</p>
+        <p>PUC-Campinas &copy; 2025</p>
+      </footer>
+    </div>
+
+    <script src="../js/index.js"></script>
+    <script src="../js/emprestimo.js"></script>
+  </body>
+</html>

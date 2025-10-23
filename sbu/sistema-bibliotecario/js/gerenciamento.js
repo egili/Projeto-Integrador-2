@@ -1,3 +1,6 @@
+// Configuração da API
+const API_BASE_URL = 'http://localhost:3001/api';
+
 document.addEventListener('DOMContentLoaded', function() {
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabPanes = document.querySelectorAll('.tab-pane');
@@ -5,30 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search-input');
     const searchButton = document.getElementById('search-button');
     const clearSearchButton = document.getElementById('clear-search');
-    
-    const sampleBooks = [
-        { id: 1, title: "Entendendo Algoritmos", author: "Aditya Y. Bhargava ", publisher: "Editora A", status: "Disponível" },
-        { id: 2, title: "Algoritmos E Lógica Da Programação", author: "Marco A. Furlan de Souza ", publisher: "Editora B", status: "Emprestado" },
-        { id: 3, title: "Lógica de Programação e Algoritmos com Javascript", author: "Edécio Fernando Iepsen  ", publisher: "Editora A", status: "Disponível" },
-        { id: 4, title: "Estruturas De Dados E Algoritmos Com Javascript", author: " Loiane Groner", publisher: "Editora C", status: "Emprestado" },
-        { id: 5, title: "Introdução à Linguagem SQL", author: " Thomas Nield  ", publisher: "Editora A", status: "Disponível" },
-        { id: 6, title: "Microsoft Power bi Para Leigos", author: " Jack Hyman", publisher: "Editora D", status: "Disponível" },
-        { id: 7, title: "A Cor dos Dados: Um guia para o uso de cores em storytelling de dados", author: "Kate Strachnyi", publisher: "Editora C", status: "Disponível" }
-    ];
-    
-    const sampleLoans = [
-        { id: 1, title: "Algoritmos E Lógica Da Programação", student: "Eduardo", loanDate: "2025-01-15", returnDate: "2025-02-15" },
-        { id: 2, title: "Estruturas De Dados E Algoritmos Com Javascript", student: "Eliseu", loanDate: "2025-01-20", returnDate: "2025-02-20" },
-        { id: 3, title: "Entendendo Algoritmos", student: "Lucas", loanDate: "2025-01-10", returnDate: "2025-02-10" }
-    ];
-    
-    const sampleHistory = [
-        { id: 1, title: "Entendendo Algoritmos", student: "Joãozinho", transaction: "Empréstimo", date: "2025-01-05" },
-        { id: 2, title: "Algoritmos E Lógica Da Programação", student: "Kaue", transaction: "Empréstimo", date: "2025-01-08" },
-        { id: 3, title: "Lógica de Programação e Algoritmos com Javascript", student: "Luis", transaction: "Empréstimo", date: "2025-01-12" },
-        { id: 4, title: "Entendendo Algoritmos", student: "Brenda", transaction: "Devolução", date: "2025-01-20" },
-        { id: 5, title: "Estruturas De Dados E Algoritmos Com Javascript", student: "Caio", transaction: "Empréstimo", date: "2025-01-25" }
-    ];
 
     function initTabs() {
         tabButtons.forEach(button => {
@@ -107,38 +86,88 @@ document.addEventListener('DOMContentLoaded', function() {
         loadTabData('todos-livros');
     }
 
-    function loadTabData(tabId) {
+    async function loadTabData(tabId) {
         const dataView = document.querySelector(`#${tabId} .data-view`);
+        dataView.innerHTML = '<p>Carregando dados...</p>';
         
-        switch(tabId) {
-            case 'todos-livros':
-                loadAllBooks(dataView);
-                break;
-            case 'pendentes':
-                loadPendingBooks(dataView);
-                break;
-            case 'historico':
-                loadHistory(dataView);
-                break;
+        try {
+            switch(tabId) {
+                case 'todos-livros':
+                    await loadAllBooks(dataView);
+                    break;
+                case 'pendentes':
+                    await loadPendingBooks(dataView);
+                    break;
+                case 'historico':
+                    await loadHistory(dataView);
+                    break;
+            }
+        } catch (error) {
+            console.error('Erro ao carregar dados:', error);
+            dataView.innerHTML = '<p>Erro ao carregar dados. Tente novamente.</p>';
         }
     }
 
-    function loadAllBooks(container) {
-        const table = createBooksTable(sampleBooks, ['Título', 'Autor', 'Editora', 'Status']);
-        container.innerHTML = '';
-        container.appendChild(table);
+    async function loadAllBooks(container) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const exemplares = data.data;
+                
+                // Agrupar exemplares por livro
+                const livrosMap = new Map();
+                exemplares.forEach(exemplar => {
+                    const livroId = exemplar.idLivro;
+                    if (!livrosMap.has(livroId)) {
+                        livrosMap.set(livroId, {
+                            id: exemplar.idLivro,
+                            titulo: exemplar.livro_titulo,
+                            autor: exemplar.autor,
+                            editora: exemplar.editora,
+                            anoPublicacao: exemplar.anoPublicacao,
+                            exemplares: []
+                        });
+                    }
+                    livrosMap.get(livroId).exemplares.push(exemplar);
+                });
+                
+                const livros = Array.from(livrosMap.values());
+                const table = createBooksTable(livros, ['Título', 'Autor', 'Editora', 'Ano', 'Exemplares', 'Status']);
+                container.innerHTML = '';
+                container.appendChild(table);
+            } else {
+                throw new Error(data.error || 'Erro ao carregar livros');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar livros:', error);
+            container.innerHTML = '<p>Erro ao carregar livros. Tente novamente.</p>';
+        }
     }
 
-    function loadPendingBooks(container) {
-        const table = createLoansTable(sampleLoans, ['Título', 'Aluno', 'Data de Empréstimo', 'Data de Devolução']);
-        container.innerHTML = '';
-        container.appendChild(table);
+    async function loadPendingBooks(container) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/emprestimos/ativos`);
+            const data = await response.json();
+            
+            if (data.success) {
+                const emprestimos = data.data;
+                const table = createLoansTable(emprestimos, ['Título', 'Exemplar', 'Aluno', 'RA', 'Data de Empréstimo', 'Prazo de Devolução']);
+                container.innerHTML = '';
+                container.appendChild(table);
+            } else {
+                throw new Error(data.error || 'Erro ao carregar empréstimos');
+            }
+        } catch (error) {
+            console.error('Erro ao carregar empréstimos:', error);
+            container.innerHTML = '<p>Erro ao carregar empréstimos. Tente novamente.</p>';
+        }
     }
 
-    function loadHistory(container) {
-        const table = createHistoryTable(sampleHistory, ['Título', 'Aluno', 'Transação', 'Data']);
-        container.innerHTML = '';
-        container.appendChild(table);
+    async function loadHistory(container) {
+        // Por enquanto, mostrar uma mensagem já que não temos histórico implementado
+        container.innerHTML = '<p>Funcionalidade de histórico em desenvolvimento.</p>';
     }
 
     function createBooksTable(data, headers) {
@@ -159,14 +188,23 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const tbody = document.createElement('tbody');
         
-        data.forEach(book => {
+        data.forEach(livro => {
             const row = document.createElement('tr');
             
+            const exemplaresDisponiveis = livro.exemplares.filter(ex => ex.status === 'disponivel').length;
+            const exemplaresEmprestados = livro.exemplares.filter(ex => ex.status === 'emprestado').length;
+            const exemplaresManutencao = livro.exemplares.filter(ex => ex.status === 'manutencao').length;
+            
+            const statusText = exemplaresDisponiveis > 0 ? 'Disponível' : 
+                              exemplaresEmprestados > 0 ? 'Emprestado' : 'Manutenção';
+            
             const cells = [
-                book.title,
-                book.author,
-                book.publisher,
-                book.status
+                livro.titulo,
+                livro.autor,
+                livro.editora,
+                livro.anoPublicacao,
+                `${exemplaresDisponiveis} disp. / ${exemplaresEmprestados} emp. / ${exemplaresManutencao} man.`,
+                statusText
             ];
             
             cells.forEach(cell => {
@@ -178,6 +216,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     td.style.fontWeight = '600';
                 } else if (cell === 'Disponível') {
                     td.style.color = '#16a34a';
+                    td.style.fontWeight = '600';
+                } else if (cell === 'Manutenção') {
+                    td.style.color = '#f59e0b';
                     td.style.fontWeight = '600';
                 }
                 
@@ -209,14 +250,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const tbody = document.createElement('tbody');
         
-        data.forEach(loan => {
+        data.forEach(emprestimo => {
             const row = document.createElement('tr');
             
             const cells = [
-                loan.title,
-                loan.student,
-                formatDate(loan.loanDate),
-                formatDate(loan.returnDate)
+                emprestimo.livro_titulo,
+                emprestimo.exemplar_codigo,
+                emprestimo.aluno_nome,
+                emprestimo.ra,
+                formatDate(emprestimo.dataEmprestimo),
+                formatDate(emprestimo.dataDevolucaoPrevista)
             ];
             
             cells.forEach(cell => {
@@ -232,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
             returnBtn.style.padding = 'var(--space-xs) var(--space-sm)';
             returnBtn.style.fontSize = '0.875rem';
             returnBtn.addEventListener('click', function() {
-                markAsReturned(loan.id);
+                markAsReturned(emprestimo.id);
             });
             actionCell.appendChild(returnBtn);
             row.appendChild(actionCell);
@@ -299,13 +342,32 @@ document.addEventListener('DOMContentLoaded', function() {
         return date.toLocaleDateString('pt-BR');
     }
 
-    function markAsReturned(loanId) {
-        if (confirm('Deseja marcar este livro como devolvido?')) {
-            console.log(`Livro ${loanId} marcado como devolvido`);
-            alert('Livro marcado como devolvido com sucesso!');
-            
-            loadTabData('pendentes');
-            loadTabData('todos-livros');
+    async function markAsReturned(emprestimoId) {
+        if (confirm('Deseja marcar este empréstimo como devolvido?')) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/emprestimos/devolucao`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        idEmprestimo: emprestimoId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    alert('Empréstimo marcado como devolvido com sucesso!');
+                    loadTabData('pendentes');
+                    loadTabData('todos-livros');
+                } else {
+                    throw new Error(data.error || 'Erro ao marcar como devolvido');
+                }
+            } catch (error) {
+                console.error('Erro ao marcar como devolvido:', error);
+                alert('Erro ao marcar como devolvido: ' + error.message);
+            }
         }
     }
 

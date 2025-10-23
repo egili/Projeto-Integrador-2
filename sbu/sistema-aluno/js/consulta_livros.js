@@ -7,67 +7,42 @@ function navigateTo(page) {
   window.location.href = page;
 }
 
-// Simulação de mockAPI reutilizando o padrão do totem
-const mockAPI = {
-  buscarLivrosDisponiveis: async (termo = "") => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
+// API real do backend
+const API_BASE_URL = 'http://localhost:3001/api';
 
-    // Função que gera uma capa aleatória
-    const gerarCapa = (id) => `https://picsum.photos/seed/livro${id}/200/300`;
-
-    const livros = [
-      {
-        id: 1,
-        titulo: "Introdução à Programação",
-        autor: "João Silva",
-        capa: gerarCapa(1),
-      },
-      {
-        id: 2,
-        titulo: "Banco de Dados Relacional",
-        autor: "Maria Santos",
-        capa: gerarCapa(2),
-      },
-      {
-        id: 3,
-        titulo: "Desenvolvimento Web Moderno",
-        autor: "Pedro Costa",
-        capa: gerarCapa(3),
-      },
-      {
-        id: 4,
-        titulo: "Algoritmos e Estruturas de Dados",
-        autor: "Ana Oliveira",
-        capa: gerarCapa(4),
-      },
-      {
-        id: 5,
-        titulo: "Engenharia de Software",
-        autor: "Carlos Mendes",
-        capa: gerarCapa(5),
-      },
-      {
-        id: 6,
-        titulo: "Inteligência Artificial Aplicada",
-        autor: "Fernanda Souza",
-        capa: gerarCapa(6),
-      },
-      {
-        id: 7,
-        titulo: "Sistemas Operacionais",
-        autor: "Ricardo Lima",
-        capa: gerarCapa(7),
-      },
-    ];
-
-    if (!termo.trim()) return livros;
-
-    const termoLower = termo.toLowerCase();
-    return livros.filter(
-      (livro) =>
-        livro.titulo.toLowerCase().includes(termoLower) ||
-        livro.autor.toLowerCase().includes(termoLower)
-    );
+const api = {
+  buscarExemplaresDisponiveis: async (termo = "") => {
+    try {
+      let url = `${API_BASE_URL}/exemplares/disponiveis`;
+      
+      if (termo.trim()) {
+        // Buscar por título ou autor nos livros
+        const livrosResponse = await fetch(`${API_BASE_URL}/livros?titulo=${encodeURIComponent(termo)}`);
+        const livrosData = await livrosResponse.json();
+        
+        if (livrosData.success && livrosData.data.length > 0) {
+          // Buscar exemplares dos livros encontrados
+          const exemplaresPromises = livrosData.data.map(livro => 
+            fetch(`${API_BASE_URL}/exemplares/livro/${livro.id}`)
+              .then(res => res.json())
+              .then(data => data.success ? data.data : [])
+          );
+          
+          const exemplaresArrays = await Promise.all(exemplaresPromises);
+          const exemplares = exemplaresArrays.flat().filter(ex => ex.status === 'disponivel');
+          return exemplares;
+        }
+        
+        return [];
+      }
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.success ? data.data : [];
+    } catch (error) {
+      console.error('Erro ao buscar exemplares:', error);
+      return [];
+    }
   },
 };
 
@@ -76,21 +51,47 @@ async function carregarLivros(termo = "") {
   const carrossel = document.getElementById("carrosselLivros");
   carrossel.innerHTML = "<p>Carregando livros...</p>";
 
-  const livros = await mockAPI.buscarLivrosDisponiveis(termo);
+  const exemplares = await api.buscarExemplaresDisponiveis(termo);
   carrossel.innerHTML = "";
 
-  if (livros.length === 0) {
-    carrossel.innerHTML = "<p>Nenhum livro encontrado.</p>";
+  if (exemplares.length === 0) {
+    carrossel.innerHTML = "<p>Nenhum exemplar disponível encontrado.</p>";
     return;
   }
 
-  livros.forEach((livro) => {
+  // Agrupar exemplares por livro para mostrar apenas um card por livro
+  const livrosUnicos = {};
+  exemplares.forEach(exemplar => {
+    const livroId = exemplar.idLivro;
+    if (!livrosUnicos[livroId]) {
+      livrosUnicos[livroId] = {
+        id: exemplar.idLivro,
+        titulo: exemplar.livro_titulo,
+        autor: exemplar.autor,
+        editora: exemplar.editora,
+        anoPublicacao: exemplar.anoPublicacao,
+        isbn: exemplar.isbn,
+        exemplares: []
+      };
+    }
+    livrosUnicos[livroId].exemplares.push(exemplar);
+  });
+
+  Object.values(livrosUnicos).forEach((livro) => {
     const card = document.createElement("div");
     card.className = "livro-card";
     card.innerHTML = `
-      <img src="${livro.capa}" alt="${livro.titulo}">
+      <div class="livro-capa">
+        <div class="capa-placeholder">📚</div>
+      </div>
       <h3>${livro.titulo}</h3>
-      <p>${livro.autor}</p>
+      <p><strong>Autor:</strong> ${livro.autor}</p>
+      <p><strong>Editora:</strong> ${livro.editora}</p>
+      <p><strong>Ano:</strong> ${livro.anoPublicacao}</p>
+      <p><strong>Exemplares disponíveis:</strong> ${livro.exemplares.length}</p>
+      <div class="exemplares-info">
+        <p><strong>Códigos:</strong> ${livro.exemplares.map(ex => ex.codigo).join(', ')}</p>
+      </div>
     `;
     carrossel.appendChild(card);
   });

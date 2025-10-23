@@ -44,6 +44,7 @@ async function buscarEmprestimos() {
                     <h4>${emp.livro_titulo}</h4>
                     <p><strong>Autor:</strong> ${emp.autor}</p>
                     <p><strong>Editora:</strong> ${emp.editora}</p>
+                    <p><strong>Exemplar:</strong> ${emp.exemplar_codigo}</p>
                     <p><strong>Data do empréstimo:</strong> ${formatarData(emp.dataEmprestimo)}</p>
                     <p><strong>Prazo de devolução:</strong> ${formatarData(emp.dataDevolucaoPrevista)}</p>
                 </div>
@@ -80,7 +81,7 @@ function selecionarEmprestimo(emprestimoId) {
     emprestimoSelecionado = emprestimoData;
     
     // Preencher confirmação
-    document.getElementById('confirmaDevolucaoLivro').textContent = emprestimoData.livro_titulo;
+    document.getElementById('confirmaDevolucaoLivro').textContent = `${emprestimoData.livro_titulo} (${emprestimoData.exemplar_codigo})`;
     document.getElementById('confirmaDevolucaoAluno').textContent = alunoDevolucao.nome;
     document.getElementById('confirmaDevolucaoRA').textContent = alunoDevolucao.ra;
     document.getElementById('confirmaDataEmprestimo').textContent = formatarData(emprestimoData.dataEmprestimo);
@@ -96,7 +97,7 @@ async function confirmarDevolucao() {
         const resultado = await api.registrarDevolucao(emprestimoSelecionado.id);
         
         // Preencher mensagem de sucesso
-        document.getElementById('sucessoDevolucaoLivro').textContent = emprestimoSelecionado.livro_titulo;
+        document.getElementById('sucessoDevolucaoLivro').textContent = `${emprestimoSelecionado.livro_titulo} (${emprestimoSelecionado.exemplar_codigo})`;
         document.getElementById('sucessoDevolucaoAluno').textContent = alunoDevolucao.nome;
         document.getElementById('sucessoDevolucaoData').textContent = formatarData(new Date());
         

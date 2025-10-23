@@ -28,13 +28,10 @@ class Livro {
 
     static async listarDisponiveis() {
         const [rows] = await connection.execute(`
-            SELECT l.* 
+            SELECT DISTINCT l.* 
             FROM livro l 
-            WHERE l.id NOT IN (
-                SELECT e.idLivro 
-                FROM emprestimo e 
-                WHERE e.dataDevolucaoReal IS NULL
-            )
+            JOIN exemplar ex ON l.id = ex.idLivro
+            WHERE ex.status = 'disponivel'
         `);
         return rows;
     }

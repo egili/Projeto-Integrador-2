@@ -6,11 +6,12 @@ const { testConnection } = require('./database/connection');
 // Import controllers
 const alunoController = require('./controllers/alunoController');
 const livroController = require('./controllers/livroController');
+const exemplarController = require('./controllers/exemplarController');
 const emprestimoController = require('./controllers/emprestimoController');
 const classificacaoController = require('./controllers/classificacaoController');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Middlewares
 app.use(cors());
@@ -31,6 +32,15 @@ app.get('/api/livros/disponiveis', livroController.listarLivrosDisponiveis);
 app.get('/api/livros', livroController.buscarLivros);
 app.get('/api/livros/todos', livroController.listarTodosLivros);
 app.get('/api/livros/:id', livroController.buscarLivroPorId);
+
+// Routes - Exemplares
+app.post('/api/exemplares', exemplarController.cadastrarExemplar);
+app.get('/api/exemplares/disponiveis', exemplarController.listarExemplaresDisponiveis);
+app.get('/api/exemplares', exemplarController.listarTodosExemplares);
+app.get('/api/exemplares/livro/:idLivro', exemplarController.listarExemplaresPorLivro);
+app.get('/api/exemplares/codigo/:codigo', exemplarController.buscarExemplarPorCodigo);
+app.put('/api/exemplares/:id', exemplarController.atualizarExemplar);
+app.delete('/api/exemplares/:id', exemplarController.deletarExemplar);
 
 // Routes - Empréstimos
 app.post('/api/emprestimos', emprestimoController.realizarEmprestimo);

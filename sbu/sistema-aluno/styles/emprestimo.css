@@ -1,0 +1,195 @@
+/* =======================================================*/
+/* ARQUIVO DO EMPRÉSTIMO DE LIVROS (emprestimo.css)      */
+/* Estilos que se aplicam APENAS ao emprestimo.html.    */
+/* =======================================================*/
+
+.identification-section {
+  max-width: 500px;
+  margin: 40px auto;
+  text-align: center;
+}
+
+.identification-section label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+.identification-section input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.identification-section input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+}
+
+.aluno-info {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.search-section {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.search-section input {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid #e1e5e9;
+  border-radius: 8px;
+  font-size: 16px;
+}
+
+.search-section input:focus {
+  outline: none;
+  border-color: var(--primary-blue);
+}
+
+.results-section {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.livro-item {
+  background-color: var(--pure-white);
+  border: 2px solid #e1e5e9;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.livro-item:hover {
+  border-color: var(--primary-blue);
+  box-shadow: 0 4px 12px rgba(42, 82, 152, 0.15);
+  transform: translateY(-2px);
+}
+
+.livro-item h4 {
+  color: var(--primary-blue);
+  margin-bottom: 10px;
+  font-size: 18px;
+}
+
+.livro-item p {
+  margin-bottom: 5px;
+  color: var(--text-dark);
+  font-size: 14px;
+}
+
+.selected-books {
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  padding: 20px;
+  margin-top: 30px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.selected-books h3 {
+  color: var(--primary-blue);
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.livro-selecionado {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--pure-white);
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+}
+
+.livro-info h4 {
+  color: var(--primary-blue);
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+.livro-info p {
+  color: var(--text-dark);
+  font-size: 14px;
+  margin: 0;
+}
+
+.btn-remove {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-remove:hover {
+  background-color: #b91c1c;
+}
+
+.success-details {
+  text-align: left;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.success-details ul {
+  text-align: left;
+  margin: 10px 0;
+}
+
+.success-details li {
+  margin-bottom: 5px;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.btn-success {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+.btn-success:hover {
+  background-color: #15803d;
+}
+
+.step {
+  display: none;
+}
+
+.step.active {
+  display: block;
+}

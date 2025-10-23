@@ -1,4 +1,5 @@
 const Livro = require('../models/livro');
+const Exemplar = require('../models/exemplar');
 
 exports.cadastrarLivro = async (req, res) => {
     try {
@@ -48,12 +49,12 @@ exports.cadastrarLivro = async (req, res) => {
 
 exports.listarLivrosDisponiveis = async (req, res) => {
     try {
-        const livros = await Livro.listarDisponiveis();
+        const exemplares = await Exemplar.listarDisponiveis();
 
         res.json({
             success: true,
-            data: livros,
-            total: livros.length
+            data: exemplares,
+            total: exemplares.length
         });
 
     } catch (error) {
