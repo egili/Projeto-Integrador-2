@@ -1,4 +1,5 @@
 const Livro = require('../models/livro');
+const Exemplar = require('../models/exemplar');
 
 exports.cadastrarLivro = async (req, res) => {
     try {
@@ -124,13 +125,84 @@ exports.buscarLivroPorId = async (req, res) => {
             });
         }
 
+        // Buscar exemplares do livro
+        const exemplares = await Exemplar.listarPorLivro(id);
+
         res.json({
             success: true,
-            data: livro
+            data: {
+                ...livro,
+                exemplares: exemplares
+            }
         });
 
     } catch (error) {
         console.error('Erro ao buscar livro:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor'
+        });
+    }
+};
+
+exports.listarLivrosComExemplares = async (req, res) => {
+    try {
+        const livros = await Livro.listarTodos();
+        
+        // Para cada livro, buscar seus exemplares
+        const livrosComExemplares = await Promise.all(
+            livros.map(async (livro) => {
+                const exemplares = await Exemplar.listarPorLivro(livro.id);
+                return {
+                    ...livro,
+                    exemplares: exemplares,
+                    totalExemplares: exemplares.length,
+                    exemplaresDisponiveis: exemplares.filter(ex => ex.status === 'disponivel').length
+                };
+            })
+        );
+
+        res.json({
+            success: true,
+            data: livrosComExemplares,
+            total: livrosComExemplares.length
+        });
+
+    } catch (error) {
+        console.error('Erro ao listar livros com exemplares:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor'
+        });
+    }
+};
+
+exports.listarLivrosDisponiveisComExemplares = async (req, res) => {
+    try {
+        const livros = await Livro.listarTodos();
+        
+        // Filtrar apenas livros que têm exemplares disponíveis
+        const livrosComExemplaresDisponiveis = [];
+        
+        for (const livro of livros) {
+            const exemplaresDisponiveis = await Exemplar.listarDisponiveisPorLivro(livro.id);
+            if (exemplaresDisponiveis.length > 0) {
+                livrosComExemplaresDisponiveis.push({
+                    ...livro,
+                    exemplares: exemplaresDisponiveis,
+                    totalExemplares: exemplaresDisponiveis.length
+                });
+            }
+        }
+
+        res.json({
+            success: true,
+            data: livrosComExemplaresDisponiveis,
+            total: livrosComExemplaresDisponiveis.length
+        });
+
+    } catch (error) {
+        console.error('Erro ao listar livros disponíveis com exemplares:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'

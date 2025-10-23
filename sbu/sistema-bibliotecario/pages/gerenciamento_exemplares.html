@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <title>Gerenciamento de Exemplares</title>
+</head>
+<body class="totem-screen">
+    <div class="container">
+        <header class="cadastro-header">
+            <h1>Gerenciamento de Exemplares</h1>
+        </header>
+
+        <main class="cadastro-main">
+            <a href="../index.html" class="btn-secondary">
+                ← Voltar para o menu principal
+            </a>
+
+            <div class="exemplares-section">
+                <h2>Cadastrar Novo Exemplar</h2>
+                <form id="exemplar-form" class="form-layout" novalidate>
+                    <div class="form-group">
+                        <label for="livroSelect">Livro:</label>
+                        <select id="livroSelect" class="form-input" required>
+                            <option value="">Selecione um livro</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="codigoExemplar">Código do Exemplar:</label>
+                        <input type="text" id="codigoExemplar" class="form-input" required placeholder="Ex: EX-001-01">
+                    </div>
+                    <div class="form-group">
+                        <label for="observacoes">Observações (opcional):</label>
+                        <textarea id="observacoes" class="form-input" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataAquisicao">Data de Aquisição:</label>
+                        <input type="date" id="dataAquisicao" class="form-input" required>
+                    </div>
+                    
+                    <button type="submit" id="cadastrar-exemplar-btn" class="btn-primary" disabled>
+                        <span class="btn-text">Cadastrar Exemplar</span>
+                        <span class="spinner" style="display: none;"></span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="exemplares-list">
+                <h2>Lista de Exemplares</h2>
+                <div id="exemplares-container">
+                    <p>Carregando exemplares...</p>
+                </div>
+            </div>
+
+            <div id="success-message" class="success-container" style="display: none;">
+                <div class="success-message">
+                    <div class="success-icon">✅</div>
+                    <h2>Operação Concluída!</h2>
+                    <p id="success-text">Operação realizada com sucesso!</p>
+                    <button id="close-success" class="btn-primary">Fechar</button>
+                </div>
+            </div>
+        </main>
+
+        <footer class="rodape">
+            <div class="rodape-conteudo">
+                <p>Projeto Integrador 2 - Sistema de Biblioteca Universitária</p>
+                <p>Desenvolvido com ❤️ pelos integrantes do time 3</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="../js/gerenciamento_exemplares.js"></script>
+</body>
+</html>

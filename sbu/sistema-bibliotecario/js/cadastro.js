@@ -1,3 +1,6 @@
+// API base URL
+const API_BASE_URL = 'http://localhost:3000/api';
+
 document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('registration-form');
     const registerBtn = document.getElementById('register-btn');
@@ -22,25 +25,49 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('input', checkFormValidity);
     });
 
-    registrationForm.addEventListener('submit', function(event) {
+    registrationForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
         registerBtn.disabled = true;
         btnText.textContent = 'Cadastrando...';
-        setTimeout(() => {
-            
+        spinner.style.display = 'inline-block';
+
+        try {
             const bookData = {
-                title: document.getElementById('bookTitle').value,
-                author: document.getElementById('authorName').value,
-                publisher: document.getElementById('publisher').value
+                titulo: document.getElementById('bookTitle').value,
+                autor: document.getElementById('authorName').value,
+                editora: document.getElementById('publisher').value,
+                isbn: document.getElementById('isbn').value || null,
+                anoPublicacao: parseInt(document.getElementById('anoPublicacao').value)
             };
             
-            console.log("DADOS CADASTRADOS (Simulação):", bookData);
+            const response = await fetch(`${API_BASE_URL}/livros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bookData)
+            });
 
-            cadastroFormDiv.style.display = 'none';
-            step2SuccessDiv.style.display = 'block';
+            const result = await response.json();
 
-        }, 1500);
+            if (result.success) {
+                cadastroFormDiv.style.display = 'none';
+                step2SuccessDiv.style.display = 'block';
+            } else {
+                alert('Erro ao cadastrar livro: ' + result.error);
+                registerBtn.disabled = false;
+                btnText.textContent = 'Cadastrar livro';
+                spinner.style.display = 'none';
+            }
+
+        } catch (error) {
+            console.error('Erro ao cadastrar livro:', error);
+            alert('Erro ao conectar com o servidor. Tente novamente.');
+            registerBtn.disabled = false;
+            btnText.textContent = 'Cadastrar livro';
+            spinner.style.display = 'none';
+        }
     });
 
     checkFormValidity();

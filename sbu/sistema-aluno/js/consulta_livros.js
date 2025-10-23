@@ -7,68 +7,40 @@ function navigateTo(page) {
   window.location.href = page;
 }
 
-// Simulação de mockAPI reutilizando o padrão do totem
-const mockAPI = {
+// API real do backend
+const API_BASE_URL = 'http://localhost:3000/api';
+
+const api = {
   buscarLivrosDisponiveis: async (termo = "") => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Função que gera uma capa aleatória
-    const gerarCapa = (id) => `https://picsum.photos/seed/livro${id}/200/300`;
-
-    const livros = [
-      {
-        id: 1,
-        titulo: "Introdução à Programação",
-        autor: "João Silva",
-        capa: gerarCapa(1),
-      },
-      {
-        id: 2,
-        titulo: "Banco de Dados Relacional",
-        autor: "Maria Santos",
-        capa: gerarCapa(2),
-      },
-      {
-        id: 3,
-        titulo: "Desenvolvimento Web Moderno",
-        autor: "Pedro Costa",
-        capa: gerarCapa(3),
-      },
-      {
-        id: 4,
-        titulo: "Algoritmos e Estruturas de Dados",
-        autor: "Ana Oliveira",
-        capa: gerarCapa(4),
-      },
-      {
-        id: 5,
-        titulo: "Engenharia de Software",
-        autor: "Carlos Mendes",
-        capa: gerarCapa(5),
-      },
-      {
-        id: 6,
-        titulo: "Inteligência Artificial Aplicada",
-        autor: "Fernanda Souza",
-        capa: gerarCapa(6),
-      },
-      {
-        id: 7,
-        titulo: "Sistemas Operacionais",
-        autor: "Ricardo Lima",
-        capa: gerarCapa(7),
-      },
-    ];
-
-    if (!termo.trim()) return livros;
-
-    const termoLower = termo.toLowerCase();
-    return livros.filter(
-      (livro) =>
-        livro.titulo.toLowerCase().includes(termoLower) ||
-        livro.autor.toLowerCase().includes(termoLower)
-    );
+    try {
+      let url = `${API_BASE_URL}/livros/disponiveis-com-exemplares`;
+      
+      if (termo.trim()) {
+        // Se há termo de busca, buscar por título ou autor
+        const response = await fetch(`${API_BASE_URL}/livros?titulo=${encodeURIComponent(termo)}`);
+        const data = await response.json();
+        return data.success ? data.data : [];
+      }
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      return data.success ? data.data : [];
+    } catch (error) {
+      console.error('Erro ao buscar livros:', error);
+      return [];
+    }
   },
+
+  buscarExemplaresDisponiveis: async (idLivro) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/exemplares/disponiveis?idLivro=${idLivro}`);
+      const data = await response.json();
+      return data.success ? data.data : [];
+    } catch (error) {
+      console.error('Erro ao buscar exemplares:', error);
+      return [];
+    }
+  }
 };
 
 // Função para carregar livros no carrossel
@@ -76,7 +48,7 @@ async function carregarLivros(termo = "") {
   const carrossel = document.getElementById("carrosselLivros");
   carrossel.innerHTML = "<p>Carregando livros...</p>";
 
-  const livros = await mockAPI.buscarLivrosDisponiveis(termo);
+  const livros = await api.buscarLivrosDisponiveis(termo);
   carrossel.innerHTML = "";
 
   if (livros.length === 0) {
@@ -88,9 +60,22 @@ async function carregarLivros(termo = "") {
     const card = document.createElement("div");
     card.className = "livro-card";
     card.innerHTML = `
-      <img src="${livro.capa}" alt="${livro.titulo}">
-      <h3>${livro.titulo}</h3>
-      <p>${livro.autor}</p>
+      <div class="livro-info">
+        <h3>${livro.titulo}</h3>
+        <p><strong>Autor:</strong> ${livro.autor}</p>
+        <p><strong>Editora:</strong> ${livro.editora}</p>
+        <p><strong>Ano:</strong> ${livro.anoPublicacao}</p>
+        <p><strong>ISBN:</strong> ${livro.isbn || 'N/A'}</p>
+        <p><strong>Exemplares disponíveis:</strong> ${livro.totalExemplares}</p>
+        <div class="exemplares-info">
+          <h4>Exemplares:</h4>
+          <ul>
+            ${livro.exemplares.map(exemplar => 
+              `<li>Código: ${exemplar.codigo} - Status: ${exemplar.status}</li>`
+            ).join('')}
+          </ul>
+        </div>
+      </div>
     `;
     carrossel.appendChild(card);
   });

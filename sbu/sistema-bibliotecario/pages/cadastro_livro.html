@@ -38,8 +38,12 @@
                         <input type="text" id="publisher" class="form-input" required>
                     </div>
                     <div class="form-group">
-                        <label for="bookCover">Foto (upload *opcional*):</label>
-                        <input type="file" id="bookCover" class="form-input" accept="image/*">
+                        <label for="isbn">ISBN (opcional):</label>
+                        <input type="text" id="isbn" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="anoPublicacao">Ano de Publicação:</label>
+                        <input type="number" id="anoPublicacao" class="form-input" required min="1900" max="2030">
                     </div>
                     
                     <button type="submit" id="register-btn" class="btn-primary" disabled>

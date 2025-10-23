@@ -60,9 +60,9 @@ const api = {
     // Livros
     buscarLivrosDisponiveis: async (termo = '') => {
         try {
-            let url = `${API_BASE_URL}/livros`;
+            let url = `${API_BASE_URL}/livros/disponiveis-com-exemplares`;
             if (termo) {
-                url += `?titulo=${encodeURIComponent(termo)}`;
+                url = `${API_BASE_URL}/livros?titulo=${encodeURIComponent(termo)}`;
             }
             
             const response = await fetch(url);
@@ -75,6 +75,23 @@ const api = {
             }
         } catch (error) {
             console.error('Erro ao buscar livros:', error);
+            throw error;
+        }
+    },
+
+    // Exemplares
+    buscarExemplaresDisponiveis: async (idLivro) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares/disponiveis?idLivro=${idLivro}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao buscar exemplares');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar exemplares:', error);
             throw error;
         }
     },
@@ -96,7 +113,7 @@ const api = {
         }
     },
 
-    realizarEmprestimo: async (raAluno, idLivro) => {
+    realizarEmprestimo: async (raAluno, idExemplar) => {
         try {
             const response = await fetch(`${API_BASE_URL}/emprestimos`, {
                 method: 'POST',
@@ -105,7 +122,7 @@ const api = {
                 },
                 body: JSON.stringify({
                     raAluno,
-                    idLivro
+                    idExemplar
                 })
             });
             const data = await response.json();
@@ -117,6 +134,31 @@ const api = {
             }
         } catch (error) {
             console.error('Erro ao realizar empréstimo:', error);
+            throw error;
+        }
+    },
+
+    realizarEmprestimoPorCodigo: async (raAluno, codigoExemplar) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/emprestimos/codigo`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    raAluno,
+                    codigoExemplar
+                })
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao realizar empréstimo');
+            }
+        } catch (error) {
+            console.error('Erro ao realizar empréstimo por código:', error);
             throw error;
         }
     },

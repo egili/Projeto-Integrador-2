@@ -28,12 +28,28 @@
                     </div>
                 </div>
                 
-                <!-- Passo 2: Identificação do aluno -->
+                <!-- Passo 2: Seleção de exemplar -->
                 <div id="step2" class="step">
-                    <h2>Identificação do Aluno</h2>
+                    <h2>Selecionar Exemplar</h2>
                     <div class="book-selected">
                         <h3>Livro selecionado:</h3>
                         <p id="livroSelecionadoInfo"></p>
+                    </div>
+                    
+                    <div id="exemplaresSection">
+                        <h3>Exemplares disponíveis:</h3>
+                        <div id="exemplaresList" class="exemplares-list">
+                            <!-- Exemplares serão carregados aqui -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Passo 3: Identificação do aluno -->
+                <div id="step3" class="step">
+                    <h2>Identificação do Aluno</h2>
+                    <div class="exemplar-selected">
+                        <h3>Exemplar selecionado:</h3>
+                        <p id="exemplarSelecionadoInfo"></p>
                     </div>
                     
                     <div class="identification-section">
@@ -49,12 +65,15 @@
                     </div>
                 </div>
                 
-                <!-- Passo 3: Confirmação do empréstimo -->
-                <div id="step3" class="step">
+                <!-- Passo 4: Confirmação do empréstimo -->
+                <div id="step4" class="step">
                     <h2>Confirmação de Empréstimo</h2>
                     <div class="confirmation-details">
                         <div class="detail-item">
                             <strong>Livro:</strong> <span id="confirmaLivroTitulo"></span>
+                        </div>
+                        <div class="detail-item">
+                            <strong>Exemplar:</strong> <span id="confirmaExemplarCodigo"></span>
                         </div>
                         <div class="detail-item">
                             <strong>Aluno:</strong> <span id="confirmaAlunoNome"></span>
@@ -73,8 +92,8 @@
                     </div>
                 </div>
                 
-                <!-- Passo 4: Mensagem de sucesso -->
-                <div id="step4" class="step">
+                <!-- Passo 5: Mensagem de sucesso -->
+                <div id="step5" class="step">
                     <div class="success-message">
                         <div class="success-icon">✅</div>
                         <h2>Empréstimo Realizado com Sucesso!</h2>
