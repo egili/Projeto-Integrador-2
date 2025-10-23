@@ -6,17 +6,13 @@
     <title>Cadastro de Aluno - Biblioteca</title>
     <link rel="stylesheet" href="../styles/style.css" />
     <link rel="stylesheet" href="../styles/cadastro.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    />
   </head>
   <body class="general-screen">
     <div class="container">
       <header class="general-header">
         <button
           class="btn-primary btn-voltar"
-          onclick="navigateTo('../../index.html')"
+          onclick="navigateTo('../index.html')"
         >
           ← Voltar
         </button>
@@ -26,104 +22,65 @@
       <main class="general-main">
         <div id="step1-form" class="step active">
           <div class="welcome-section">
-            <h2>Crie sua conta</h2>
-            <p>Preencha os campos abaixo para começar.</p>
+            <h2>Crie seu cadastro</h2>
+            <p>Preencha os campos abaixo para se cadastrar na biblioteca.</p>
           </div>
           <form id="registration-form" class="form-layout" novalidate>
             <div class="form-group">
-              <label for="fullName">Nome Completo</label>
-              <input type="text" id="fullName" class="form-input" required />
+              <label for="fullName">Nome Completo *</label>
+              <input 
+                type="text" 
+                id="fullName" 
+                class="form-input" 
+                required 
+                placeholder="Digite seu nome completo"
+              />
             </div>
 
             <div class="form-group">
-              <label for="email">E-mail Institucional</label>
+              <label for="ra">RA (Registro Acadêmico) *</label>
               <input
-                type="email"
-                id="email"
+                type="text"
+                id="ra"
                 class="form-input"
                 required
-                placeholder="seu.nome@puccampinas.edu.br"
+                placeholder="Digite seu RA"
               />
-              <small class="error-message" id="email-error"></small>
-            </div>
-
-            <div class="form-group password-wrapper">
-              <label for="password">Senha</label>
-              <input
-                type="password"
-                id="password"
-                class="form-input"
-                required
-              />
-              <i
-                class="fa-solid fa-eye-slash password-toggle-icon"
-                id="togglePassword"
-              ></i>
-              <small class="error-message" id="password-error"
-                >A senha deve ter no mínimo 8 caracteres.</small
-              >
-            </div>
-
-            <div class="form-group">
-              <label for="confirmPassword">Confirme sua Senha</label>
-              <input
-                type="password"
-                id="confirmPassword"
-                class="form-input"
-                required
-              />
-              <small class="error-message" id="confirmPassword-error"></small>
+              <small class="form-hint">Seu RA é único e será usado para identificar você no sistema</small>
             </div>
 
             <button
               type="submit"
               id="register-btn"
               class="btn-primary"
-              disabled
             >
               <span class="btn-text">Cadastrar</span>
               <span class="spinner" style="display: none"></span>
             </button>
           </form>
-        </div>
 
-        <div id="step2-code" class="step">
-          <div class="welcome-section">
-            <h2>Verifique seu E-mail</h2>
-            <p>
-              Enviamos um código de 6 dígitos para
-              <strong id="user-email-display"></strong>. Por favor, insira-o
-              abaixo.
-            </p>
+          <div class="login-redirect">
+            <p>Já possui cadastro? <a href="../index.html">Voltar ao início</a></p>
           </div>
-          <form id="code-form" class="form-layout">
-            <div class="form-group">
-              <label for="verificationCode">Código de Verificação</label>
-              <input
-                type="text"
-                id="verificationCode"
-                class="form-input"
-                required
-                maxlength="6"
-              />
-              <small class="error-message" id="code-error"></small>
-            </div>
-            <button type="submit" id="verify-btn" class="btn-primary">
-              Verificar código
-            </button>
-          </form>
         </div>
 
-        <div id="step3-success" class="step">
+        <div id="step2-success" class="step">
           <div class="success-message">
             <div class="success-icon">✅</div>
             <h2>Cadastro Concluído!</h2>
             <p>
-              Sua conta foi criada com sucesso. Agora você já pode utilizar os
-              recursos da biblioteca.
+              Seu cadastro foi realizado com sucesso. Agora você já pode utilizar os
+              recursos da biblioteca usando seu RA.
             </p>
+            <div class="success-details">
+              <p><strong>Nome:</strong> <span id="success-nome"></span></p>
+              <p><strong>RA:</strong> <span id="success-ra"></span></p>
+            </div>
             <button id="home-btn" class="btn-primary">
               Ir para a página inicial
+            </button>
+            <button id="new-cadastro-btn" class="btn-secondary">
+              Fazer outro cadastro
             </button>
           </div>
         </div>
@@ -136,6 +93,7 @@
       </footer>
     </div>
 
+    <script src="../js/api.js"></script>
     <script src="../js/cadastro.js"></script>
   </body>
 </html>

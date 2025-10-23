@@ -4,46 +4,42 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Programa do Aluno - Biblioteca Universitária</title>
-    <link rel="stylesheet" href="styles/style.css" />
-    <link rel="stylesheet" href="styles/index.css" />
+    <link rel="stylesheet" href="./styles/style.css" />
+    <link rel="stylesheet" href="./styles/index.css" />
   </head>
   <body class="general-screen">
     <div class="container">
       <header class="general-header">
         <h1>Programa do Aluno</h1>
+        <p class="subtitle">Sistema de Biblioteca Universitária</p>
       </header>
 
       <main class="general-main">
         <div class="welcome-section">
-          <h2>Olá, aluno(a)!</h2>
-          <p>O que você gostaria de fazer hoje?</p>
+          <h2>Bem-vindo à Biblioteca</h2>
+          <p>Selecione uma das opções abaixo para continuar:</p>
         </div>
 
-        <div class="options-grid">
-          <div class="option-card" onclick="navigateTo('pages/cadastro.html')">
-            <div class="option-icon">🧑‍🎓</div>
-            <h3>Cadastro de Aluno</h3>
-            <p>Realize o seu cadastro na biblioteca</p>
+        <div class="actions-grid">
+          <div class="action-card" onclick="navigateTo('./pages/cadastro.html')">
+            <div class="action-icon">📝</div>
+            <h3>Cadastro</h3>
+            <p>Faça seu cadastro na biblioteca para começar a usar os serviços</p>
           </div>
 
-          <div
-            class="option-card"
-            onclick="navigateTo('pages/consulta_livros.html')"
-          >
-            <div class="option-icon">🔍</div>
-            <h3>Consultar Livros</h3>
-            <p>Verifique os livros disponíveis para empréstimo</p>
+          <div class="action-card" onclick="navigateTo('./pages/consulta_livros.html')">
+            <div class="action-icon">📚</div>
+            <h3>Consulta de Livros</h3>
+            <p>Busque e visualize livros disponíveis no acervo</p>
           </div>
 
-          <div
-            class="option-card"
-            onclick="navigateTo('pages/pontuacao_leitor.html')"
-          >
-            <div class="option-icon">📊</div>
-            <h3>Minha Pontuação</h3>
-            <p>Veja sua classificação como leitor no semestre</p>
+          <div class="action-card" onclick="navigateTo('./pages/pontuacao_leitor.html')">
+            <div class="action-icon">🏆</div>
+            <h3>Pontuação do Leitor</h3>
+            <p>Verifique sua classificação como leitor</p>
           </div>
         </div>
+
       </main>
 
       <footer class="general-footer">
@@ -53,6 +49,7 @@
       </footer>
     </div>
 
-    <script src="js/index.js"></script>
+    <script src="./js/api.js"></script>
+    <script src="./js/index.js"></script>
   </body>
 </html>

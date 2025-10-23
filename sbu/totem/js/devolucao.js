@@ -1,143 +1,134 @@
-// Lógica específica para a tela de devolução de livros
+let alunoEncontrado = null;
+let emprestimosAtivos = [];
 
-let alunoDevolucao = null;
-let emprestimoSelecionado = null;
-
-// Buscar empréstimos ativos do aluno
 async function buscarEmprestimos() {
-    const ra = document.getElementById('raInputDevolucao').value.trim();
-    const alunoInfoDiv = document.getElementById('alunoInfoDevolucao');
-    const cadastroSection = document.getElementById('cadastroSectionDevolucao');
+    const ra = document.getElementById('raInputDevolucao').value;
     
     if (!ra) {
-        alert('Por favor, informe o RA.');
+        showError('Digite o RA do aluno');
         return;
     }
-    
-    alunoInfoDiv.innerHTML = '<p>Buscando informações...</p>';
-    
+
     try {
-        const aluno = await api.buscarAluno(ra);
+        // Buscar aluno
+        const alunoResult = await BibliotecaAPI.buscarAlunoPorRA(ra);
         
-        alunoDevolucao = aluno;
-        alunoInfoDiv.innerHTML = `
-            <div style="color: #27ae60;">
-                <h4>Aluno encontrado:</h4>
-                <p><strong>Nome:</strong> ${aluno.nome}</p>
-                <p><strong>RA:</strong> ${aluno.ra}</p>
-            </div>
-        `;
-        cadastroSection.style.display = 'none';
-        
-        // Buscar empréstimos ativos
-        const emprestimos = await api.buscarEmprestimosAtivos(ra);
-        
-        if (emprestimos.length > 0) {
-            document.getElementById('alunoSelecionadoInfo').innerHTML = `
-                <h4>Aluno: ${aluno.nome}</h4>
-                <p><strong>RA:</strong> ${aluno.ra}</p>
-                <p><strong>Livros em empréstimo:</strong> ${emprestimos.length}</p>
-            `;
+        if (alunoResult.success) {
+            alunoEncontrado = alunoResult.data;
             
-            document.getElementById('listaEmprestimos').innerHTML = emprestimos.map(emp => `
-                <div class="emprestimo-item" onclick="selecionarEmprestimo(${emp.id})" data-emprestimo='${JSON.stringify(emp)}'>
-                    <h4>${emp.livro_titulo}</h4>
-                    <p><strong>Autor:</strong> ${emp.autor}</p>
-                    <p><strong>Editora:</strong> ${emp.editora}</p>
-                    <p><strong>Data do empréstimo:</strong> ${formatarData(emp.dataEmprestimo)}</p>
-                    <p><strong>Prazo de devolução:</strong> ${formatarData(emp.dataDevolucaoPrevista)}</p>
-                </div>
-            `).join('');
+            // Buscar empréstimos ativos
+            const emprestimosResult = await BibliotecaAPI.listarEmprestimosAtivos(alunoResult.data.id);
             
-            document.getElementById('semEmprestimos').style.display = 'none';
-            document.getElementById('listaEmprestimos').style.display = 'block';
-            
+            if (emprestimosResult.success) {
+                emprestimosAtivos = emprestimosResult.data;
+                exibirEmprestimosAtivos();
+            } else {
+                showError('Erro ao buscar empréstimos');
+            }
         } else {
-            document.getElementById('listaEmprestimos').style.display = 'none';
-            document.getElementById('semEmprestimos').style.display = 'block';
+            alunoEncontrado = null;
+            document.getElementById('alunoInfoDevolucao').innerHTML = '';
+            document.getElementById('cadastroSectionDevolucao').style.display = 'block';
         }
-        
-        // Avançar para seleção de livro
-        document.getElementById('step1').classList.remove('active');
-        document.getElementById('step2').classList.add('active');
-        
     } catch (error) {
-        alunoDevolucao = null;
-        if (error.message.includes('não encontrado')) {
-            alunoInfoDiv.innerHTML = '<p style="color: #e74c3c;">Aluno não encontrado no sistema.</p>';
-            cadastroSection.style.display = 'block';
-        } else {
-            alunoInfoDiv.innerHTML = '<p style="color: #e74c3c;">Erro ao buscar informações. Tente novamente.</p>';
-        }
+        showError('Erro ao buscar empréstimos: ' + error.message);
     }
 }
 
-// Selecionar empréstimo para devolução
-function selecionarEmprestimo(emprestimoId) {
-    const emprestimoItem = event.target.closest('.emprestimo-item');
-    const emprestimoData = JSON.parse(emprestimoItem.getAttribute('data-emprestimo'));
+function exibirEmprestimosAtivos() {
+    const container = document.getElementById('alunoInfoDevolucao');
+    const listaContainer = document.getElementById('listaEmprestimos');
+    const semEmprestimos = document.getElementById('semEmprestimos');
+
+    // Exibir info do aluno
+    container.innerHTML = `
+        <div class="aluno-encontrado">
+            <p><strong>Aluno:</strong> ${alunoEncontrado.nome}</p>
+            <p><strong>RA:</strong> ${alunoEncontrado.ra}</p>
+        </div>
+    `;
+
+    if (emprestimosAtivos.length === 0) {
+        listaContainer.innerHTML = '';
+        semEmprestimos.style.display = 'block';
+        return;
+    }
+
+    semEmprestimos.style.display = 'none';
     
-    emprestimoSelecionado = emprestimoData;
-    
-    // Preencher confirmação
-    document.getElementById('confirmaDevolucaoLivro').textContent = emprestimoData.livro_titulo;
-    document.getElementById('confirmaDevolucaoAluno').textContent = alunoDevolucao.nome;
-    document.getElementById('confirmaDevolucaoRA').textContent = alunoDevolucao.ra;
-    document.getElementById('confirmaDataEmprestimo').textContent = formatarData(emprestimoData.dataEmprestimo);
-    
-    // Avançar para confirmação
+    listaContainer.innerHTML = emprestimosAtivos.map(emp => `
+        <div class="emprestimo-item" onclick="selecionarEmprestimo(${JSON.stringify(emp).replace(/"/g, '&quot;')})">
+            <h3>${emp.titulo}</h3>
+            <p><strong>Autor:</strong> ${emp.autor}</p>
+            <p><strong>Exemplar:</strong> ${emp.codigo_exemplar}</p>
+            <p><strong>Data do empréstimo:</strong> ${formatDate(emp.dataEmprestimo)}</p>
+            <p><strong>Devolução prevista:</strong> ${formatDate(emp.dataDevolucaoPrevista)}</p>
+        </div>
+    `).join('');
+
+    // Avançar para próxima etapa
+    document.getElementById('step1').classList.remove('active');
+    document.getElementById('step2').classList.add('active');
+}
+
+function selecionarEmprestimo(emprestimo) {
+    document.getElementById('alunoSelecionadoInfo').innerHTML = `
+        <p><strong>Aluno:</strong> ${alunoEncontrado.nome} (RA: ${alunoEncontrado.ra})</p>
+    `;
+
+    // Preencher dados de confirmação
+    document.getElementById('confirmaDevolucaoLivro').textContent = emprestimo.titulo;
+    document.getElementById('confirmaDevolucaoAluno').textContent = alunoEncontrado.nome;
+    document.getElementById('confirmaDevolucaoRA').textContent = alunoEncontrado.ra;
+    document.getElementById('confirmaDataEmprestimo').textContent = formatDate(emprestimo.dataEmprestimo);
+
+    // Armazenar ID do empréstimo para devolução
+    window.emprestimoSelecionado = emprestimo;
+
     document.getElementById('step2').classList.remove('active');
     document.getElementById('step3').classList.add('active');
 }
 
-// Confirmar devolução
 async function confirmarDevolucao() {
+    if (!window.emprestimoSelecionado) {
+        showError('Nenhum empréstimo selecionado');
+        return;
+    }
+
     try {
-        const resultado = await api.registrarDevolucao(emprestimoSelecionado.id);
+        const result = await BibliotecaAPI.realizarDevolucao(window.emprestimoSelecionado.id);
         
-        // Preencher mensagem de sucesso
-        document.getElementById('sucessoDevolucaoLivro').textContent = emprestimoSelecionado.livro_titulo;
-        document.getElementById('sucessoDevolucaoAluno').textContent = alunoDevolucao.nome;
-        document.getElementById('sucessoDevolucaoData').textContent = formatarData(new Date());
-        
-        // Buscar classificação atualizada
-        let classificacao = null;
-        try {
-            classificacao = await api.obterClassificacao(alunoDevolucao.ra);
-        } catch (error) {
-            console.log('Não foi possível obter classificação:', error);
-        }
-        
-        // Mostrar classificação atualizada se disponível
-        if (classificacao) {
-            document.getElementById('novaClassificacao').innerHTML = `
-                <p><strong>${classificacao.descricao}</strong></p>
-                <p>Total de livros lidos no semestre: ${classificacao.totalLivros || 0}</p>
-            `;
-            document.querySelector('.classification-update').style.display = 'block';
+        if (result.success) {
+            document.getElementById('step3').classList.remove('active');
+            document.getElementById('step4').classList.add('active');
+            
+            document.getElementById('sucessoDevolucaoLivro').textContent = window.emprestimoSelecionado.titulo;
+            document.getElementById('sucessoDevolucaoAluno').textContent = alunoEncontrado.nome;
+            document.getElementById('sucessoDevolucaoData').textContent = new Date().toLocaleDateString('pt-BR');
         } else {
-            document.querySelector('.classification-update').style.display = 'none';
+            showError(result.error);
         }
-        
-        // Avançar para sucesso
-        document.getElementById('step3').classList.remove('active');
-        document.getElementById('step4').classList.add('active');
-        
     } catch (error) {
-        alert('Erro ao processar devolução: ' + error.message);
+        showError('Erro ao realizar devolução: ' + error.message);
     }
 }
 
-// Funções de navegação
 function voltarParaIdentificacao() {
+    alunoEncontrado = null;
+    emprestimosAtivos = [];
+    window.emprestimoSelecionado = null;
+    
     document.getElementById('step2').classList.remove('active');
+    document.getElementById('step3').classList.remove('active');
+    document.getElementById('step4').classList.remove('active');
     document.getElementById('step1').classList.add('active');
-    alunoDevolucao = null;
-    emprestimoSelecionado = null;
+    
+    document.getElementById('raInputDevolucao').value = '';
+    document.getElementById('alunoInfoDevolucao').innerHTML = '';
+    document.getElementById('cadastroSectionDevolucao').style.display = 'none';
 }
 
 function voltarParaSelecao() {
     document.getElementById('step3').classList.remove('active');
     document.getElementById('step2').classList.add('active');
-    emprestimoSelecionado = null;
 }

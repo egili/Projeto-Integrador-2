@@ -26,24 +26,51 @@
                 </div>
                 <form id="registration-form" class="form-layout" novalidate>
                     <div class="form-group">
-                        <label for="bookTitle">Nome do Livro:</label>
-                        <input type="text" id="bookTitle" class="form-input" required>
+                        <label for="titulo">Título do Livro:</label>
+                        <input type="text" id="titulo" name="titulo" class="form-input" required>
                     </div>
                     <div class="form-group">
-                        <label for="authorName">Autor:</label>
-                        <input type="text" id="authorName" class="form-input" required>
+                        <label for="isbn">ISBN (opcional):</label>
+                        <input type="text" id="isbn" name="isbn" class="form-input">
                     </div>
                     <div class="form-group">
-                        <label for="publisher">Editora:</label>
-                        <input type="text" id="publisher" class="form-input" required>
+                        <label for="autor">Autor:</label>
+                        <input type="text" id="autor" name="autor" class="form-input" required>
                     </div>
                     <div class="form-group">
-                        <label for="bookCover">Foto (upload *opcional*):</label>
-                        <input type="file" id="bookCover" class="form-input" accept="image/*">
+                        <label for="editora">Editora:</label>
+                        <input type="text" id="editora" name="editora" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="anoPublicacao">Ano de Publicação:</label>
+                        <input type="number" id="anoPublicacao" name="anoPublicacao" class="form-input" required min="1000" max="2025">
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria">Categoria (Gênero):</label>
+                        <select id="categoria" name="categoria" class="form-input" required>
+                            <option value="">Selecione uma categoria</option>
+                            <option value="Ficção">Ficção</option>
+                            <option value="Não Ficção">Não Ficção</option>
+                            <option value="Técnico">Técnico</option>
+                            <option value="Didático">Didático</option>
+                            <option value="Literatura">Literatura</option>
+                            <option value="Ciências">Ciências</option>
+                            <option value="História">História</option>
+                            <option value="Arte">Arte</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div id="outros-categoria-group" class="form-group hidden">
+                        <label for="outros-categoria">Especifique a categoria:</label>
+                        <input type="text" id="outros-categoria" name="outros-categoria" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="numeroExemplares">Número de Exemplares:</label>
+                        <input type="number" id="numeroExemplares" name="numeroExemplares" class="form-input" required min="1" max="100" value="1">
                     </div>
                     
-                    <button type="submit" id="register-btn" class="btn-primary" disabled>
-                        <span class="btn-text">Cadastrar livro</span>
+                    <button type="submit" id="register-btn" class="btn-primary">
+                        <span class="btn-text">Cadastrar Livro</span>
                         <span class="spinner" style="display: none;"></span>
                     </button>
                 </form>
@@ -54,7 +81,8 @@
                     <div class="success-icon">✅</div>
                     <h2>Cadastro Concluído!</h2>
                     <p>O livro foi registrado com sucesso!</p>
-                    <a href="../index.html" id="home-btn" class="btn-primary">Voltar para o menu principal</a>
+                    <button id="new-register-btn" class="btn-primary">Cadastrar Novo Livro</button>
+                    <a href="../index.html" id="home-btn" class="btn-secondary">Voltar para o Menu Principal</a>
                 </div>
             </div>
 
@@ -68,7 +96,8 @@
         </footer>
     </div>
 
-    <script src="../js/cadastro.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/cadastro_livro.js"></script>
 
 </body>
 </html>

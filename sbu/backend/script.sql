@@ -28,15 +28,24 @@ CREATE TABLE IF NOT EXISTS livro (
     anoPublicacao INT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS exemplar (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    idLivro INT NOT NULL,
+    codigo VARCHAR(50) UNIQUE NOT NULL,
+    status ENUM('disponivel', 'emprestado', 'manutencao') DEFAULT 'disponivel',
+    observacoes TEXT,
+    FOREIGN KEY (idLivro) REFERENCES livro(id) ON DELETE CASCADE
+);
+
 CREATE TABLE IF NOT EXISTS emprestimo (
     id INT AUTO_INCREMENT PRIMARY KEY,
     idAluno INT NOT NULL,
-    idLivro INT NOT NULL,
+    idExemplar INT NOT NULL,
     dataEmprestimo DATE NOT NULL,
     dataDevolucaoPrevista DATE NOT NULL,
     dataDevolucaoReal DATE,
     FOREIGN KEY (idAluno) REFERENCES aluno(id),
-    FOREIGN KEY (idLivro) REFERENCES livro(id)
+    FOREIGN KEY (idExemplar) REFERENCES exemplar(id) 
 );
 
 CREATE TABLE IF NOT EXISTS classificacao (
@@ -76,3 +85,12 @@ INSERT INTO livro (titulo, isbn, autor, editora, anoPublicacao) VALUES
 ('Desenvolvimento Web Moderno', '978-85-12345-03-3', 'Pedro Costa', 'Web Publishing', 2024),
 ('Algoritmos e Estruturas de Dados', '978-85-12345-04-4', 'Ana Oliveira', 'Computação Ltda', 2023),
 ('Engenharia de Software', '978-85-12345-05-5', 'Carlos Mendes', 'SoftPress', 2022);
+
+INSERT INTO exemplar (idLivro, codigo, status, data_aquisicao) VALUES
+(1, 'EX-001-01', 'disponivel', '2024-01-15'),
+(1, 'EX-001-02', 'disponivel', '2024-01-15'),
+(2, 'EX-002-01', 'disponivel', '2024-02-01'),
+(3, 'EX-003-01', 'disponivel', '2024-03-10'),
+(3, 'EX-003-02', 'emprestado', '2024-03-10'),
+(4, 'EX-004-01', 'disponivel', '2024-01-20'),
+(5, 'EX-005-01', 'manutencao', '2024-04-05');
