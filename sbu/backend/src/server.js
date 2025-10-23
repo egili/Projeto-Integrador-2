@@ -6,6 +6,7 @@ const { testConnection } = require('./database/connection');
 // Import controllers
 const alunoController = require('./controllers/alunoController');
 const livroController = require('./controllers/livroController');
+const exemplarController = require('./controllers/exemplarController');
 const emprestimoController = require('./controllers/emprestimoController');
 const classificacaoController = require('./controllers/classificacaoController');
 
@@ -31,6 +32,14 @@ app.get('/api/livros/disponiveis', livroController.listarLivrosDisponiveis);
 app.get('/api/livros', livroController.buscarLivros);
 app.get('/api/livros/todos', livroController.listarTodosLivros);
 app.get('/api/livros/:id', livroController.buscarLivroPorId);
+
+// Routes - Exemplares
+app.post('/api/exemplares', exemplarController.cadastrarExemplar);
+app.get('/api/exemplares', exemplarController.listarExemplares);
+app.get('/api/exemplares/disponiveis', exemplarController.listarExemplaresDisponiveis);
+app.get('/api/exemplares/codigo/:codigo', exemplarController.buscarExemplarPorCodigo);
+app.put('/api/exemplares/:id', exemplarController.atualizarExemplar);
+app.delete('/api/exemplares/:id', exemplarController.deletarExemplar);
 
 // Routes - Empréstimos
 app.post('/api/emprestimos', emprestimoController.realizarEmprestimo);
@@ -59,6 +68,7 @@ app.get('/', (req, res) => {
         endpoints: {
             alunos: '/api/alunos',
             livros: '/api/livros',
+            exemplares: '/api/exemplares',
             emprestimos: '/api/emprestimos',
             classificacao: '/api/classificacao'
         }

@@ -28,13 +28,12 @@ class Livro {
 
     static async listarDisponiveis() {
         const [rows] = await connection.execute(`
-            SELECT l.* 
+            SELECT DISTINCT l.*, COUNT(ex.id) as total_exemplares,
+                   COUNT(CASE WHEN ex.status = 'disponivel' THEN 1 END) as exemplares_disponiveis
             FROM livro l 
-            WHERE l.id NOT IN (
-                SELECT e.idLivro 
-                FROM emprestimo e 
-                WHERE e.dataDevolucaoReal IS NULL
-            )
+            LEFT JOIN exemplar ex ON l.id = ex.idLivro
+            GROUP BY l.id
+            HAVING exemplares_disponiveis > 0
         `);
         return rows;
     }

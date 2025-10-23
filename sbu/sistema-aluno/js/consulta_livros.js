@@ -7,68 +7,38 @@ function navigateTo(page) {
   window.location.href = page;
 }
 
-// Simulação de mockAPI reutilizando o padrão do totem
-const mockAPI = {
+// Configuração da API
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// Função que gera uma capa aleatória
+const gerarCapa = (id) => `https://picsum.photos/seed/livro${id}/200/300`;
+
+// API real
+const api = {
   buscarLivrosDisponiveis: async (termo = "") => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Função que gera uma capa aleatória
-    const gerarCapa = (id) => `https://picsum.photos/seed/livro${id}/200/300`;
-
-    const livros = [
-      {
-        id: 1,
-        titulo: "Introdução à Programação",
-        autor: "João Silva",
-        capa: gerarCapa(1),
-      },
-      {
-        id: 2,
-        titulo: "Banco de Dados Relacional",
-        autor: "Maria Santos",
-        capa: gerarCapa(2),
-      },
-      {
-        id: 3,
-        titulo: "Desenvolvimento Web Moderno",
-        autor: "Pedro Costa",
-        capa: gerarCapa(3),
-      },
-      {
-        id: 4,
-        titulo: "Algoritmos e Estruturas de Dados",
-        autor: "Ana Oliveira",
-        capa: gerarCapa(4),
-      },
-      {
-        id: 5,
-        titulo: "Engenharia de Software",
-        autor: "Carlos Mendes",
-        capa: gerarCapa(5),
-      },
-      {
-        id: 6,
-        titulo: "Inteligência Artificial Aplicada",
-        autor: "Fernanda Souza",
-        capa: gerarCapa(6),
-      },
-      {
-        id: 7,
-        titulo: "Sistemas Operacionais",
-        autor: "Ricardo Lima",
-        capa: gerarCapa(7),
-      },
-    ];
-
-    if (!termo.trim()) return livros;
-
-    const termoLower = termo.toLowerCase();
-    return livros.filter(
-      (livro) =>
-        livro.titulo.toLowerCase().includes(termoLower) ||
-        livro.autor.toLowerCase().includes(termoLower)
-    );
-  },
+    try {
+      let url = `${API_BASE_URL}/livros/disponiveis`;
+      if (termo) {
+        url = `${API_BASE_URL}/livros?titulo=${encodeURIComponent(termo)}`;
+      }
+      
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      if (data.success) {
+        // Adicionar capas aleatórias aos livros
+        return data.data.map(livro => ({
+          ...livro,
+          capa: gerarCapa(livro.id)
+        }));
+      } else {
+        throw new Error(data.error || 'Erro ao buscar livros');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar livros:', error);
+      throw error;
+    }
+  }
 };
 
 // Função para carregar livros no carrossel
@@ -76,7 +46,7 @@ async function carregarLivros(termo = "") {
   const carrossel = document.getElementById("carrosselLivros");
   carrossel.innerHTML = "<p>Carregando livros...</p>";
 
-  const livros = await mockAPI.buscarLivrosDisponiveis(termo);
+  const livros = await api.buscarLivrosDisponiveis(termo);
   carrossel.innerHTML = "";
 
   if (livros.length === 0) {

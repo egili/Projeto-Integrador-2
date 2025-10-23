@@ -1,50 +1,64 @@
 // Lógica específica para a tela de retirada de livros
 
-let livroSelecionado = null;
+let exemplarSelecionado = null;
 let alunoVerificado = null;
 
-// Pesquisar livros disponíveis
+// Pesquisar exemplares disponíveis
 async function pesquisarLivros() {
     const termo = document.getElementById('searchInput').value;
     const resultadosDiv = document.getElementById('resultadosLivros');
     
-    resultadosDiv.innerHTML = '<p>Pesquisando livros...</p>';
+    resultadosDiv.innerHTML = '<p>Pesquisando exemplares...</p>';
     
     try {
-        const livros = await api.buscarLivrosDisponiveis(termo);
+        let exemplares;
+        if (termo) {
+            // Se há termo de busca, buscar livros primeiro e depois seus exemplares
+            const livros = await api.buscarLivrosDisponiveis(termo);
+            exemplares = [];
+            for (const livro of livros) {
+                const exemplaresLivro = await api.buscarExemplaresDisponiveis();
+                const exemplaresDoLivro = exemplaresLivro.filter(ex => ex.idLivro === livro.id);
+                exemplares.push(...exemplaresDoLivro);
+            }
+        } else {
+            exemplares = await api.buscarExemplaresDisponiveis();
+        }
         
-        if (livros.length === 0) {
-            resultadosDiv.innerHTML = '<p class="no-results">Nenhum livro encontrado.</p>';
+        if (exemplares.length === 0) {
+            resultadosDiv.innerHTML = '<p class="no-results">Nenhum exemplar disponível encontrado.</p>';
             return;
         }
         
-        resultadosDiv.innerHTML = livros.map(livro => `
-            <div class="livro-item" onclick="selecionarLivro(${livro.id})" data-livro='${JSON.stringify(livro)}'>
-                <h4>${livro.titulo}</h4>
-                <p><strong>Autor:</strong> ${livro.autor}</p>
-                <p><strong>Editora:</strong> ${livro.editora} (${livro.anoPublicacao})</p>
-                <p><strong>ISBN:</strong> ${livro.isbn || 'N/A'}</p>
+        resultadosDiv.innerHTML = exemplares.map(exemplar => `
+            <div class="livro-item" onclick="selecionarExemplar(${exemplar.id})" data-exemplar='${JSON.stringify(exemplar)}'>
+                <h4>${exemplar.titulo}</h4>
+                <p><strong>Autor:</strong> ${exemplar.autor}</p>
+                <p><strong>Editora:</strong> ${exemplar.editora} (${exemplar.anoPublicacao})</p>
+                <p><strong>ISBN:</strong> ${exemplar.isbn || 'N/A'}</p>
+                <p><strong>Código:</strong> ${exemplar.codigo}</p>
                 <p><strong>Status:</strong> <span style="color: #27ae60;">Disponível</span></p>
             </div>
         `).join('');
         
     } catch (error) {
-        resultadosDiv.innerHTML = '<p class="no-results">Erro ao buscar livros. Tente novamente.</p>';
+        resultadosDiv.innerHTML = '<p class="no-results">Erro ao buscar exemplares. Tente novamente.</p>';
         console.error('Erro:', error);
     }
 }
 
-// Selecionar livro para empréstimo
-function selecionarLivro(livroId) {
-    const livroItem = event.target.closest('.livro-item');
-    const livroData = JSON.parse(livroItem.getAttribute('data-livro'));
+// Selecionar exemplar para empréstimo
+function selecionarExemplar(exemplarId) {
+    const exemplarItem = event.target.closest('.livro-item');
+    const exemplarData = JSON.parse(exemplarItem.getAttribute('data-exemplar'));
     
-    livroSelecionado = livroData;
+    exemplarSelecionado = exemplarData;
     
     document.getElementById('livroSelecionadoInfo').innerHTML = `
-        <strong>${livroData.titulo}</strong><br>
-        <em>${livroData.autor}</em><br>
-        <small>${livroData.editora} (${livroData.anoPublicacao})</small>
+        <strong>${exemplarData.titulo}</strong><br>
+        <em>${exemplarData.autor}</em><br>
+        <small>${exemplarData.editora} (${exemplarData.anoPublicacao})</small><br>
+        <small><strong>Código:</strong> ${exemplarData.codigo}</small>
     `;
     
     // Avançar para o próximo passo
@@ -84,7 +98,7 @@ async function verificarAluno() {
         cadastroSection.style.display = 'none';
         
         // Preparar confirmação
-        document.getElementById('confirmaLivroTitulo').textContent = livroSelecionado.titulo;
+        document.getElementById('confirmaLivroTitulo').textContent = exemplarSelecionado.titulo;
         document.getElementById('confirmaAlunoNome').textContent = aluno.nome;
         document.getElementById('confirmaAlunoRA').textContent = aluno.ra;
         document.getElementById('dataRetirada').textContent = formatarData(new Date());
@@ -107,10 +121,10 @@ async function verificarAluno() {
 // Confirmar empréstimo
 async function confirmarEmprestimo() {
     try {
-        const resultado = await api.realizarEmprestimo(alunoVerificado.ra, livroSelecionado.id);
+        const resultado = await api.realizarEmprestimo(alunoVerificado.ra, exemplarSelecionado.id);
         
         // Preencher mensagem de sucesso
-        document.getElementById('sucessoLivro').textContent = livroSelecionado.titulo;
+        document.getElementById('sucessoLivro').textContent = exemplarSelecionado.titulo;
         document.getElementById('sucessoAluno').textContent = alunoVerificado.nome;
         document.getElementById('sucessoData').textContent = formatarData(new Date());
         
@@ -127,6 +141,6 @@ async function confirmarEmprestimo() {
 function voltarParaPesquisa() {
     document.getElementById('step3').classList.remove('active');
     document.getElementById('step1').classList.add('active');
-    livroSelecionado = null;
+    exemplarSelecionado = null;
     alunoVerificado = null;
 }

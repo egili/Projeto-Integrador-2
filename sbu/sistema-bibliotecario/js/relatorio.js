@@ -1,18 +1,26 @@
+// Configuração da API
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// API functions
+const api = {
+    obterClassificacaoGeral: async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/classificacao`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao obter classificação');
+            }
+        } catch (error) {
+            console.error('Erro ao obter classificação:', error);
+            throw error;
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
-    const sampleReaders = [
-        { RA: '25009281', name: 'Eliseu Gili', booksRead: 25, classification: 'Extremo' },
-        { RA: '25008024', name: 'Eduardo Faundes', booksRead: 18, classification: 'Ativo' },
-        { RA: '23011884', name: 'Kaue Rodrigues', booksRead: 12, classification: 'Ativo' },
-        { RA: '25002731', name: 'Lucas Athanasio', booksRead: 8, classification: 'Regular' },
-        { RA: '25001011', name: 'Patrícia Nunes', booksRead: 22, classification: 'Extremo' },
-        { RA: '25001006', name: 'Ricardo Alves', booksRead: 15, classification: 'Ativo' },
-        { RA: '25001007', name: 'Juliana Lima', booksRead: 6, classification: 'Regular' },
-        { RA: '25001008', name: 'Pedro Mendes', booksRead: 3, classification: 'Iniciante' },
-        { RA: '25001009', name: 'Camila Rocha', booksRead: 19, classification: 'Ativo' },
-        { RA: '25001010', name: 'Lucas Ferreira', booksRead: 9, classification: 'Regular' },
-        { RA: '25002436', name: 'Pietra Bortolato', booksRead: 28, classification: 'Extremo' },
-        { RA: '25001012', name: 'Roberto Dias', booksRead: 4, classification: 'Iniciante' }
-    ];
 
     const rankingContainer = document.querySelector('.table-ranking');
     
@@ -21,29 +29,68 @@ document.addEventListener('DOMContentLoaded', function() {
         addExportFunctionality();
     }
 
-    function loadRankingData() {
-        const sortedReaders = [...sampleReaders].sort((a, b) => b.booksRead - a.booksRead);
-        
-        const table = createRankingTable(sortedReaders);
-        rankingContainer.innerHTML = '';
-        
-        const title = document.createElement('h3');
-        title.textContent = 'Ranking Geral (Último Semestre)';
-        title.style.marginBottom = 'var(--space-md)';
-        title.style.color = 'var(--gray-800)';
-        
-        const subtitle = document.createElement('p');
-        subtitle.textContent = `Total de alunos no ranking: ${sortedReaders.length}`;
-        subtitle.style.marginBottom = 'var(--space-md)';
-        subtitle.style.color = 'var(--gray-600)';
-        
-        rankingContainer.appendChild(title);
-        rankingContainer.appendChild(subtitle);
-        rankingContainer.appendChild(table);
-        
-        addStatistics(sortedReaders);
-        
-        addExportButton();
+    async function loadRankingData() {
+        try {
+            rankingContainer.innerHTML = '<p>Carregando dados...</p>';
+            
+            const classificacoes = await api.obterClassificacaoGeral();
+            
+            if (classificacoes.length === 0) {
+                rankingContainer.innerHTML = '<p>Nenhuma classificação encontrada.</p>';
+                return;
+            }
+
+            // Converter dados para o formato esperado
+            const readers = classificacoes.map(c => ({
+                RA: c.ra,
+                name: c.aluno_nome,
+                booksRead: 0, // Não temos essa informação diretamente
+                classification: getClassificationName(c.codigo),
+                semestre: c.semestre_descricao
+            }));
+
+            const sortedReaders = readers.sort((a, b) => {
+                // Ordenar por classificação (EL > BL > RL > ML > NL)
+                const order = { 'Excelente': 1, 'Bom': 2, 'Regular': 3, 'Mau': 4, 'Não': 5 };
+                return (order[a.classification] || 6) - (order[b.classification] || 6);
+            });
+            
+            const table = createRankingTable(sortedReaders);
+            rankingContainer.innerHTML = '';
+            
+            const title = document.createElement('h3');
+            title.textContent = 'Ranking Geral de Classificação';
+            title.style.marginBottom = 'var(--space-md)';
+            title.style.color = 'var(--gray-800)';
+            
+            const subtitle = document.createElement('p');
+            subtitle.textContent = `Total de alunos classificados: ${sortedReaders.length}`;
+            subtitle.style.marginBottom = 'var(--space-md)';
+            subtitle.style.color = 'var(--gray-600)';
+            
+            rankingContainer.appendChild(title);
+            rankingContainer.appendChild(subtitle);
+            rankingContainer.appendChild(table);
+            
+            addStatistics(sortedReaders);
+            
+            addExportButton();
+
+        } catch (error) {
+            rankingContainer.innerHTML = '<p>Erro ao carregar dados. Tente novamente.</p>';
+            console.error('Erro:', error);
+        }
+    }
+
+    function getClassificationName(codigo) {
+        switch (codigo) {
+            case 'EL': return 'Excelente';
+            case 'BL': return 'Bom';
+            case 'RL': return 'Regular';
+            case 'ML': return 'Mau';
+            case 'NL': return 'Não';
+            default: return 'Não Classificado';
+        }
     }
 
     function createRankingTable(readers) {
@@ -53,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
         
-        const headers = ['Posição', 'RA do Aluno', 'Nome', 'Livros Lidos', 'Classificação'];
+        const headers = ['Posição', 'RA do Aluno', 'Nome', 'Classificação', 'Semestre'];
         headers.forEach(header => {
             const th = document.createElement('th');
             th.textContent = header;
@@ -97,16 +144,15 @@ document.addEventListener('DOMContentLoaded', function() {
             nameCell.textContent = reader.name;
             row.appendChild(nameCell);
             
-            const booksCell = document.createElement('td');
-            booksCell.textContent = reader.booksRead;
-            booksCell.style.textAlign = 'center';
-            booksCell.style.fontWeight = '600';
-            row.appendChild(booksCell);
-            
             const classificationCell = document.createElement('td');
-            classificationCell.textContent = reader.classification;
+            classificationCell.textContent = reader.classification + ' Leitor';
             classificationCell.className = getClassificationClass(reader.classification);
             row.appendChild(classificationCell);
+
+            const semestreCell = document.createElement('td');
+            semestreCell.textContent = reader.semestre || 'N/A';
+            semestreCell.style.textAlign = 'center';
+            row.appendChild(semestreCell);
             
             tbody.appendChild(row);
         });
@@ -117,13 +163,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function getClassificationClass(classification) {
         switch(classification) {
-            case 'Extremo':
+            case 'Excelente':
                 return 'status-extreme';
-            case 'Ativo':
+            case 'Bom':
                 return 'status-active';
             case 'Regular':
                 return 'status-regular';
-            case 'Iniciante':
+            case 'Mau':
+                return 'status-beginner';
+            case 'Não':
                 return 'status-beginner';
             default:
                 return '';
@@ -145,12 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         statsContainer.appendChild(statsTitle);
         
-        const totalBooks = readers.reduce((sum, reader) => sum + reader.booksRead, 0);
-        const averageBooks = (totalBooks / readers.length).toFixed(1);
-        const extremeReaders = readers.filter(r => r.classification === 'Extremo').length;
-        const activeReaders = readers.filter(r => r.classification === 'Ativo').length;
+        const excellentReaders = readers.filter(r => r.classification === 'Excelente').length;
+        const goodReaders = readers.filter(r => r.classification === 'Bom').length;
         const regularReaders = readers.filter(r => r.classification === 'Regular').length;
-        const beginnerReaders = readers.filter(r => r.classification === 'Iniciante').length;
+        const badReaders = readers.filter(r => r.classification === 'Mau').length;
+        const nonReaders = readers.filter(r => r.classification === 'Não').length;
         
         const statsGrid = document.createElement('div');
         statsGrid.style.display = 'grid';
@@ -160,12 +207,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const stats = [
             { label: 'Total de Alunos', value: readers.length },
-            { label: 'Total de Livros Lidos', value: totalBooks },
-            { label: 'Média por Aluno', value: averageBooks },
-            { label: 'Leitores Extremos', value: extremeReaders },
-            { label: 'Leitores Ativos', value: activeReaders },
+            { label: 'Excelentes Leitores', value: excellentReaders },
+            { label: 'Bons Leitores', value: goodReaders },
             { label: 'Leitores Regulares', value: regularReaders },
-            { label: 'Leitores Iniciantes', value: beginnerReaders }
+            { label: 'Maus Leitores', value: badReaders },
+            { label: 'Não Leitores', value: nonReaders }
         ];
         
         stats.forEach(stat => {

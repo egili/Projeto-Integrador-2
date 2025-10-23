@@ -1,3 +1,31 @@
+// Configuração da API
+const API_BASE_URL = 'http://localhost:3000/api';
+
+// API functions
+const api = {
+    cadastrarLivro: async (livro) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/livros`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(livro)
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao cadastrar livro');
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar livro:', error);
+            throw error;
+        }
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('registration-form');
     const registerBtn = document.getElementById('register-btn');
@@ -22,25 +50,34 @@ document.addEventListener('DOMContentLoaded', function() {
         input.addEventListener('input', checkFormValidity);
     });
 
-    registrationForm.addEventListener('submit', function(event) {
+    registrationForm.addEventListener('submit', async function(event) {
         event.preventDefault();
 
         registerBtn.disabled = true;
         btnText.textContent = 'Cadastrando...';
-        setTimeout(() => {
-            
+        spinner.style.display = 'inline-block';
+
+        try {
             const bookData = {
-                title: document.getElementById('bookTitle').value,
-                author: document.getElementById('authorName').value,
-                publisher: document.getElementById('publisher').value
+                titulo: document.getElementById('bookTitle').value.trim(),
+                autor: document.getElementById('authorName').value.trim(),
+                editora: document.getElementById('publisher').value.trim(),
+                anoPublicacao: new Date().getFullYear(), // Ano atual como padrão
+                isbn: null // Pode ser adicionado posteriormente
             };
             
-            console.log("DADOS CADASTRADOS (Simulação):", bookData);
+            const result = await api.cadastrarLivro(bookData);
+            console.log("Livro cadastrado com sucesso:", result);
 
             cadastroFormDiv.style.display = 'none';
             step2SuccessDiv.style.display = 'block';
 
-        }, 1500);
+        } catch (error) {
+            alert('Erro ao cadastrar livro: ' + error.message);
+            registerBtn.disabled = false;
+            btnText.textContent = 'Cadastrar livro';
+            spinner.style.display = 'none';
+        }
     });
 
     checkFormValidity();

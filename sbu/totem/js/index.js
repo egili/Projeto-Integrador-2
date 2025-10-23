@@ -60,9 +60,9 @@ const api = {
     // Livros
     buscarLivrosDisponiveis: async (termo = '') => {
         try {
-            let url = `${API_BASE_URL}/livros`;
+            let url = `${API_BASE_URL}/livros/disponiveis`;
             if (termo) {
-                url += `?titulo=${encodeURIComponent(termo)}`;
+                url = `${API_BASE_URL}/livros?titulo=${encodeURIComponent(termo)}`;
             }
             
             const response = await fetch(url);
@@ -75,6 +75,39 @@ const api = {
             }
         } catch (error) {
             console.error('Erro ao buscar livros:', error);
+            throw error;
+        }
+    },
+
+    // Exemplares
+    buscarExemplaresDisponiveis: async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares/disponiveis`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao buscar exemplares');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar exemplares:', error);
+            throw error;
+        }
+    },
+
+    buscarExemplarPorCodigo: async (codigo) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares/codigo/${codigo}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Exemplar não encontrado');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar exemplar:', error);
             throw error;
         }
     },
@@ -96,7 +129,7 @@ const api = {
         }
     },
 
-    realizarEmprestimo: async (raAluno, idLivro) => {
+    realizarEmprestimo: async (raAluno, idExemplar) => {
         try {
             const response = await fetch(`${API_BASE_URL}/emprestimos`, {
                 method: 'POST',
@@ -105,7 +138,7 @@ const api = {
                 },
                 body: JSON.stringify({
                     raAluno,
-                    idLivro
+                    idExemplar
                 })
             });
             const data = await response.json();

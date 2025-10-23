@@ -22,6 +22,23 @@ class Bibliotecario {
         const [rows] = await connection.execute('SELECT * FROM bibliotecario');
         return rows;
     }
+
+    static async atualizar(id, bibliotecario) {
+        const { nome } = bibliotecario;
+        const [result] = await connection.execute(
+            'UPDATE bibliotecario SET nome = ? WHERE id = ?',
+            [nome, id]
+        );
+        return result;
+    }
+
+    static async deletar(id) {
+        const [result] = await connection.execute(
+            'DELETE FROM bibliotecario WHERE id = ?',
+            [id]
+        );
+        return result;
+    }
 }
 
 module.exports = Bibliotecario;

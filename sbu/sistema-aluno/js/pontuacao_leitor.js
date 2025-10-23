@@ -1,52 +1,105 @@
-// Simula um "banco de dados" temporário
-const mockLeitores = [
-  { nome: "Eliseu Pereira Gili", ra: "25009281", livrosLidos: 4 },
-  { nome: "Eduardo Fagundes da Silva", ra: "25008024", livrosLidos: 8 },
-  { nome: "Kaue Rodrigues Seixas", ra: "23011884", livrosLidos: 15 },
-  { nome: "Lucas Athanasio Bueno de Andrade", ra: "25002731", livrosLidos: 25 },
-  { nome: "Pietra Façanha Bortolatto", ra: "25002436", livrosLidos: 6 },
-];
+// Configuração da API
+const API_BASE_URL = 'http://localhost:3000/api';
 
-// Função que determina a pontuacao
-function obterPontuacao(qtdLivros) {
-  if (qtdLivros <= 5)
-    return { nivel: "Leitor Iniciante", classe: "tag-iniciante" };
-  if (qtdLivros <= 10)
-    return { nivel: "Leitor Regular", classe: "tag-regular" };
-  if (qtdLivros <= 20) return { nivel: "Leitor Ativo", classe: "tag-ativo" };
-  return { nivel: "Leitor Extremo", classe: "tag-extremo" };
+// API real
+const api = {
+  buscarAluno: async (ra) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/alunos/${ra}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        return data.data;
+      } else {
+        throw new Error(data.error || 'Aluno não encontrado');
+      }
+    } catch (error) {
+      console.error('Erro ao buscar aluno:', error);
+      throw error;
+    }
+  },
+
+  obterClassificacao: async (ra) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/classificacao/${ra}`);
+      const data = await response.json();
+      
+      if (data.success) {
+        return data.data;
+      } else {
+        throw new Error(data.error || 'Classificação não encontrada');
+      }
+    } catch (error) {
+      console.error('Erro ao obter classificação:', error);
+      throw error;
+    }
+  }
+};
+
+// Função que determina a classe CSS baseada no código da classificação
+function obterClasseCSS(codigo) {
+  switch (codigo) {
+    case 'EL': return 'tag-extremo';
+    case 'BL': return 'tag-ativo';
+    case 'RL': return 'tag-regular';
+    case 'ML': return 'tag-iniciante';
+    case 'NL': return 'tag-iniciante';
+    default: return 'tag-regular';
+  }
 }
 
 // Busca e exibe o resultado
-function buscarLeitor() {
+async function buscarLeitor() {
   const termo = document
     .getElementById("campoBuscaLeitor")
-    .value.trim()
-    .toLowerCase();
+    .value.trim();
   const resultadoDiv = document.getElementById("resultadoPontuacao");
 
   if (!termo) {
-    resultadoDiv.innerHTML = "<p>Por favor, digite um nome ou RA.</p>";
+    resultadoDiv.innerHTML = "<p>Por favor, digite um RA.</p>";
     return;
   }
 
-  const leitor = mockLeitores.find(
-    (l) => l.nome.toLowerCase().includes(termo) || l.ra.includes(termo)
-  );
+  resultadoDiv.innerHTML = "<p>Buscando informações...</p>";
 
-  if (!leitor) {
-    resultadoDiv.innerHTML = "<p>Nenhum leitor encontrado.</p>";
-    return;
+  try {
+    // Buscar aluno
+    const aluno = await api.buscarAluno(termo);
+    
+    // Buscar classificação
+    let classificacao = null;
+    try {
+      classificacao = await api.obterClassificacao(termo);
+    } catch (error) {
+      console.log('Classificação não encontrada para este aluno');
+    }
+
+    if (classificacao) {
+      const classeCSS = obterClasseCSS(classificacao.codigo);
+      
+      resultadoDiv.innerHTML = `
+        <h3>${aluno.nome}</h3>
+        <p><strong>RA:</strong> ${aluno.ra}</p>
+        <p><strong>Classificação:</strong> ${classificacao.descricao}</p>
+        <p><strong>Semestre:</strong> ${classificacao.semestre_descricao}</p>
+        <span class="pontuacao-tag ${classeCSS}">${classificacao.descricao}</span>
+      `;
+    } else {
+      resultadoDiv.innerHTML = `
+        <h3>${aluno.nome}</h3>
+        <p><strong>RA:</strong> ${aluno.ra}</p>
+        <p><strong>Status:</strong> Sem classificação no semestre atual</p>
+        <span class="pontuacao-tag tag-iniciante">Não Classificado</span>
+      `;
+    }
+
+  } catch (error) {
+    if (error.message.includes('não encontrado')) {
+      resultadoDiv.innerHTML = "<p>Aluno não encontrado. Verifique o RA informado.</p>";
+    } else {
+      resultadoDiv.innerHTML = "<p>Erro ao buscar informações. Tente novamente.</p>";
+    }
   }
-
-  const pontuacao = obterPontuacao(leitor.livrosLidos);
-
-  resultadoDiv.innerHTML = `
-    <h3>${leitor.nome}</h3>
-    <p><strong>RA:</strong> ${leitor.ra}</p>
-    <p><strong>Livros lidos no semestre:</strong> ${leitor.livrosLidos}</p>
-    <span class="pontuacao-tag ${pontuacao.classe}">${pontuacao.nivel}</span>
-  `;
 }
 
 // Inicializa eventos
