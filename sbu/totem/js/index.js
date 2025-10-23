@@ -96,17 +96,27 @@ const api = {
         }
     },
 
-    realizarEmprestimo: async (raAluno, idLivro) => {
+    realizarEmprestimo: async (raAluno, idLivro, idExemplar = null) => {
         try {
+            const requestBody = { raAluno };
+            
+            // Se foi fornecido um idExemplar específico, usa ele
+            if (idExemplar) {
+                requestBody.idExemplar = idExemplar;
+            } 
+            // Caso contrário, usa idLivro (backend vai buscar um exemplar disponível)
+            else if (idLivro) {
+                requestBody.idLivro = idLivro;
+            } else {
+                throw new Error('É necessário fornecer idLivro ou idExemplar');
+            }
+
             const response = await fetch(`${API_BASE_URL}/emprestimos`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    raAluno,
-                    idLivro
-                })
+                body: JSON.stringify(requestBody)
             });
             const data = await response.json();
             
@@ -158,6 +168,77 @@ const api = {
             }
         } catch (error) {
             console.error('Erro ao obter classificação:', error);
+            throw error;
+        }
+    },
+
+    // Exemplares
+    buscarExemplaresPorLivro: async (idLivro) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares/livro/${idLivro}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao buscar exemplares');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar exemplares:', error);
+            throw error;
+        }
+    },
+
+    buscarExemplarPorCodigo: async (codigo) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares/codigo/${codigo}`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao buscar exemplar');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar exemplar:', error);
+            throw error;
+        }
+    },
+
+    listarExemplaresDisponiveis: async () => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares/disponiveis`);
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao listar exemplares');
+            }
+        } catch (error) {
+            console.error('Erro ao listar exemplares:', error);
+            throw error;
+        }
+    },
+
+    cadastrarExemplar: async (exemplar) => {
+        try {
+            const response = await fetch(`${API_BASE_URL}/exemplares`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(exemplar)
+            });
+            const data = await response.json();
+            
+            if (data.success) {
+                return data.data;
+            } else {
+                throw new Error(data.error || 'Erro ao cadastrar exemplar');
+            }
+        } catch (error) {
+            console.error('Erro ao cadastrar exemplar:', error);
             throw error;
         }
     }

@@ -7,93 +7,42 @@ function navigateTo(page) {
   window.location.href = page;
 }
 
-// Simulação de mockAPI reutilizando o padrão do totem
-const mockAPI = {
-  buscarLivrosDisponiveis: async (termo = "") => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-
-    // Função que gera uma capa aleatória
-    const gerarCapa = (id) => `https://picsum.photos/seed/livro${id}/200/300`;
-
-    const livros = [
-      {
-        id: 1,
-        titulo: "Introdução à Programação",
-        autor: "João Silva",
-        capa: gerarCapa(1),
-      },
-      {
-        id: 2,
-        titulo: "Banco de Dados Relacional",
-        autor: "Maria Santos",
-        capa: gerarCapa(2),
-      },
-      {
-        id: 3,
-        titulo: "Desenvolvimento Web Moderno",
-        autor: "Pedro Costa",
-        capa: gerarCapa(3),
-      },
-      {
-        id: 4,
-        titulo: "Algoritmos e Estruturas de Dados",
-        autor: "Ana Oliveira",
-        capa: gerarCapa(4),
-      },
-      {
-        id: 5,
-        titulo: "Engenharia de Software",
-        autor: "Carlos Mendes",
-        capa: gerarCapa(5),
-      },
-      {
-        id: 6,
-        titulo: "Inteligência Artificial Aplicada",
-        autor: "Fernanda Souza",
-        capa: gerarCapa(6),
-      },
-      {
-        id: 7,
-        titulo: "Sistemas Operacionais",
-        autor: "Ricardo Lima",
-        capa: gerarCapa(7),
-      },
-    ];
-
-    if (!termo.trim()) return livros;
-
-    const termoLower = termo.toLowerCase();
-    return livros.filter(
-      (livro) =>
-        livro.titulo.toLowerCase().includes(termoLower) ||
-        livro.autor.toLowerCase().includes(termoLower)
-    );
-  },
-};
+// Função que gera uma capa aleatória
+const gerarCapa = (id) => `https://picsum.photos/seed/livro${id}/200/300`;
 
 // Função para carregar livros no carrossel
 async function carregarLivros(termo = "") {
   const carrossel = document.getElementById("carrosselLivros");
   carrossel.innerHTML = "<p>Carregando livros...</p>";
 
-  const livros = await mockAPI.buscarLivrosDisponiveis(termo);
-  carrossel.innerHTML = "";
+  try {
+    const livros = await api.buscarLivrosDisponiveis(termo);
+    carrossel.innerHTML = "";
 
-  if (livros.length === 0) {
-    carrossel.innerHTML = "<p>Nenhum livro encontrado.</p>";
-    return;
+    if (livros.length === 0) {
+      carrossel.innerHTML = "<p>Nenhum livro encontrado.</p>";
+      return;
+    }
+
+    livros.forEach((livro) => {
+      const card = document.createElement("div");
+      card.className = "livro-card";
+      const disponibilidade = livro.exemplares_disponiveis > 0 
+        ? `<span style="color: #27ae60;">${livro.exemplares_disponiveis} disponível(is)</span>`
+        : `<span style="color: #e74c3c;">Indisponível</span>`;
+      
+      card.innerHTML = `
+        <img src="${gerarCapa(livro.id)}" alt="${livro.titulo}">
+        <h3>${livro.titulo}</h3>
+        <p>${livro.autor}</p>
+        <p style="font-size: 0.9em; margin-top: 5px;">${disponibilidade}</p>
+      `;
+      carrossel.appendChild(card);
+    });
+  } catch (error) {
+    console.error('Erro ao carregar livros:', error);
+    carrossel.innerHTML = "<p>Erro ao carregar livros. Verifique se o servidor está rodando.</p>";
   }
-
-  livros.forEach((livro) => {
-    const card = document.createElement("div");
-    card.className = "livro-card";
-    card.innerHTML = `
-      <img src="${livro.capa}" alt="${livro.titulo}">
-      <h3>${livro.titulo}</h3>
-      <p>${livro.autor}</p>
-    `;
-    carrossel.appendChild(card);
-  });
 }
 
 // Inicialização da página

@@ -2,10 +2,10 @@ const { connection } = require('../database/connection');
 
 class Emprestimo {
     static async criar(emprestimo) {
-        const { idAluno, idLivro, dataEmprestimo, dataDevolucaoPrevista } = emprestimo;
+        const { idAluno, idExemplar, dataEmprestimo, dataDevolucaoPrevista } = emprestimo;
         const [result] = await connection.execute(
-            'INSERT INTO emprestimo (idAluno, idLivro, dataEmprestimo, dataDevolucaoPrevista) VALUES (?, ?, ?, ?)',
-            [idAluno, idLivro, dataEmprestimo, dataDevolucaoPrevista]
+            'INSERT INTO emprestimo (idAluno, idExemplar, dataEmprestimo, dataDevolucaoPrevista) VALUES (?, ?, ?, ?)',
+            [idAluno, idExemplar, dataEmprestimo, dataDevolucaoPrevista]
         );
         return result;
     }
@@ -13,10 +13,12 @@ class Emprestimo {
     static async buscarPorId(id) {
         const [rows] = await connection.execute(
             `SELECT e.*, a.nome as aluno_nome, a.ra, 
+                    ex.codigo as exemplar_codigo, ex.status as exemplar_status,
                     l.titulo as livro_titulo, l.isbn, l.autor, l.editora, l.anoPublicacao
              FROM emprestimo e
              JOIN aluno a ON e.idAluno = a.id
-             JOIN livro l ON e.idLivro = l.id
+             JOIN exemplar ex ON e.idExemplar = ex.id
+             JOIN livro l ON ex.idLivro = l.id
              WHERE e.id = ?`,
             [id]
         );
@@ -25,9 +27,11 @@ class Emprestimo {
 
     static async listarAtivosPorAluno(idAluno) {
         const [rows] = await connection.execute(
-            `SELECT e.*, l.titulo as livro_titulo, l.isbn, l.autor, l.editora, l.anoPublicacao
+            `SELECT e.*, ex.codigo as exemplar_codigo, 
+                    l.titulo as livro_titulo, l.isbn, l.autor, l.editora, l.anoPublicacao
              FROM emprestimo e
-             JOIN livro l ON e.idLivro = l.id
+             JOIN exemplar ex ON e.idExemplar = ex.id
+             JOIN livro l ON ex.idLivro = l.id
              WHERE e.idAluno = ? AND e.dataDevolucaoReal IS NULL`,
             [idAluno]
         );
@@ -36,10 +40,13 @@ class Emprestimo {
 
     static async listarTodosPorAluno(idAluno) {
         const [rows] = await connection.execute(
-            `SELECT e.*, l.titulo as livro_titulo, l.isbn, l.autor, l.editora, l.anoPublicacao
+            `SELECT e.*, ex.codigo as exemplar_codigo,
+                    l.titulo as livro_titulo, l.isbn, l.autor, l.editora, l.anoPublicacao
              FROM emprestimo e
-             JOIN livro l ON e.idLivro = l.id
-             WHERE e.idAluno = ?`,
+             JOIN exemplar ex ON e.idExemplar = ex.id
+             JOIN livro l ON ex.idLivro = l.id
+             WHERE e.idAluno = ?
+             ORDER BY e.dataEmprestimo DESC`,
             [idAluno]
         );
         return rows;
@@ -48,11 +55,14 @@ class Emprestimo {
     static async listarEmprestimosAtivos() {
         const [rows] = await connection.execute(
             `SELECT e.*, a.nome as aluno_nome, a.ra, 
+                    ex.codigo as exemplar_codigo,
                     l.titulo as livro_titulo, l.autor, l.editora
              FROM emprestimo e
              JOIN aluno a ON e.idAluno = a.id
-             JOIN livro l ON e.idLivro = l.id
-             WHERE e.dataDevolucaoReal IS NULL`
+             JOIN exemplar ex ON e.idExemplar = ex.id
+             JOIN livro l ON ex.idLivro = l.id
+             WHERE e.dataDevolucaoReal IS NULL
+             ORDER BY e.dataEmprestimo DESC`
         );
         return rows;
     }
@@ -65,12 +75,23 @@ class Emprestimo {
         return result;
     }
 
-    static async verificarLivroDisponivel(idLivro) {
+    static async verificarExemplarDisponivel(idExemplar) {
         const [rows] = await connection.execute(
-            'SELECT * FROM emprestimo WHERE idLivro = ? AND dataDevolucaoReal IS NULL',
-            [idLivro]
+            'SELECT * FROM emprestimo WHERE idExemplar = ? AND dataDevolucaoReal IS NULL',
+            [idExemplar]
         );
         return rows.length === 0;
+    }
+
+    static async buscarPorExemplar(idExemplar) {
+        const [rows] = await connection.execute(
+            `SELECT e.*, a.nome as aluno_nome, a.ra 
+             FROM emprestimo e
+             JOIN aluno a ON e.idAluno = a.id
+             WHERE e.idExemplar = ? AND e.dataDevolucaoReal IS NULL`,
+            [idExemplar]
+        );
+        return rows[0];
     }
 }
 

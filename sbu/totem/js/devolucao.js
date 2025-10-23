@@ -42,6 +42,7 @@ async function buscarEmprestimos() {
             document.getElementById('listaEmprestimos').innerHTML = emprestimos.map(emp => `
                 <div class="emprestimo-item" onclick="selecionarEmprestimo(${emp.id})" data-emprestimo='${JSON.stringify(emp)}'>
                     <h4>${emp.livro_titulo}</h4>
+                    <p><strong>Exemplar:</strong> ${emp.exemplar_codigo || 'N/A'}</p>
                     <p><strong>Autor:</strong> ${emp.autor}</p>
                     <p><strong>Editora:</strong> ${emp.editora}</p>
                     <p><strong>Data do empréstimo:</strong> ${formatarData(emp.dataEmprestimo)}</p>

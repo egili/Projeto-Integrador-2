@@ -1,12 +1,13 @@
 const Emprestimo = require('../models/emprestimo');
 const Aluno = require('../models/aluno');
 const Livro = require('../models/livro');
+const Exemplar = require('../models/exemplar');
 const Classificacao = require('../models/classificacao');
 const Semestre = require('../models/semestre');
 
 exports.realizarEmprestimo = async (req, res) => {
     try {
-        const { raAluno, idLivro } = req.body;
+        const { raAluno, idLivro, idExemplar } = req.body;
 
         // Verificar se aluno existe
         const aluno = await Aluno.buscarPorRa(raAluno);
@@ -17,21 +18,59 @@ exports.realizarEmprestimo = async (req, res) => {
             });
         }
 
-        // Verificar se livro existe
-        const livro = await Livro.buscarPorId(idLivro);
-        if (!livro) {
-            return res.status(404).json({
+        let exemplar;
+
+        // Se foi fornecido um idExemplar específico, usa ele
+        if (idExemplar) {
+            exemplar = await Exemplar.buscarPorId(idExemplar);
+            if (!exemplar) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Exemplar não encontrado'
+                });
+            }
+
+            if (exemplar.status !== 'disponivel') {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Exemplar não está disponível'
+                });
+            }
+        } 
+        // Se foi fornecido apenas idLivro, busca um exemplar disponível
+        else if (idLivro) {
+            const livro = await Livro.buscarPorId(idLivro);
+            if (!livro) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Livro não encontrado'
+                });
+            }
+
+            const exemplaresDisponiveis = await Exemplar.listarDisponiveisPorLivro(idLivro);
+            if (exemplaresDisponiveis.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Não há exemplares disponíveis deste livro'
+                });
+            }
+
+            // Pega o primeiro exemplar disponível
+            exemplar = exemplaresDisponiveis[0];
+            exemplar = await Exemplar.buscarPorId(exemplar.id); // Busca completo com informações do livro
+        } else {
+            return res.status(400).json({
                 success: false,
-                error: 'Livro não encontrado'
+                error: 'É necessário fornecer idLivro ou idExemplar'
             });
         }
 
-        // Verificar se livro está disponível
-        const livroDisponivel = await Emprestimo.verificarLivroDisponivel(idLivro);
-        if (!livroDisponivel) {
+        // Verificar se exemplar está disponível
+        const exemplarDisponivel = await Emprestimo.verificarExemplarDisponivel(exemplar.id);
+        if (!exemplarDisponivel) {
             return res.status(400).json({
                 success: false,
-                error: 'Livro já emprestado'
+                error: 'Exemplar já está emprestado'
             });
         }
 
@@ -44,10 +83,13 @@ exports.realizarEmprestimo = async (req, res) => {
         // Registrar empréstimo
         const result = await Emprestimo.criar({
             idAluno: aluno.id,
-            idLivro,
+            idExemplar: exemplar.id,
             dataEmprestimo,
             dataDevolucaoPrevista: dataDevolucaoPrevistaStr
         });
+
+        // Atualizar status do exemplar
+        await Exemplar.atualizarStatus(exemplar.id, 'emprestado');
 
         res.status(201).json({
             success: true,
@@ -55,7 +97,8 @@ exports.realizarEmprestimo = async (req, res) => {
             data: {
                 id: result.insertId,
                 aluno: aluno.nome,
-                livro: livro.titulo,
+                livro: exemplar.titulo,
+                exemplar: exemplar.codigo,
                 dataEmprestimo,
                 dataDevolucaoPrevista: dataDevolucaoPrevistaStr
             }
@@ -95,10 +138,14 @@ exports.registrarDevolucao = async (req, res) => {
         const dataDevolucaoReal = new Date().toISOString().split('T')[0];
         await Emprestimo.registrarDevolucao(idEmprestimo, dataDevolucaoReal);
 
+        // Atualizar status do exemplar para disponível
+        await Exemplar.atualizarStatus(emprestimo.idExemplar, 'disponivel');
+
         // Atualizar classificação do aluno
+        let classificacao = null;
         const semestreAtivo = await Semestre.buscarAtivo();
         if (semestreAtivo) {
-            const classificacao = await Classificacao.calcularClassificacao(
+            classificacao = await Classificacao.calcularClassificacao(
                 emprestimo.idAluno, 
                 semestreAtivo.id
             );

@@ -1,52 +1,49 @@
-// Simula um "banco de dados" temporário
-const mockLeitores = [
-  { nome: "Eliseu Pereira Gili", ra: "25009281", livrosLidos: 4 },
-  { nome: "Eduardo Fagundes da Silva", ra: "25008024", livrosLidos: 8 },
-  { nome: "Kaue Rodrigues Seixas", ra: "23011884", livrosLidos: 15 },
-  { nome: "Lucas Athanasio Bueno de Andrade", ra: "25002731", livrosLidos: 25 },
-  { nome: "Pietra Façanha Bortolatto", ra: "25002436", livrosLidos: 6 },
-];
-
-// Função que determina a pontuacao
-function obterPontuacao(qtdLivros) {
-  if (qtdLivros <= 5)
-    return { nivel: "Leitor Iniciante", classe: "tag-iniciante" };
-  if (qtdLivros <= 10)
-    return { nivel: "Leitor Regular", classe: "tag-regular" };
-  if (qtdLivros <= 20) return { nivel: "Leitor Ativo", classe: "tag-ativo" };
-  return { nivel: "Leitor Extremo", classe: "tag-extremo" };
+// Função que determina a classe CSS baseado no código
+function obterClassePontuacao(codigo) {
+  switch(codigo) {
+    case 'INICIANTE':
+      return 'tag-iniciante';
+    case 'REGULAR':
+      return 'tag-regular';
+    case 'ATIVO':
+      return 'tag-ativo';
+    case 'EXTREMO':
+      return 'tag-extremo';
+    default:
+      return 'tag-iniciante';
+  }
 }
 
 // Busca e exibe o resultado
-function buscarLeitor() {
+async function buscarLeitor() {
   const termo = document
     .getElementById("campoBuscaLeitor")
-    .value.trim()
-    .toLowerCase();
+    .value.trim();
   const resultadoDiv = document.getElementById("resultadoPontuacao");
 
   if (!termo) {
-    resultadoDiv.innerHTML = "<p>Por favor, digite um nome ou RA.</p>";
+    resultadoDiv.innerHTML = "<p>Por favor, digite um RA.</p>";
     return;
   }
 
-  const leitor = mockLeitores.find(
-    (l) => l.nome.toLowerCase().includes(termo) || l.ra.includes(termo)
-  );
+  resultadoDiv.innerHTML = "<p>Buscando informações...</p>";
 
-  if (!leitor) {
-    resultadoDiv.innerHTML = "<p>Nenhum leitor encontrado.</p>";
-    return;
+  try {
+    const aluno = await api.buscarAluno(termo);
+    const classificacao = await api.obterClassificacao(termo);
+
+    const classe = obterClassePontuacao(classificacao.codigo);
+
+    resultadoDiv.innerHTML = `
+      <h3>${aluno.nome}</h3>
+      <p><strong>RA:</strong> ${aluno.ra}</p>
+      <p><strong>Livros lidos no semestre:</strong> ${classificacao.totalLivros || 0}</p>
+      <span class="pontuacao-tag ${classe}">${classificacao.descricao}</span>
+    `;
+  } catch (error) {
+    console.error('Erro ao buscar leitor:', error);
+    resultadoDiv.innerHTML = "<p>Aluno não encontrado ou não possui classificação no semestre atual.</p>";
   }
-
-  const pontuacao = obterPontuacao(leitor.livrosLidos);
-
-  resultadoDiv.innerHTML = `
-    <h3>${leitor.nome}</h3>
-    <p><strong>RA:</strong> ${leitor.ra}</p>
-    <p><strong>Livros lidos no semestre:</strong> ${leitor.livrosLidos}</p>
-    <span class="pontuacao-tag ${pontuacao.classe}">${pontuacao.nivel}</span>
-  `;
 }
 
 // Inicializa eventos
