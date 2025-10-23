@@ -3,6 +3,8 @@ const Aluno = require('../models/aluno');
 const Livro = require('../models/livro');
 const Classificacao = require('../models/classificacao');
 const Semestre = require('../models/semestre');
+const Exemplar = require('../models/exemplar');
+const Log = require('../models/log');
 
 exports.realizarEmprestimo = async (req, res) => {
     try {
@@ -26,12 +28,12 @@ exports.realizarEmprestimo = async (req, res) => {
             });
         }
 
-        // Verificar se livro está disponível
-        const livroDisponivel = await Emprestimo.verificarLivroDisponivel(idLivro);
-        if (!livroDisponivel) {
+        // Selecionar um exemplar disponível
+        const exemplar = await Exemplar.buscarDisponivelPorLivro(idLivro);
+        if (!exemplar) {
             return res.status(400).json({
                 success: false,
-                error: 'Livro já emprestado'
+                error: 'Não há exemplares disponíveis para este livro'
             });
         }
 
@@ -41,13 +43,17 @@ exports.realizarEmprestimo = async (req, res) => {
         dataDevolucaoPrevista.setDate(dataDevolucaoPrevista.getDate() + 7);
         const dataDevolucaoPrevistaStr = dataDevolucaoPrevista.toISOString().split('T')[0];
 
-        // Registrar empréstimo
+        // Atualizar status do exemplar para emprestado e registrar empréstimo
+        await Exemplar.atualizarStatus(exemplar.id, 'emprestado');
         const result = await Emprestimo.criar({
             idAluno: aluno.id,
-            idLivro,
+            idExemplar: exemplar.id,
             dataEmprestimo,
             dataDevolucaoPrevista: dataDevolucaoPrevistaStr
         });
+
+        // Log de sucesso
+        await Log.registrar('sucesso', `Empréstimo realizado (emp:${result.insertId}) - RA ${aluno.ra} - Exemplar ${exemplar.codigo}`);
 
         res.status(201).json({
             success: true,
@@ -57,12 +63,17 @@ exports.realizarEmprestimo = async (req, res) => {
                 aluno: aluno.nome,
                 livro: livro.titulo,
                 dataEmprestimo,
-                dataDevolucaoPrevista: dataDevolucaoPrevistaStr
+            dataDevolucaoPrevista: dataDevolucaoPrevistaStr,
+            exemplar: {
+                id: exemplar.id,
+                codigo: exemplar.codigo
+            }
             }
         });
 
     } catch (error) {
         console.error('Erro ao realizar empréstimo:', error);
+        try { await Log.registrar('erro', `Falha ao realizar empréstimo: ${error.message}`);} catch (_) {}
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'
@@ -95,14 +106,19 @@ exports.registrarDevolucao = async (req, res) => {
         const dataDevolucaoReal = new Date().toISOString().split('T')[0];
         await Emprestimo.registrarDevolucao(idEmprestimo, dataDevolucaoReal);
 
+        // Liberar exemplar associado
+        if (emprestimo.idExemplar) {
+            await Exemplar.atualizarStatus(emprestimo.idExemplar, 'disponivel');
+        }
+
         // Atualizar classificação do aluno
+        let classificacao = null;
         const semestreAtivo = await Semestre.buscarAtivo();
         if (semestreAtivo) {
-            const classificacao = await Classificacao.calcularClassificacao(
+            classificacao = await Classificacao.calcularClassificacao(
                 emprestimo.idAluno, 
                 semestreAtivo.id
             );
-            
             await Classificacao.atualizarClassificacaoAluno(
                 emprestimo.idAluno,
                 semestreAtivo.id,
@@ -110,6 +126,9 @@ exports.registrarDevolucao = async (req, res) => {
                 classificacao.descricao
             );
         }
+
+        // Log de sucesso
+        try { await Log.registrar('sucesso', `Devolução registrado (emp:${idEmprestimo}) - RA ${emprestimo.ra}`);} catch (_) {}
 
         res.json({
             success: true,
@@ -123,6 +142,7 @@ exports.registrarDevolucao = async (req, res) => {
 
     } catch (error) {
         console.error('Erro ao registrar devolução:', error);
+        try { await Log.registrar('erro', `Falha ao registrar devolução: ${error.message}`);} catch (_) {}
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'

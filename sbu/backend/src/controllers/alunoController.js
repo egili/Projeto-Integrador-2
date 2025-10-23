@@ -1,4 +1,5 @@
 const Aluno = require('../models/aluno');
+const Log = require('../models/log');
 
 exports.cadastrarAluno = async (req, res) => {
     try {
@@ -21,6 +22,7 @@ exports.cadastrarAluno = async (req, res) => {
         }
 
         const result = await Aluno.criar({ nome, ra });
+        try { await Log.registrar('sucesso', `Aluno cadastrado: ${nome} (RA ${ra})`);} catch (_) {}
         
         res.status(201).json({
             success: true,
@@ -30,6 +32,7 @@ exports.cadastrarAluno = async (req, res) => {
 
     } catch (error) {
         console.error('Erro ao cadastrar aluno:', error);
+        try { await Log.registrar('erro', `Falha ao cadastrar aluno RA ${ra}: ${error.message}`);} catch (_) {}
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'

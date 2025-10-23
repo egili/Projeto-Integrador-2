@@ -27,14 +27,12 @@ class Livro {
     }
 
     static async listarDisponiveis() {
+        // Lista livros que possuem ao menos um exemplar disponível
         const [rows] = await connection.execute(`
-            SELECT l.* 
-            FROM livro l 
-            WHERE l.id NOT IN (
-                SELECT e.idLivro 
-                FROM emprestimo e 
-                WHERE e.dataDevolucaoReal IS NULL
-            )
+            SELECT DISTINCT l.*
+            FROM livro l
+            JOIN exemplar ex ON ex.idLivro = l.id
+            WHERE ex.status = 'disponivel'
         `);
         return rows;
     }

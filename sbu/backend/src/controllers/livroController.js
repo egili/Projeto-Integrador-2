@@ -1,4 +1,5 @@
 const Livro = require('../models/livro');
+const Log = require('../models/log');
 
 exports.cadastrarLivro = async (req, res) => {
     try {
@@ -23,6 +24,7 @@ exports.cadastrarLivro = async (req, res) => {
         }
 
         const result = await Livro.criar({ titulo, isbn, autor, editora, anoPublicacao });
+        try { await Log.registrar('sucesso', `Livro cadastrado: ${titulo} (${isbn || 'SEM ISBN'})`);} catch (_) {}
         
         res.status(201).json({
             success: true,
@@ -39,6 +41,7 @@ exports.cadastrarLivro = async (req, res) => {
 
     } catch (error) {
         console.error('Erro ao cadastrar livro:', error);
+        try { await Log.registrar('erro', `Falha ao cadastrar livro: ${error.message}`);} catch (_) {}
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'
@@ -71,9 +74,16 @@ exports.buscarLivros = async (req, res) => {
         let livros;
 
         if (titulo) {
-            livros = await Livro.buscarPorTitulo(titulo);
+            // Quando buscar por título, preferir apenas livros com exemplar disponível
+            const todos = await Livro.buscarPorTitulo(titulo);
+            const disponiveis = await Livro.listarDisponiveis();
+            const idsDisponiveis = new Set(disponiveis.map(l => l.id));
+            livros = todos.filter(l => idsDisponiveis.has(l.id));
         } else if (autor) {
-            livros = await Livro.buscarPorAutor(autor);
+            const todos = await Livro.buscarPorAutor(autor);
+            const disponiveis = await Livro.listarDisponiveis();
+            const idsDisponiveis = new Set(disponiveis.map(l => l.id));
+            livros = todos.filter(l => idsDisponiveis.has(l.id));
         } else {
             livros = await Livro.listarDisponiveis();
         }
