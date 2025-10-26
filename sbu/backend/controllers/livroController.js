@@ -2,7 +2,7 @@ const Livro = require('../models/livro');
 
 exports.cadastrarLivro = async (req, res) => {
     try {
-        const { titulo, isbn, autor, editora, anoPublicacao } = req.body;
+        const { titulo, isbn, autor, editora, anoPublicacao, categoria } = req.body;
 
         if (!titulo || !autor || !editora || !anoPublicacao) {
             return res.status(400).json({
@@ -11,7 +11,6 @@ exports.cadastrarLivro = async (req, res) => {
             });
         }
 
-        // Se ISBN foi fornecido, verifica se já existe
         if (isbn) {
             const livroExistente = await Livro.buscarPorIsbn(isbn);
             if (livroExistente) {
@@ -22,7 +21,7 @@ exports.cadastrarLivro = async (req, res) => {
             }
         }
 
-        const result = await Livro.criar({ titulo, isbn, autor, editora, anoPublicacao });
+        const result = await Livro.criar({ titulo, isbn, autor, editora, anoPublicacao, categoria });
         
         res.status(201).json({
             success: true,
@@ -33,7 +32,8 @@ exports.cadastrarLivro = async (req, res) => {
                 isbn, 
                 autor, 
                 editora, 
-                anoPublicacao 
+                anoPublicacao,
+                categoria
             }
         });
 

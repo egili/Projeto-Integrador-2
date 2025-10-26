@@ -11,7 +11,6 @@ exports.cadastrarAluno = async (req, res) => {
             });
         }
 
-        // Verifica se RA já existe
         const alunoExistente = await Aluno.buscarPorRa(ra);
         if (alunoExistente) {
             return res.status(400).json({

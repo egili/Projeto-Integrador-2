@@ -185,7 +185,6 @@ function exibirEmprestimosPendentes(emprestimos) {
                     <th>Livro</th>
                     <th>Exemplar</th>
                     <th>Data Empréstimo</th>
-                    <th>Data Devolução Prevista</th>
                 </tr>
             </thead>
             <tbody>
@@ -196,7 +195,6 @@ function exibirEmprestimosPendentes(emprestimos) {
                         <td>${emp.titulo}</td>
                         <td>${emp.codigo_exemplar}</td>
                         <td>${formatDate(emp.dataEmprestimo)}</td>
-                        <td>${formatDate(emp.dataDevolucaoPrevista)}</td>
                     </tr>
                 `).join('')}
             </tbody>

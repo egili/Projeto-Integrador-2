@@ -1,3 +1,10 @@
+const NIVEL_CORES = {
+    'Leitor Iniciante': 'beginner',
+    'Leitor Regular': 'regular',
+    'Leitor Ativo': 'active',
+    'Leitor Extremo': 'extreme'
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     carregarClassificacaoGeral();
 });
@@ -24,13 +31,6 @@ function exibirClassificacaoGeral(classificacao) {
         return;
     }
 
-    const nivelCores = {
-        'Leitor Iniciante': 'beginner',
-        'Leitor Regular': 'regular', 
-        'Leitor Ativo': 'active',
-        'Leitor Extremo': 'extreme'
-    };
-
     const html = `
         <table class="data-table">
             <thead>
@@ -44,16 +44,16 @@ function exibirClassificacaoGeral(classificacao) {
             </thead>
             <tbody>
                 ${classificacao.map((aluno, index) => {
-                    const corClasse = nivelCores[aluno.classificacao] || 'beginner';
+                    const corClasse = NIVEL_CORES[aluno.classificacao] || 'beginner';
                     return `
                         <tr>
                             <td>${index + 1}º</td>
                             <td>${aluno.nome}</td>
                             <td>${aluno.ra}</td>
-                            <td>${aluno.livros_lidos}</td>
+                            <td>${aluno.livros_lidos ? aluno.livros_lidos : '0'}</td>
                             <td>
                                 <span class="status-${corClasse}">
-                                    ${aluno.classificacao}
+                                    ${aluno.classificacao ? aluno.classificacao : 'Leitor Iniciante'}
                                 </span>
                             </td>
                         </tr>

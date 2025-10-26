@@ -1,7 +1,6 @@
 const API_BASE_URL = 'http://localhost:3000/api';
 
 class BibliotecaAPI {
-    // Alunos
     static async buscarAlunoPorRA(ra) {
         const response = await fetch(`${API_BASE_URL}/alunos/ra/${ra}`);
         return await response.json();
@@ -16,18 +15,21 @@ class BibliotecaAPI {
         return await response.json();
     }
 
-    // Livros
     static async listarLivrosDisponiveis() {
         const response = await fetch(`${API_BASE_URL}/livros/disponiveis`);
         return await response.json();
     }
 
     static async buscarLivros(termo) {
-        const response = await fetch(`${API_BASE_URL}/livros/busca/${termo}`);
+        const response = await fetch(`${API_BASE_URL}/livros/busca?titulo=${encodeURIComponent(termo)}`);
         return await response.json();
     }
 
-    // Empréstimos
+    static async buscarExemplarPorCodigo(codigo) {
+        const response = await fetch(`${API_BASE_URL}/exemplares/codigo/${codigo}`);
+        return await response.json();
+    }
+
     static async realizarEmprestimo(emprestimoData) {
         const response = await fetch(`${API_BASE_URL}/emprestimos`, {
             method: 'POST',
@@ -38,26 +40,26 @@ class BibliotecaAPI {
     }
 
     static async realizarDevolucao(idEmprestimo) {
-        const response = await fetch(`${API_BASE_URL}/emprestimos/${idEmprestimo}/devolucao`, {
+        const response = await fetch(`${API_BASE_URL}/emprestimos/${idEmprestimo}/devolver`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' }
         });
         return await response.json();
     }
 
-    static async listarEmprestimosAtivos(idAluno) {
-        const response = await fetch(`${API_BASE_URL}/emprestimos/aluno/${idAluno}/ativos`);
+    static async listarEmprestimosAtivos(ra) {
+        const response = await fetch(`${API_BASE_URL}/emprestimos/aluno/${ra}`);
         return await response.json();
     }
 }
 
-// Utilitários
-function showError(message) { 
-    alert(`Erro: ${message}`); 
+// Funções Utilitárias
+function showError(message) {
+    alert(`Erro: ${message}`);
 }
 
 function showSuccess(message) {
-    alert(`Sucesso: ${message}`); 
+    alert(`Sucesso: ${message}`);
 }
 
 function formatDate(dateString) {

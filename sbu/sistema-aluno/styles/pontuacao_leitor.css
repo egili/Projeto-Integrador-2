@@ -1,7 +1,79 @@
 /* Estilos específicos para a página de pontuação do leitor */
+.general-screen {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 700px;
+    margin: 20px;
+    overflow: hidden;
+}
+
+.general-header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.general-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.btn-voltar {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-voltar:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.general-main {
+    padding: 40px 30px;
+}
+
+.general-footer {
+    background: #ecf0f1;
+    padding: 20px;
+    text-align: center;
+    color: #7f8c8d;
+    border-top: 1px solid #bdc3c7;
+}
+
+.general-footer p {
+    margin: 5px 0;
+}
+
 .pontuacao-section {
     max-width: 600px;
     margin: 0 auto;
+}
+
+.pontuacao-section h2 {
+    color: #2c3e50;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    text-align: center;
 }
 
 .search-bar {
@@ -21,6 +93,24 @@
 .search-bar input:focus {
     outline: none;
     border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn-primary {
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
 }
 
 .resultado-container {
@@ -131,20 +221,6 @@
     color: #2c3e50;
 }
 
-.pontuacao-dica {
-    margin-top: 20px;
-    padding: 15px;
-    background: #fff3cd;
-    border: 1px solid #ffeaa7;
-    border-radius: 8px;
-    color: #856404;
-}
-
-.pontuacao-dica p {
-    margin: 0;
-    font-size: 0.9rem;
-}
-
 /* Estados vazios */
 .no-results {
     text-align: center;
@@ -155,6 +231,15 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .general-main {
+        padding: 20px 15px;
+    }
+    
     .search-bar {
         flex-direction: column;
     }

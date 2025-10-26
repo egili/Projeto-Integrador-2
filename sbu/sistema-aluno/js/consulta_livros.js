@@ -16,16 +16,34 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    
+    // Configurar navegação do carrossel
+    const setaEsquerda = document.querySelector('.seta-esquerda');
+    const setaDireita = document.querySelector('.seta-direita');
+    const carrossel = document.getElementById('carrosselLivros');
+    
+    if (setaEsquerda && carrossel) {
+        setaEsquerda.addEventListener('click', function() {
+            carrossel.scrollBy({ left: -300, behavior: 'smooth' });
+        });
+    }
+    
+    if (setaDireita && carrossel) {
+        setaDireita.addEventListener('click', function() {
+            carrossel.scrollBy({ left: 300, behavior: 'smooth' });
+        });
+    }
 });
 
 async function carregarLivrosDisponiveis() {
     try {
         const result = await BibliotecaAPI.listarLivrosDisponiveis();
         
-        if (result.success) {
+        // Se chegou aqui sem exceção, a busca foi bem-sucedida
+        if (result && result.data) {
             exibirLivrosNoCarrossel(result.data);
         } else {
-            showError(result.error);
+            showError('Nenhum livro disponível no momento.');
         }
     } catch (error) {
         showError('Erro ao carregar livros: ' + error.message);
@@ -33,7 +51,7 @@ async function carregarLivrosDisponiveis() {
 }
 
 async function buscarLivros() {
-    const termo = document.getElementById('campoBusca').value;
+    const termo = document.getElementById('campoBusca').value.trim();
     
     if (!termo) {
         carregarLivrosDisponiveis();
@@ -43,10 +61,11 @@ async function buscarLivros() {
     try {
         const result = await BibliotecaAPI.buscarLivros(termo);
         
-        if (result.success) {
+        // Se chegou aqui sem exceção, a busca foi bem-sucedida
+        if (result && result.data) {
             exibirLivrosNoCarrossel(result.data);
         } else {
-            showError(result.error);
+            showError('Nenhum livro encontrado.');
         }
     } catch (error) {
         showError('Erro ao buscar livros: ' + error.message);

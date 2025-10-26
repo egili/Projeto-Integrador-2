@@ -106,12 +106,28 @@ async function confirmarEmprestimo() {
         return;
     }
 
-    const emprestimoData = {
-        idAluno: alunoEncontrado.id,
-        idLivro: livroSelecionado.id
-    };
-
+    // Buscar um exemplar disponível do livro
     try {
+        const exemplares = await fetch(`http://localhost:3000/api/exemplares/livro/${livroSelecionado.id}`).then(r => r.json());
+        
+        if (!exemplares.success || exemplares.data.length === 0) {
+            showError('Nenhum exemplar disponível para este livro');
+            return;
+        }
+
+        // Pegar o primeiro exemplar disponível
+        const exemplarDisponivel = exemplares.data.find(ex => ex.status === 'disponivel');
+        
+        if (!exemplarDisponivel) {
+            showError('Nenhum exemplar disponível para este livro');
+            return;
+        }
+
+        const emprestimoData = {
+            ra: alunoEncontrado.ra,
+            codigoExemplar: exemplarDisponivel.codigo
+        };
+
         const result = await BibliotecaAPI.realizarEmprestimo(emprestimoData);
         
         if (result.success) {
@@ -121,6 +137,7 @@ async function confirmarEmprestimo() {
             document.getElementById('sucessoLivro').textContent = livroSelecionado.titulo;
             document.getElementById('sucessoAluno').textContent = alunoEncontrado.nome;
             document.getElementById('sucessoData').textContent = new Date().toLocaleDateString('pt-BR');
+            document.getElementById('sucessoExemplar').textContent = exemplarDisponivel.codigo;
         } else {
             showError(result.error);
         }

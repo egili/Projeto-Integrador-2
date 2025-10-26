@@ -8,7 +8,6 @@ exports.realizarEmprestimo = async (req, res) => {
     try {
         const { raAluno, idLivro } = req.body;
 
-        // Verificar se aluno existe
         const aluno = await Aluno.buscarPorRa(raAluno);
         if (!aluno) {
             return res.status(404).json({
@@ -17,7 +16,6 @@ exports.realizarEmprestimo = async (req, res) => {
             });
         }
 
-        // Verificar se livro existe
         const livro = await Livro.buscarPorId(idLivro);
         if (!livro) {
             return res.status(404).json({
@@ -26,7 +24,6 @@ exports.realizarEmprestimo = async (req, res) => {
             });
         }
 
-        // Verificar se livro está disponível
         const livroDisponivel = await Emprestimo.verificarLivroDisponivel(idLivro);
         if (!livroDisponivel) {
             return res.status(400).json({
@@ -35,18 +32,12 @@ exports.realizarEmprestimo = async (req, res) => {
             });
         }
 
-        // Calcular datas
         const dataEmprestimo = new Date().toISOString().split('T')[0];
-        const dataDevolucaoPrevista = new Date();
-        dataDevolucaoPrevista.setDate(dataDevolucaoPrevista.getDate() + 7);
-        const dataDevolucaoPrevistaStr = dataDevolucaoPrevista.toISOString().split('T')[0];
 
-        // Registrar empréstimo
         const result = await Emprestimo.criar({
             idAluno: aluno.id,
             idLivro,
-            dataEmprestimo,
-            dataDevolucaoPrevista: dataDevolucaoPrevistaStr
+            dataEmprestimo
         });
 
         res.status(201).json({
@@ -56,8 +47,7 @@ exports.realizarEmprestimo = async (req, res) => {
                 id: result.insertId,
                 aluno: aluno.nome,
                 livro: livro.titulo,
-                dataEmprestimo,
-                dataDevolucaoPrevista: dataDevolucaoPrevistaStr
+                dataEmprestimo
             }
         });
 
@@ -74,7 +64,6 @@ exports.registrarDevolucao = async (req, res) => {
     try {
         const { idEmprestimo } = req.body;
 
-        // Verificar se empréstimo existe
         const emprestimo = await Emprestimo.buscarPorId(idEmprestimo);
         if (!emprestimo) {
             return res.status(404).json({
@@ -83,7 +72,6 @@ exports.registrarDevolucao = async (req, res) => {
             });
         }
 
-        // Verificar se já foi devolvido
         if (emprestimo.dataDevolucaoReal) {
             return res.status(400).json({
                 success: false,
@@ -91,11 +79,9 @@ exports.registrarDevolucao = async (req, res) => {
             });
         }
 
-        // Registrar devolução
         const dataDevolucaoReal = new Date().toISOString().split('T')[0];
         await Emprestimo.registrarDevolucao(idEmprestimo, dataDevolucaoReal);
 
-        // Atualizar classificação do aluno
         const semestreAtivo = await Semestre.buscarAtivo();
         if (semestreAtivo) {
             const classificacao = await Classificacao.calcularClassificacao(
@@ -134,7 +120,6 @@ exports.listarEmprestimosAtivosPorAluno = async (req, res) => {
     try {
         const { ra } = req.params;
 
-        // Verificar se aluno existe
         const aluno = await Aluno.buscarPorRa(ra);
         if (!aluno) {
             return res.status(404).json({

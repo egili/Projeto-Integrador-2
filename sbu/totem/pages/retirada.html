@@ -10,7 +10,7 @@
     <body class="totem-screen">
         <div class="container">
             <header class="totem-header">
-                <button class="btn-voltar" onclick="navigateTo('../../index.html')">← Voltar</button>
+                <button class="btn-voltar" onclick="navigateTo('../index.html')">← Voltar</button>
                 <h1>Retirada de Livro</h1>
             </header>
             
@@ -80,12 +80,13 @@
                         <h2>Empréstimo Realizado com Sucesso!</h2>
                         <div class="success-details">
                             <p>O livro <strong id="sucessoLivro"></strong> foi emprestado para <strong id="sucessoAluno"></strong>.</p>
+                            <p>Código do Exemplar: <strong id="sucessoExemplar"></strong></p>
                             <p>Data: <strong id="sucessoData"></strong></p>
                         </div>
                     </div>
                     
                     <div class="action-buttons">
-                        <button onclick="navigateTo('../../index.html')" class="btn-primary">Voltar ao Início</button>
+                        <button onclick="navigateTo('../index.html')" class="btn-primary">Voltar ao Início</button>
                         <button onclick="voltarParaPesquisa()" class="btn-secondary">Nova Retirada</button>
                     </div>
                 </div>
@@ -96,7 +97,7 @@
             </footer>
         </div>
 
-        <script src="../js/index.js"></script>
+        <script src="../js/api.js"></script>
         <script src="../js/retirada.js"></script>
     </body>
 </html>

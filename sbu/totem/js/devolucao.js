@@ -10,14 +10,12 @@ async function buscarEmprestimos() {
     }
 
     try {
-        // Buscar aluno
         const alunoResult = await BibliotecaAPI.buscarAlunoPorRA(ra);
         
         if (alunoResult.success) {
             alunoEncontrado = alunoResult.data;
             
-            // Buscar empréstimos ativos
-            const emprestimosResult = await BibliotecaAPI.listarEmprestimosAtivos(alunoResult.data.id);
+            const emprestimosResult = await BibliotecaAPI.listarEmprestimosAtivos(ra);
             
             if (emprestimosResult.success) {
                 emprestimosAtivos = emprestimosResult.data;
@@ -49,8 +47,13 @@ function exibirEmprestimosAtivos() {
     `;
 
     if (emprestimosAtivos.length === 0) {
-        listaContainer.innerHTML = '';
-        semEmprestimos.style.display = 'block';
+        // Mostrar mensagem no step1 mesmo
+        container.innerHTML += `
+            <div class="no-results" style="margin-top: 20px;">
+                <p><strong>Este aluno não possui empréstimos ativos no momento.</strong></p>
+                <p>Não há livros para devolver.</p>
+            </div>
+        `;
         return;
     }
 
@@ -62,13 +65,18 @@ function exibirEmprestimosAtivos() {
             <p><strong>Autor:</strong> ${emp.autor}</p>
             <p><strong>Exemplar:</strong> ${emp.codigo_exemplar}</p>
             <p><strong>Data do empréstimo:</strong> ${formatDate(emp.dataEmprestimo)}</p>
-            <p><strong>Devolução prevista:</strong> ${formatDate(emp.dataDevolucaoPrevista)}</p>
         </div>
     `).join('');
 
     // Avançar para próxima etapa
     document.getElementById('step1').classList.remove('active');
     document.getElementById('step2').classList.add('active');
+    
+    // Mostrar info do aluno no step2
+    document.getElementById('alunoSelecionadoInfo').innerHTML = `
+        <p><strong>Aluno:</strong> ${alunoEncontrado.nome}</p>
+        <p><strong>RA:</strong> ${alunoEncontrado.ra}</p>
+    `;
 }
 
 function selecionarEmprestimo(emprestimo) {

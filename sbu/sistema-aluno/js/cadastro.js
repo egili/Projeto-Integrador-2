@@ -38,31 +38,33 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const result = await BibliotecaAPI.cadastrarAluno(alunoData);
                 
-                if (result.success) {
-                    // Mostrar tela de sucesso
-                    document.getElementById('step1-form').classList.remove('active');
-                    document.getElementById('step2-success').classList.add('active');
-                    
-                    // Preencher dados de sucesso
-                    document.getElementById('success-nome').textContent = nome;
-                    document.getElementById('success-ra').textContent = ra;
-                    
-                    // Configurar botões de sucesso
-                    document.getElementById('home-btn').addEventListener('click', function() {
-                        window.location.href = '../index.html';
-                    });
-                    
-                    document.getElementById('new-cadastro-btn').addEventListener('click', function() {
-                        document.getElementById('step2-success').classList.remove('active');
-                        document.getElementById('step1-form').classList.add('active');
-                        registrationForm.reset();
-                    });
-                    
-                } else {
-                    showError(result.error);
-                }
+                // Se chegou aqui sem exceção, o cadastro foi bem-sucedido
+                // Mostrar tela de sucesso
+                document.getElementById('step1-form').classList.remove('active');
+                document.getElementById('step2-success').classList.add('active');
+                
+                // Preencher dados de sucesso
+                document.getElementById('success-nome').textContent = nome;
+                document.getElementById('success-ra').textContent = ra;
+                
+                // Configurar botões de sucesso
+                document.getElementById('home-btn').addEventListener('click', function() {
+                    window.location.href = '../index.html';
+                });
+                
+                document.getElementById('new-cadastro-btn').addEventListener('click', function() {
+                    document.getElementById('step2-success').classList.remove('active');
+                    document.getElementById('step1-form').classList.add('active');
+                    registrationForm.reset();
+                });
+                
             } catch (error) {
-                showError('Erro ao cadastrar: ' + error.message);
+                // Trata erros específicos
+                if (error.message.includes('já cadastrado')) {
+                    showError('Este RA já está cadastrado no sistema.');
+                } else {
+                    showError('Erro ao cadastrar: ' + error.message);
+                }
             } finally {
                 if (registerBtn) {
                     registerBtn.disabled = false;
@@ -81,8 +83,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// Função para navegar entre páginas
-function navigateTo(url) {
-    window.location.href = url;
-}

@@ -19,15 +19,44 @@ class Classificacao {
     }
 
     static async listarPorSemestre(idSemestre) {
+        // Busca todos os alunos e calcula classificação dinamicamente
         const [rows] = await connection.execute(
-            `SELECT c.*, a.nome as aluno_nome, a.ra 
-                FROM classificacao c 
-                JOIN aluno a ON c.idAluno = a.id 
-                WHERE c.idSemestre = ? 
-                ORDER BY c.codigo`,
-            [idSemestre]
+            `SELECT 
+                a.id,
+                a.nome,
+                a.ra,
+                COUNT(CASE WHEN e.dataDevolucaoReal IS NOT NULL THEN 1 END) as livros_lidos
+            FROM aluno a
+            LEFT JOIN emprestimo e ON a.id = e.idAluno 
+                AND e.dataEmprestimo BETWEEN 
+                    (SELECT dataInicio FROM semestre WHERE id = ?) 
+                    AND (SELECT dataFim FROM semestre WHERE id = ?)
+            GROUP BY a.id, a.nome, a.ra
+            ORDER BY livros_lidos DESC, a.nome`,
+            [idSemestre, idSemestre]
         );
-        return rows;
+        
+        // Adiciona classificação para cada aluno
+        return rows.map(aluno => {
+            const livrosLidos = aluno.livros_lidos || 0;
+            let classificacao;
+            
+            if (livrosLidos <= 5) {
+                classificacao = 'Leitor Iniciante';
+            } else if (livrosLidos <= 10) {
+                classificacao = 'Leitor Regular';
+            } else if (livrosLidos <= 20) {
+                classificacao = 'Leitor Ativo';
+            } else {
+                classificacao = 'Leitor Extremo';
+            }
+            
+            return {
+                ...aluno,
+                classificacao,
+                livros_lidos: livrosLidos
+            };
+        });
     }
 
     static async atualizarClassificacaoAluno(idAluno, idSemestre, codigo, descricao) {

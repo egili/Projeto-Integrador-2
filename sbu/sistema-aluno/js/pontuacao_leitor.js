@@ -30,25 +30,64 @@ async function buscarPontuacao() {
         // Primeiro busca o aluno por RA
         const alunoResult = await BibliotecaAPI.buscarAlunoPorRA(ra);
         
-        if (alunoResult.success) {
-            // Agora busca a classificação
-            const classificacaoResult = await BibliotecaAPI.obterClassificacaoAluno(alunoResult.data.id);
-            
-            if (classificacaoResult.success) {
-                exibirPontuacao(classificacaoResult.data);
-            } else {
-                showError('Erro ao buscar classificação do aluno');
-            }
-        } else {
+        // Verifica se retornou dados
+        if (!alunoResult || !alunoResult.data) {
             showError('Aluno não encontrado. Verifique o RA digitado.');
+            return;
         }
+        
+        // Garante que temos o RA do aluno
+        const raAluno = alunoResult.data.ra;
+        if (!raAluno) {
+            console.error('Dados do aluno:', alunoResult.data);
+            showError('Erro: RA do aluno não encontrado nos dados retornados.');
+            return;
+        }
+        
+        console.log('Buscando classificação para o aluno RA:', raAluno);
+        
+        // Agora busca a classificação (a API espera RA, não ID)
+        const classificacaoResult = await BibliotecaAPI.obterClassificacaoAluno(raAluno);
+        
+        // Verifica se retornou dados
+        if (!classificacaoResult || !classificacaoResult.data) {
+            showError('Erro ao buscar classificação do aluno');
+            return;
+        }
+        
+        exibirPontuacao(classificacaoResult.data);
+        
     } catch (error) {
-        showError('Erro ao buscar pontuação: ' + error.message);
+        // Trata erros HTTP e de conexão
+        if (error.message.includes('não encontrado') || error.message.includes('404')) {
+            showError('Aluno não encontrado. Verifique o RA digitado.');
+        } else {
+            showError('Erro ao buscar pontuação: ' + error.message);
+        }
     }
 }
 
 function exibirPontuacao(dados) {
     const container = document.getElementById('resultadoPontuacao');
+    
+    console.log('Dados recebidos para exibição:', dados);
+    
+    // A API retorna: { aluno: {...}, estatisticas: {...} }
+    const aluno = dados.aluno || dados;
+    const stats = dados.estatisticas || dados;
+    
+    // Calcular livros lidos (livros devolvidos)
+    const livrosLidos = stats.livros_devolvidos || 0;
+    
+    // Determinar classificação baseada em livros lidos
+    let classificacao = 'Leitor Iniciante';
+    if (livrosLidos > 20) {
+        classificacao = 'Leitor Extremo';
+    } else if (livrosLidos > 10) {
+        classificacao = 'Leitor Ativo';
+    } else if (livrosLidos > 5) {
+        classificacao = 'Leitor Regular';
+    }
     
     const nivelCores = {
         'Leitor Iniciante': 'beginner',
@@ -57,26 +96,23 @@ function exibirPontuacao(dados) {
         'Leitor Extremo': 'extreme'
     };
     
-    const corClasse = nivelCores[dados.classificacao] || 'beginner';
+    const corClasse = nivelCores[classificacao] || 'beginner';
     
     container.innerHTML = `
         <div class="pontuacao-card ${corClasse}">
             <div class="pontuacao-header">
-                <h3>${dados.nome}</h3>
-                <span class="ra">RA: ${dados.ra}</span>
+                <h3>${aluno.nome}</h3>
+                <span class="ra">RA: ${aluno.ra}</span>
             </div>
             <div class="pontuacao-info">
                 <div class="nivel-leitor">
                     <strong>Classificação:</strong>
-                    <span class="nivel ${corClasse}">${dados.classificacao}</span>
+                    <span class="nivel ${corClasse}">${classificacao}</span>
                 </div>
                 <div class="livros-lidos">
-                    <strong>Livros lidos no semestre:</strong>
-                    <span class="quantidade">${dados.livros_lidos}</span>
+                    <strong>Livros lidos:</strong>
+                    <span class="quantidade">${livrosLidos}</span>
                 </div>
-            </div>
-            <div class="pontuacao-dica">
-                <p>💡 <strong>Dica:</strong> Continue lendo para melhorar sua classificação!</p>
             </div>
         </div>
     `;

@@ -1,7 +1,6 @@
 const API_BASE_URL = 'http://localhost:3000/api';
 
 class BibliotecaAPI {
-    // Livros
     static async cadastrarLivro(livroData) {
         const response = await fetch(`${API_BASE_URL}/livros`, {
             method: 'POST',
@@ -17,11 +16,10 @@ class BibliotecaAPI {
     }
 
     static async buscarLivros(termo) {
-        const response = await fetch(`${API_BASE_URL}/livros/busca/${termo}`);
+        const response = await fetch(`${API_BASE_URL}/livros/busca?titulo=${encodeURIComponent(termo)}`);
         return await response.json();
     }
 
-    // Exemplares
     static async cadastrarExemplar(exemplarData) {
         const response = await fetch(`${API_BASE_URL}/exemplares`, {
             method: 'POST',
@@ -36,7 +34,6 @@ class BibliotecaAPI {
         return await response.json();
     }
 
-    // Empréstimos
     static async listarEmprestimosPendentes() {
         const response = await fetch(`${API_BASE_URL}/emprestimos/pendentes`);
         return await response.json();
@@ -56,30 +53,32 @@ class BibliotecaAPI {
         return await response.json();
     }
 
-    static async registrarDevolucao(idEmprestimo, dataDevolucaoReal) {
+    static async registrarDevolucao(idEmprestimo) {
         const response = await fetch(`${API_BASE_URL}/emprestimos/${idEmprestimo}/devolver`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ dataDevolucaoReal })
+            headers: { 'Content-Type': 'application/json' }
         });
         return await response.json();
     }
 
-    // Classificação
     static async obterClassificacaoGeral() {
         const response = await fetch(`${API_BASE_URL}/classificacao/geral`);
         return await response.json();
     }
 }
 
-function showError(message) { 
-    alert(`Erro: ${message}`); 
+function showError(message) {
+    alert(`Erro: ${message}`);
 }
 
 function showSuccess(message) {
-    alert(`Sucesso: ${message}`); 
+    alert(`Sucesso: ${message}`);
 }
 
 function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('pt-BR');
+}
+
+function navigateTo(url) {
+    window.location.href = url;
 }

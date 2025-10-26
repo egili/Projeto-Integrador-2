@@ -1,0 +1,230 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --azul-principal: #2874A6;
+    --azul-botao: #3498DB;
+    --verde-sucesso: #27AE60;
+    --cinza-secundario: #95A5A6;
+    --branco: #ffffff;
+    --fundo-claro: #f0f0f0;
+    --texto: #333333;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.6;
+    color: var(--texto);
+    background-color: var(--fundo-claro);
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: var(--branco);
+}
+
+.totem-screen {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.totem-header {
+    background-color: var(--azul-principal);
+    color: var(--branco);
+    padding: 30px 20px;
+    text-align: center;
+}
+
+.totem-header h1 {
+    font-size: 32px;
+    font-weight: normal;
+    margin: 0;
+}
+
+.btn-voltar {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: var(--branco);
+    border: 2px solid var(--branco);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-voltar:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+}
+
+.totem-main {
+    flex: 1;
+    padding: 40px 60px;
+    background-color: var(--branco);
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+.form-input,
+.input-field,
+.search-input {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #cccccc;
+    border-radius: 8px;
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.form-input:focus,
+.input-field:focus,
+.search-input:focus {
+    outline: none;
+    border-color: var(--azul-botao);
+}
+
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-success {
+    padding: 15px 40px;
+    border: none;
+    border-radius: 30px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--azul-botao);
+    color: var(--branco);
+}
+
+.btn-primary:hover {
+    background-color: #2E86C1;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background-color: var(--cinza-secundario);
+    color: var(--branco);
+}
+
+.btn-secondary:hover {
+    background-color: #7F8C8D;
+    transform: translateY(-2px);
+}
+
+.btn-success {
+    background-color: var(--verde-sucesso);
+    color: var(--branco);
+}
+
+.btn-success:hover {
+    background-color: #229954;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background-color: #E74C3C;
+    color: var(--branco);
+}
+
+.btn-danger:hover {
+    background-color: #C0392B;
+    transform: translateY(-2px);
+}
+
+.card {
+    background-color: #f8f9fa;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--azul-botao);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.success-message {
+    text-align: center;
+    padding: 40px;
+}
+
+.success-icon {
+    font-size: 80px;
+    margin-bottom: 20px;
+}
+
+.error-message {
+    background-color: #FADBD8;
+    border: 2px solid #E74C3C;
+    color: #C0392B;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.aluno-info {
+    background-color: #D6EAF8;
+    border: 2px solid var(--azul-botao);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+footer,
+.totem-footer {
+    background-color: var(--azul-principal);
+    color: var(--branco);
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+}
+
+.totem-footer p {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .totem-header h1 {
+        font-size: 24px;
+    }
+    
+    .totem-main {
+        padding: 25px 20px;
+    }
+    
+    .btn-primary,
+    .btn-secondary,
+    .btn-danger,
+    .btn-success {
+        padding: 12px 30px;
+        font-size: 16px;
+    }
+}

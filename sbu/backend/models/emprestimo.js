@@ -2,10 +2,10 @@ const { connection } = require('../database/connection');
 
 class Emprestimo {
     static async criar(emprestimo) {
-        const { idAluno, idLivro, dataEmprestimo, dataDevolucaoPrevista } = emprestimo;
+        const { idAluno, idLivro, dataEmprestimo } = emprestimo;
         const [result] = await connection.execute(
-            'INSERT INTO emprestimo (idAluno, idLivro, dataEmprestimo, dataDevolucaoPrevista) VALUES (?, ?, ?, ?)',
-            [idAluno, idLivro, dataEmprestimo, dataDevolucaoPrevista]
+            'INSERT INTO emprestimo (idAluno, idLivro, dataEmprestimo) VALUES (?, ?, ?)',
+            [idAluno, idLivro, dataEmprestimo]
         );
         return result;
     }

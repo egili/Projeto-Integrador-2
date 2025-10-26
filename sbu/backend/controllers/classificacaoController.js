@@ -6,7 +6,6 @@ exports.obterClassificacaoPorAluno = async (req, res) => {
     try {
         const { ra } = req.params;
 
-        // Verificar se aluno existe
         const aluno = await Aluno.buscarPorRa(ra);
         if (!aluno) {
             return res.status(404).json({
@@ -15,7 +14,6 @@ exports.obterClassificacaoPorAluno = async (req, res) => {
             });
         }
 
-        // Buscar semestre ativo
         const semestreAtivo = await Semestre.buscarAtivo();
         if (!semestreAtivo) {
             return res.status(404).json({
@@ -24,11 +22,9 @@ exports.obterClassificacaoPorAluno = async (req, res) => {
             });
         }
 
-        // Buscar classificação existente ou calcular nova
         let classificacao = await Classificacao.buscarPorAlunoESemestre(aluno.id, semestreAtivo.id);
         
         if (!classificacao) {
-            // Calcular classificação se não existir
             const novaClassificacao = await Classificacao.calcularClassificacao(aluno.id, semestreAtivo.id);
             classificacao = {
                 codigo: novaClassificacao.codigo,
@@ -60,12 +56,24 @@ exports.obterClassificacaoPorAluno = async (req, res) => {
 
 exports.listarClassificacaoGeral = async (req, res) => {
     try {
-        // Buscar semestre ativo
-        const semestreAtivo = await Semestre.buscarAtivo();
+        let semestreAtivo = await Semestre.buscarAtivo();
+        
+        // Se não houver semestre ativo, retorna todos os alunos com classificação padrão
         if (!semestreAtivo) {
-            return res.status(404).json({
-                success: false,
-                error: 'Nenhum semestre ativo encontrado'
+            const { connection } = require('../database/connection');
+            const [alunos] = await connection.execute('SELECT id, nome, ra FROM aluno ORDER BY nome');
+            
+            const classificacoes = alunos.map(aluno => ({
+                ...aluno,
+                livros_lidos: 0,
+                classificacao: 'Leitor Iniciante'
+            }));
+            
+            return res.json({
+                success: true,
+                data: classificacoes,
+                semestre: 'Nenhum semestre ativo',
+                total: classificacoes.length
             });
         }
 
