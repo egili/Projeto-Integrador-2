@@ -12,4 +12,3 @@ router.get('/', alunoController.listarAlunos);
 router.get('/ra/:ra', alunoController.buscarAlunoPorRa);
 
 module.exports = router;
-

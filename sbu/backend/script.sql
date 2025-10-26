@@ -62,7 +62,7 @@ INSERT INTO aluno (nome, ra) VALUES
 ('Eduardo Fagundes Silva', '25008024'),
 ('Lucas Athanasio Bueno de Andrade', '25002731'),
 ('Pietra Façanha Bortolatto', '25002436'),
-('Eliseu Gili', '25009281');
+('Eliseu Gili', '250099281');
 
 INSERT INTO livro (titulo, isbn, autor, editora, anoPublicacao, categoria) VALUES 
 ('Introdução à Programação', '978-85-12345-01-1', 'João Silva', 'Tecnologia Press', 2023, 'Programação'),
@@ -88,7 +88,7 @@ INSERT INTO exemplar (idLivro, codigo, status) VALUES
 (5, 'EX-005-02', 'disponivel'),
 (5, 'EX-005-03', 'manutencao');
 
-select * from livro;
-select * from exemplar;
-select * from emprestimo;
-select * from aluno;
+select * from biblioteca.livro;
+select * from biblioteca.exemplar;
+select * from biblioteca.emprestimo;
+select * from biblioteca.aluno;

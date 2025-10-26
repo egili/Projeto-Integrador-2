@@ -2,20 +2,19 @@ const express = require('express');
 const router = express.Router();
 const livroController = require('../controllers/livroController');
 
-// Cadastrar livro (bibliotecário)
+// Cadastrar livro
 router.post('/', livroController.cadastrarLivro);
 
-// Listar todos os livros (bibliotecário)
-router.get('/', livroController.listarTodosLivros);
+// Buscar livros (com filtros opcionais)
+router.get('/busca', livroController.buscarLivros);
 
-// Listar livros disponíveis (aluno)
+// Listar livros disponíveis (com exemplares)
 router.get('/disponiveis', livroController.listarLivrosDisponiveis);
 
-// Buscar livros por título ou autor
-router.get('/busca', livroController.buscarLivros);
+// Listar todos os livros
+router.get('/', livroController.listarTodosLivros);
 
 // Buscar livro por ID
 router.get('/:id', livroController.buscarLivroPorId);
 
 module.exports = router;
-
