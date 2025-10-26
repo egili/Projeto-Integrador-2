@@ -1,24 +1,5 @@
 # Sistema de Gestão de Biblioteca Universitária (SBU)
 
-Sistema completo para gerenciamento de biblioteca universitária, desenvolvido como Projeto Integrador II.
-
-## ✅ Status do Projeto
-
-**Versão:** 3.2 (Final)  
-**Branch:** nova-versao  
-**Status:** ✅ **SISTEMA 100% FUNCIONAL - VALIDADO**
-
-### Validação Final (25/10/2025)
-✅ Banco de dados com estrutura correta (coluna `idExemplar` validada)  
-✅ Todos os arquivos CSS criados e funcionando  
-✅ Variáveis CSS globais definidas  
-✅ Todos os endpoints da API funcionando  
-✅ Todos os sistemas frontend operacionais  
-✅ Interface responsiva e otimizada  
-
-📄 **Validação Completa:** [VALIDACAO-COMPLETA.md](./VALIDACAO-COMPLETA.md)  
-📄 **Status Detalhado:** [STATUS-FINAL-VALIDACAO.md](./STATUS-FINAL-VALIDACAO.md)
-
 ---
 
 ## 📋 Sobre o Projeto
@@ -281,13 +262,3 @@ Este projeto está sob a licença MIT.
    - Uso de `idExemplar` ao invés de `idLivro` nos empréstimos
    - Implementação de busca por RA do aluno
    - Adição de endpoint de busca de exemplar por código
-
-## 🔄 Próximas Melhorias
-
-- [ ] Implementar autenticação de usuários
-- [ ] Adicionar sistema de multas por atraso
-- [ ] Implementar notificações por email
-- [ ] Adicionar relatórios avançados
-- [ ] Implementar sistema de reservas
-- [ ] Adicionar interface de administração
-
