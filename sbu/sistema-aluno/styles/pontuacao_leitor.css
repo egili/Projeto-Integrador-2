@@ -1,6 +1,6 @@
 /* Estilos específicos para a página de pontuação do leitor */
 .general-screen {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #ffffff;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
 }
 
 .general-header {
-    background: #2c3e50;
+    background: #2874A6;
     color: white;
     padding: 20px;
     text-align: center;
@@ -53,10 +53,10 @@
 }
 
 .general-footer {
-    background: #ecf0f1;
+    background: #2874A6;
     padding: 20px;
     text-align: center;
-    color: #7f8c8d;
+    color: #ffffff;
     border-top: 1px solid #bdc3c7;
 }
 
@@ -70,7 +70,7 @@
 }
 
 .pontuacao-section h2 {
-    color: #2c3e50;
+    color: #2874A6;
     margin-bottom: 1.5rem;
     font-size: 2rem;
     text-align: center;
@@ -97,7 +97,7 @@
 }
 
 .btn-primary {
-    background: #3498db;
+    background: #2874A6;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -127,7 +127,7 @@
 }
 
 .pontuacao-card.beginner {
-    border-left-color: #3498db;
+    border-left-color: #2874A6;
     background: linear-gradient(135deg, #ffffff 0%, #ebf5fb 100%);
 }
 
@@ -157,7 +157,7 @@
 
 .pontuacao-header h3 {
     margin: 0;
-    color: #2c3e50;
+    color: #2874A6;
     font-size: 1.4rem;
 }
 

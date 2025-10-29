@@ -4,7 +4,7 @@
 /* =======================================================*/
 
 .general-screen {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #ffffff;
   min-height: 100vh;
   display: flex;
   align-items: center;
@@ -22,7 +22,7 @@
 }
 
 .general-header {
-  background: #2c3e50;
+  background: #2874A6;
   color: white;
   padding: 20px;
   text-align: center;
@@ -57,10 +57,10 @@
 }
 
 .general-footer {
-  background: #ecf0f1;
+  background: #2874A6;
   padding: 20px;
   text-align: center;
-  color: #7f8c8d;
+  color: #ffffff;
   border-top: 1px solid #bdc3c7;
 }
 
@@ -104,7 +104,7 @@
 }
 
 .btn-primary {
-  background: #3498db;
+  background: #2874A6;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -173,8 +173,8 @@
 }
 
 .seta {
-  background-color: #3498db;
-  color: white;
+  background-color: #ffffff;
+  color: #2874A6;
   border: none;
   font-size: 24px;
   padding: 10px 15px;
