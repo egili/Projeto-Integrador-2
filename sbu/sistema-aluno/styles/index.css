@@ -1,83 +1,242 @@
-/* =============================================== */
-/* ARQUIVO DA HOME (index.css)                     */
-/* Estilos que se aplicam APENAS à index.html.     */
-/* =============================================== */
-
-/* Grid que organiza os cartões de opção */
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2.5rem;
-  margin-top: 2rem;
+/* Estilos específicos para a página inicial do sistema do aluno */
+.general-screen {
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Estilo dos cartões de opção da página inicial */
-.option-card {
-  background: linear-gradient(
-    135deg,
-    var(--pure-white) 0%,
-    var(--light-gray) 100%
-  );
-  padding: 2.5rem;
-  border-radius: 15px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 2px solid transparent;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 900px;
+    margin: 20px;
+    overflow: hidden;
 }
 
-.option-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(
-    90deg,
-    var(--accent-gold) 0%,
-    var(--secondary-blue) 100%
-  );
+.general-header {
+    background: #2874A6;
+    color: white;
+    padding: 30px 20px;
+    text-align: center;
 }
 
-.option-card:hover {
-  transform: translateY(-8px);
-  border-color: var(--accent-gold);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+.general-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 2.5rem;
+    font-weight: 700;
 }
 
-/* Conteúdo dos cartões */
-.option-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  display: block;
+.subtitle {
+    margin: 0;
+    font-size: 1.1rem;
+    opacity: 0.9;
 }
 
-.option-card h3 {
-  color: var(--primary-blue);
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: 600;
+.general-main {
+    padding: 40px 30px;
 }
 
-.option-card p {
-  color: var(--text-dark);
-  line-height: 1.5;
-  font-size: 1.1rem;
-  margin: 0;
+.welcome-section {
+    text-align: center;
+    margin-bottom: 40px;
 }
 
-/* Regra de responsividade específica da home */
+.welcome-section h2 {
+    color: #2874A6;
+    margin-bottom: 10px;
+    font-size: 1.8rem;
+}
+
+.welcome-section p {
+    color: #7f8c8d;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin-bottom: 50px;
+}
+
+.action-card {
+    background: #2E86C1;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 30px 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    animation: slideUp 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    border-color: #2E86C1;
+    box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15);
+}
+
+.action-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.action-card h3 {
+    color: #ffffff;
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+}
+
+.action-card p {
+    color: #ffffff;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.action-badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #e74c3c;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.info-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 30px;
+    border-left: 4px solid #3498db;
+}
+
+.info-section h3 {
+    color: #2c3e50;
+    margin: 0 0 25px 0;
+    text-align: center;
+    font-size: 1.4rem;
+}
+
+.info-steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.info-step {
+    text-align: center;
+    padding: 15px;
+}
+
+.step-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #3498db;
+    color: white;
+    border-radius: 50%;
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+}
+
+.info-step p {
+    color: #5a6c7d;
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.general-footer {
+    background: #2874A6;
+    padding: 20px;
+    text-align: center;
+    color: #ffffff;
+    border-top: 1px solid #2874A6;
+}
+
+.general-footer p {
+    margin: 5px 0;
+}
+
+/* Animações */
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Responsividade */
 @media (max-width: 768px) {
-  .options-grid {
-    grid-template-columns: 1fr;
-  }
+    .container {
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .general-main {
+        padding: 30px 20px;
+    }
+    
+    .general-header h1 {
+        font-size: 2rem;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .action-card {
+        padding: 25px 20px;
+    }
+    
+    .info-steps {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .info-section {
+        padding: 25px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .general-header {
+        padding: 20px 15px;
+    }
+    
+    .general-header h1 {
+        font-size: 1.8rem;
+    }
+    
+    .general-main {
+        padding: 20px 15px;
+    }
+    
+    .welcome-section h2 {
+        font-size: 1.5rem;
+    }
 }

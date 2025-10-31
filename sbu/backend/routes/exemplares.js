@@ -1,0 +1,107 @@
+const express = require('express');
+const router = express.Router();
+const { connection } = require('../database/connection');
+
+// Buscar exemplar por código
+router.get('/codigo/:codigo', async (req, res) => {
+    try {
+        const { codigo } = req.params;
+
+        const [exemplares] = await connection.execute(`
+            SELECT 
+                e.*,
+                l.titulo,
+                l.autor,
+                l.editora
+            FROM exemplar e
+            INNER JOIN livro l ON e.idLivro = l.id
+            WHERE e.codigo = ?
+        `, [codigo]);
+
+        if (exemplares.length === 0) {
+            return res.status(404).json({
+                success: false,
+                error: 'Exemplar não encontrado'
+            });
+        }
+
+        res.json({
+            success: true,
+            data: exemplares[0]
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar exemplar:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor'
+        });
+    }
+});
+
+// Listar exemplares de um livro
+router.get('/livro/:idLivro', async (req, res) => {
+    try {
+        const { idLivro } = req.params;
+
+        const [exemplares] = await connection.execute(
+            'SELECT * FROM exemplar WHERE idLivro = ?',
+            [idLivro]
+        );
+
+        res.json({
+            success: true,
+            data: exemplares
+        });
+
+    } catch (error) {
+        console.error('Erro ao listar exemplares:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor'
+        });
+    }
+});
+
+// Cadastrar exemplar
+router.post('/', async (req, res) => {
+    try {
+        const { idLivro, codigo, observacoes } = req.body;
+        
+        if (!idLivro || !codigo) {
+            return res.status(400).json({ 
+                success: false,
+                error: 'ID do livro e código são obrigatórios' 
+            });
+        }
+
+        const [result] = await connection.execute(
+            'INSERT INTO exemplar (idLivro, codigo, status, observacoes) VALUES (?, ?, "disponivel", ?)',
+            [idLivro, codigo, observacoes || null]
+        );
+
+        res.status(201).json({ 
+            success: true,
+            message: 'Exemplar cadastrado com sucesso',
+            id: result.insertId
+        });
+
+    } catch (error) {
+        console.error('Erro ao cadastrar exemplar:', error);
+        
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ 
+                success: false,
+                error: 'Código do exemplar já cadastrado' 
+            });
+        }
+        
+        res.status(500).json({ 
+            success: false,
+            error: 'Erro interno do servidor ao cadastrar exemplar' 
+        });
+    }
+});
+
+module.exports = router;
+

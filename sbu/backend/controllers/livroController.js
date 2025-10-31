@@ -2,43 +2,59 @@ const Livro = require('../models/livro');
 
 exports.cadastrarLivro = async (req, res) => {
     try {
-        const { titulo, isbn, autor, editora, anoPublicacao } = req.body;
+        const { titulo, isbn, autor, editora, anoPublicacao, categoria } = req.body;
 
-        if (!titulo || !autor || !editora || !anoPublicacao) {
+        if (!titulo || !autor) {
             return res.status(400).json({
                 success: false,
-                error: 'Título, autor, editora e ano de publicação são obrigatórios'
+                error: 'Título e autor são obrigatórios'
             });
         }
 
-        // Se ISBN foi fornecido, verifica se já existe
-        if (isbn) {
-            const livroExistente = await Livro.buscarPorIsbn(isbn);
-            if (livroExistente) {
-                return res.status(400).json({
-                    success: false,
-                    error: 'ISBN já cadastrado'
-                });
-            }
-        }
+        const result = await Livro.criar({
+            titulo,
+            isbn,
+            autor,
+            editora,
+            anoPublicacao,
+            categoria
+        });
 
-        const result = await Livro.criar({ titulo, isbn, autor, editora, anoPublicacao });
-        
         res.status(201).json({
             success: true,
             message: 'Livro cadastrado com sucesso',
-            data: { 
-                id: result.insertId, 
-                titulo, 
-                isbn, 
-                autor, 
-                editora, 
-                anoPublicacao 
-            }
+            data: { id: result.insertId, ...req.body }
         });
 
     } catch (error) {
         console.error('Erro ao cadastrar livro:', error);
+
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({
+                success: false,
+                error: 'ISBN já cadastrado'
+            });
+        }
+
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor'
+        });
+    }
+};
+
+exports.listarTodosLivros = async (req, res) => {
+    try {
+        const livros = await Livro.listarTodos();
+
+        res.json({
+            success: true,
+            data: livros,
+            total: livros.length
+        });
+
+    } catch (error) {
+        console.error('Erro ao listar todos os livros:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'
@@ -93,30 +109,11 @@ exports.buscarLivros = async (req, res) => {
     }
 };
 
-exports.listarTodosLivros = async (req, res) => {
-    try {
-        const livros = await Livro.listarTodos();
-
-        res.json({
-            success: true,
-            data: livros,
-            total: livros.length
-        });
-
-    } catch (error) {
-        console.error('Erro ao listar todos os livros:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Erro interno do servidor'
-        });
-    }
-};
-
 exports.buscarLivroPorId = async (req, res) => {
     try {
         const { id } = req.params;
-
         const livro = await Livro.buscarPorId(id);
+
         if (!livro) {
             return res.status(404).json({
                 success: false,

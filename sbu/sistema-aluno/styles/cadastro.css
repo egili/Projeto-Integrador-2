@@ -1,104 +1,277 @@
-/* =============================================== */
-/* ARQUIVO DO CADASTRO (cadastro.css)              */
-/* Estilos que se aplicam APENAS ao cadastro.html. */
-/* =============================================== */
+/* Estilos específicos para a página de cadastro */
+.general-screen {
+    background: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-/* Layout do formulário */
+.container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 500px;
+    margin: 20px;
+    overflow: hidden;
+}
+
+.general-header {
+    background: #2874A6;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.general-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.btn-voltar {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-voltar:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.general-main {
+    padding: 30px;
+}
+
+.step {
+    display: none;
+}
+
+.step.active {
+    display: block;
+}
+
+.welcome-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.welcome-section h2 {
+    color: #2874A6;
+    margin-bottom: 10px;
+}
+
+.welcome-section p {
+    color: #7f8c8d;
+    margin: 0;
+}
+
 .form-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 500px;
-  margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 .form-group {
-  display: flex;
-  flex-direction: column;
-  text-align: left;
+    display: flex;
+    flex-direction: column;
 }
 
 .form-group label {
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: var(--text-dark);
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
 }
 
 .form-input {
-  padding: 1rem;
-  border: 2px solid var(--border-light);
-  border-radius: 10px;
-  font-size: 1.1rem;
-  background: var(--pure-white);
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    padding: 12px 16px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .form-input:focus {
-  outline: none;
-  border-color: var(--secondary-blue);
-  box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.2);
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
-/* Mensagens de erro */
-.error-message {
-  color: #e74c3c;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
-  display: none; /* Oculta por padrão */
-  text-align: left;
+.form-input:invalid {
+    border-color: #e74c3c;
 }
 
-/* Estilo para o ícone de senha */
-.password-wrapper {
-  position: relative;
+.form-hint {
+    color: #7f8c8d;
+    font-size: 0.875rem;
+    margin-top: 5px;
 }
 
-.password-toggle-icon {
-  position: absolute;
-  top: 70%;
-  right: 15px;
-  transform: translateY(-50%);
-  cursor: pointer;
-  color: #7f8c8d;
+.btn-primary {
+    background: #2874A6;
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }
 
-/* Esconde/mostra as etapas do formulário */
-.step {
-  display: none;
-}
-.step.active {
-  display: block;
+.btn-primary:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
 }
 
-/* Estilo da mensagem de sucesso */
-.success-message {
-  text-align: center;
-}
-.success-icon {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-}
-
-/* Botão primário (herdado do style.css) e estado desabilitado */
 .btn-primary:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
-  box-shadow: none;
-  transform: none;
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
 }
 
-/* Animação do Spinner */
-.spinner {
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: var(--pure-white);
-  width: 20px;
-  height: 20px;
-  animation: spin 1s ease-in-out infinite;
-  display: inline-block;
+.btn-secondary {
+    background: #95a5a6;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.3s;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
 }
+
+.btn-secondary:hover {
+    background: #7f8c8d;
+}
+
+.login-redirect {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #e1e8ed;
+}
+
+.login-redirect a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.login-redirect a:hover {
+    text-decoration: underline;
+}
+
+.success-message {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+}
+
+.success-message h2 {
+    color: #27ae60;
+    margin-bottom: 15px;
+}
+
+.success-details {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.success-details p {
+    margin: 10px 0;
+    font-size: 1.1rem;
+}
+
+.success-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.success-actions .btn-primary,
+.success-actions .btn-secondary {
+    flex: 1;
+    max-width: 200px;
+}
+
+.general-footer {
+    background: #2874A6;
+    padding: 20px;
+    text-align: center;
+    color: #ffffff;
+    border-top: 1px solid #bdc3c7;
+}
+
+.general-footer p {
+    margin: 5px 0;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .general-main {
+        padding: 20px;
+    }
+    
+    .success-actions {
+        flex-direction: column;
+    }
+    
+    .success-actions .btn-primary,
+    .success-actions .btn-secondary {
+        max-width: none;
+    }
+}
+
+/* Animações */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.step.active {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Estados de loading */
+.spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s ease-in-out infinite;
+}
+
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+    to { transform: rotate(360deg); }
 }

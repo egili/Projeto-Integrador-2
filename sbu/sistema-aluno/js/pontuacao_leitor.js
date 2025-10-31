@@ -1,62 +1,119 @@
-// Simula um "banco de dados" temporário
-const mockLeitores = [
-  { nome: "Eliseu Pereira Gili", ra: "25009281", livrosLidos: 4 },
-  { nome: "Eduardo Fagundes da Silva", ra: "25008024", livrosLidos: 8 },
-  { nome: "Kaue Rodrigues Seixas", ra: "23011884", livrosLidos: 15 },
-  { nome: "Lucas Athanasio Bueno de Andrade", ra: "25002731", livrosLidos: 25 },
-  { nome: "Pietra Façanha Bortolatto", ra: "25002436", livrosLidos: 6 },
-];
-
-// Função que determina a pontuacao
-function obterPontuacao(qtdLivros) {
-  if (qtdLivros <= 5)
-    return { nivel: "Leitor Iniciante", classe: "tag-iniciante" };
-  if (qtdLivros <= 10)
-    return { nivel: "Leitor Regular", classe: "tag-regular" };
-  if (qtdLivros <= 20) return { nivel: "Leitor Ativo", classe: "tag-ativo" };
-  return { nivel: "Leitor Extremo", classe: "tag-extremo" };
-}
-
-// Busca e exibe o resultado
-function buscarLeitor() {
-  const termo = document
-    .getElementById("campoBuscaLeitor")
-    .value.trim()
-    .toLowerCase();
-  const resultadoDiv = document.getElementById("resultadoPontuacao");
-
-  if (!termo) {
-    resultadoDiv.innerHTML = "<p>Por favor, digite um nome ou RA.</p>";
-    return;
-  }
-
-  const leitor = mockLeitores.find(
-    (l) => l.nome.toLowerCase().includes(termo) || l.ra.includes(termo)
-  );
-
-  if (!leitor) {
-    resultadoDiv.innerHTML = "<p>Nenhum leitor encontrado.</p>";
-    return;
-  }
-
-  const pontuacao = obterPontuacao(leitor.livrosLidos);
-
-  resultadoDiv.innerHTML = `
-    <h3>${leitor.nome}</h3>
-    <p><strong>RA:</strong> ${leitor.ra}</p>
-    <p><strong>Livros lidos no semestre:</strong> ${leitor.livrosLidos}</p>
-    <span class="pontuacao-tag ${pontuacao.classe}">${pontuacao.nivel}</span>
-  `;
-}
-
-// Inicializa eventos
-document.addEventListener("DOMContentLoaded", () => {
-  const btnBuscar = document.getElementById("btnBuscarLeitor");
-  const campoBusca = document.getElementById("campoBuscaLeitor");
-
-  btnBuscar.addEventListener("click", buscarLeitor);
-
-  campoBusca.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") buscarLeitor();
-  });
+document.addEventListener('DOMContentLoaded', function() {
+    const btnBuscarLeitor = document.getElementById('btnBuscarLeitor');
+    const campoBuscaLeitor = document.getElementById('campoBuscaLeitor');
+    
+    if (btnBuscarLeitor) {
+        btnBuscarLeitor.addEventListener('click', buscarPontuacao);
+    }
+    
+    if (campoBuscaLeitor) {
+        campoBuscaLeitor.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                buscarPontuacao();
+            }
+        });
+        
+        // Focar no campo de busca quando a página carregar
+        campoBuscaLeitor.focus();
+    }
 });
+
+async function buscarPontuacao() {
+    const ra = document.getElementById('campoBuscaLeitor').value.trim();
+    
+    if (!ra) {
+        showError('Por favor, digite o RA do aluno');
+        return;
+    }
+
+    try {
+        // Primeiro busca o aluno por RA
+        const alunoResult = await BibliotecaAPI.buscarAlunoPorRA(ra);
+        
+        // Verifica se retornou dados
+        if (!alunoResult || !alunoResult.data) {
+            showError('Aluno não encontrado. Verifique o RA digitado.');
+            return;
+        }
+        
+        // Garante que temos o RA do aluno
+        const raAluno = alunoResult.data.ra;
+        if (!raAluno) {
+            console.error('Dados do aluno:', alunoResult.data);
+            showError('Erro: RA do aluno não encontrado nos dados retornados.');
+            return;
+        }
+        
+        console.log('Buscando classificação para o aluno RA:', raAluno);
+        
+        // Agora busca a classificação (a API espera RA, não ID)
+        const classificacaoResult = await BibliotecaAPI.obterClassificacaoAluno(raAluno);
+        
+        // Verifica se retornou dados
+        if (!classificacaoResult || !classificacaoResult.data) {
+            showError('Erro ao buscar classificação do aluno');
+            return;
+        }
+        
+        exibirPontuacao(classificacaoResult.data);
+        
+    } catch (error) {
+        // Trata erros HTTP e de conexão
+        if (error.message.includes('não encontrado') || error.message.includes('404')) {
+            showError('Aluno não encontrado. Verifique o RA digitado.');
+        } else {
+            showError('Erro ao buscar pontuação: ' + error.message);
+        }
+    }
+}
+
+function exibirPontuacao(dados) {
+    const container = document.getElementById('resultadoPontuacao');
+    
+    console.log('Dados recebidos para exibição:', dados);
+    
+    // A API retorna: { aluno: {...}, estatisticas: {...} }
+    const aluno = dados.aluno || dados;
+    const stats = dados.estatisticas || dados;
+    
+    // Calcular livros lidos (livros devolvidos)
+    const livrosLidos = stats.livros_devolvidos || 0;
+    
+    // Determinar classificação baseada em livros lidos
+    let classificacao = 'Leitor Iniciante';
+    if (livrosLidos > 20) {
+        classificacao = 'Leitor Extremo';
+    } else if (livrosLidos > 10) {
+        classificacao = 'Leitor Ativo';
+    } else if (livrosLidos > 5) {
+        classificacao = 'Leitor Regular';
+    }
+    
+    const nivelCores = {
+        'Leitor Iniciante': 'beginner',
+        'Leitor Regular': 'regular',
+        'Leitor Ativo': 'active',
+        'Leitor Extremo': 'extreme'
+    };
+    
+    const corClasse = nivelCores[classificacao] || 'beginner';
+    
+    container.innerHTML = `
+        <div class="pontuacao-card ${corClasse}">
+            <div class="pontuacao-header">
+                <h3>${aluno.nome}</h3>
+                <span class="ra">RA: ${aluno.ra}</span>
+            </div>
+            <div class="pontuacao-info">
+                <div class="nivel-leitor">
+                    <strong>Classificação:</strong>
+                    <span class="nivel ${corClasse}">${classificacao}</span>
+                </div>
+                <div class="livros-lidos">
+                    <strong>Livros lidos:</strong>
+                    <span class="quantidade">${livrosLidos}</span>
+                </div>
+            </div>
+        </div>
+    `;
+}
