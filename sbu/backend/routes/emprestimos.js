@@ -123,7 +123,7 @@ router.get('/aluno/:ra', async (req, res) => {
                 e.dataEmprestimo,
                 l.titulo,
                 l.autor,
-                ex.codigo as codigo_exemplar
+                ex.id as id_exemplar
             FROM emprestimo e
             INNER JOIN exemplar ex ON e.idExemplar = ex.id
             INNER JOIN livro l ON ex.idLivro = l.id

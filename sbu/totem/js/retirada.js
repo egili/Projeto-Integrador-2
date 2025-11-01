@@ -108,7 +108,8 @@ async function confirmarEmprestimo() {
 
     // Buscar um exemplar disponível do livro
     try {
-        const exemplares = await fetch(`http://localhost:3000/api/exemplares/livro/${livroSelecionado.id}`).then(r => r.json());
+        const port = window.location.port || '3000';
+        const exemplares = await fetch(`http://localhost:${port}/api/exemplares/livro/${livroSelecionado.id}`).then(r => r.json());
         
         if (!exemplares.success || exemplares.data.length === 0) {
             showError('Nenhum exemplar disponível para este livro');

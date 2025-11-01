@@ -27,9 +27,7 @@ CREATE TABLE IF NOT EXISTS livro (
 CREATE TABLE IF NOT EXISTS exemplar (
     id INT AUTO_INCREMENT PRIMARY KEY,
     idLivro INT NOT NULL,
-    codigo VARCHAR(50) UNIQUE NOT NULL,
-    status ENUM('disponivel', 'emprestado', 'manutencao') DEFAULT 'disponivel',
-    observacoes TEXT,
+    status ENUM('disponivel', 'emprestado') DEFAULT 'disponivel',
     FOREIGN KEY (idLivro) REFERENCES livro(id) ON DELETE CASCADE
 );
 
@@ -71,22 +69,21 @@ INSERT INTO livro (titulo, isbn, autor, editora, anoPublicacao, categoria) VALUE
 ('Algoritmos e Estruturas de Dados', '978-85-12345-04-4', 'Ana Oliveira', 'Computação Ltda', 2023, 'Algoritmos'),
 ('Engenharia de Software', '978-85-12345-05-5', 'Carlos Mendes', 'SoftPress', 2022, 'Engenharia de Software');
 
-INSERT INTO exemplar (idLivro, codigo, status) VALUES
-(1, 'EX-001-01', 'disponivel'),
-(1, 'EX-001-02', 'disponivel'),
-(1, 'EX-001-03', 'disponivel'),
-(2, 'EX-002-01', 'disponivel'),
-(2, 'EX-002-02', 'disponivel'),
-(2, 'EX-002-03', 'disponivel'),
-(3, 'EX-003-01', 'disponivel'),
-(3, 'EX-003-02', 'disponivel'),
-(3, 'EX-003-03', 'emprestado'),
-(4, 'EX-004-01', 'disponivel'),
-(4, 'EX-004-02', 'disponivel'),
-(4, 'EX-004-03', 'disponivel'),
-(5, 'EX-005-01', 'disponivel'),
-(5, 'EX-005-02', 'disponivel'),
-(5, 'EX-005-03', 'manutencao');
+INSERT INTO exemplar (idLivro, status) VALUES
+(1, 'disponivel'),
+(1, 'disponivel'),
+(1, 'disponivel'),
+(2, 'disponivel'),
+(2, 'disponivel'),
+(2, 'disponivel'),
+(3, 'disponivel'),
+(3, 'disponivel'),
+(3, 'emprestado'),
+(4, 'disponivel'),
+(4, 'disponivel'),
+(4, 'disponivel'),
+(5, 'disponivel'),
+(5, 'disponivel'),
 
 select * from biblioteca.livro;
 select * from biblioteca.exemplar;
