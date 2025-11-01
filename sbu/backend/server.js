@@ -116,7 +116,6 @@ function findAvailablePort(startPort, maxAttempts = 10) {
     });
 }
 
-// Iniciar servidor
 async function startServer() {
     try {
         await connection.query('SELECT 1');

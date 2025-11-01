@@ -50,22 +50,6 @@ async function initDatabase() {
             )
         `);
 
-        try {
-            await connection.query(`ALTER TABLE exemplar DROP COLUMN codigo`);
-        } catch (error) {
-            if (error.code !== 'ER_CANT_DROP_FIELD_OR_KEY') {
-                throw error;
-            }
-        }
-
-        try {
-            await connection.query(`ALTER TABLE exemplar DROP COLUMN observacoes`);
-        } catch (error) {
-            if (error.code !== 'ER_CANT_DROP_FIELD_OR_KEY') {
-                throw error;
-            }
-        }
-
         await connection.query(`
             CREATE TABLE IF NOT EXISTS emprestimo (
                 id INT AUTO_INCREMENT PRIMARY KEY,
