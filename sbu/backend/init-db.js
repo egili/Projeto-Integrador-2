@@ -51,12 +51,26 @@ async function initDatabase() {
             CREATE TABLE IF NOT EXISTS exemplar (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 idLivro INT NOT NULL,
-                codigo VARCHAR(50) UNIQUE NOT NULL,
-                status ENUM('disponivel', 'emprestado', 'manutencao') DEFAULT 'disponivel',
-                observacoes TEXT,
+                status ENUM('disponivel', 'emprestado') DEFAULT 'disponivel',
                 FOREIGN KEY (idLivro) REFERENCES livro(id) ON DELETE CASCADE
             )
         `);
+
+        try {
+            await connection.query(`ALTER TABLE exemplar DROP COLUMN codigo`);
+        } catch (error) {
+            if (error.code !== 'ER_CANT_DROP_FIELD_OR_KEY') {
+                throw error;
+            }
+        }
+
+        try {
+            await connection.query(`ALTER TABLE exemplar DROP COLUMN observacoes`);
+        } catch (error) {
+            if (error.code !== 'ER_CANT_DROP_FIELD_OR_KEY') {
+                throw error;
+            }
+        }
 
         // Criar tabela emprestimo
         await connection.query(`
@@ -93,22 +107,22 @@ async function initDatabase() {
         `);
 
         await connection.query(`
-            INSERT IGNORE INTO exemplar (idLivro, codigo, status) VALUES 
-            (1, 'PROG-001', 'disponivel'),
-            (1, 'PROG-002', 'disponivel'),
-            (1, 'PROG-003', 'disponivel'),
-            (2, 'BD-001', 'disponivel'),
-            (2, 'BD-002', 'disponivel'),
-            (2, 'BD-003', 'disponivel'),
-            (3, 'WEB-001', 'disponivel'),
-            (3, 'WEB-002', 'disponivel'),
-            (3, 'WEB-003', 'disponivel'),
-            (4, 'ALG-001', 'disponivel'),
-            (4, 'ALG-002', 'disponivel'),
-            (4, 'ALG-003', 'disponivel'),
-            (5, 'ENG-001', 'disponivel'),
-            (5, 'ENG-002', 'disponivel'),
-            (5, 'ENG-003', 'disponivel')
+            INSERT IGNORE INTO exemplar (idLivro, status) VALUES 
+            (1, 'disponivel'),
+            (1, 'disponivel'),
+            (1, 'disponivel'),
+            (2, 'disponivel'),
+            (2, 'disponivel'),
+            (2, 'disponivel'),
+            (3, 'disponivel'),
+            (3, 'disponivel'),
+            (3, 'disponivel'),
+            (4, 'disponivel'),
+            (4, 'disponivel'),
+            (4, 'disponivel'),
+            (5, 'disponivel'),
+            (5, 'disponivel'),
+            (5, 'disponivel')
         `);
 
         console.log('Banco de dados inicializado com sucesso!');
@@ -118,10 +132,10 @@ async function initDatabase() {
         const [livroCount] = await connection.query('SELECT COUNT(*) as count FROM livro');
         const [exemplarCount] = await connection.query('SELECT COUNT(*) as count FROM exemplar');
 
-        console.log('📊 Resumo dos dados inseridos:');
-        console.log(`👥 Alunos: ${alunoCount[0].count}`);
-        console.log(`📚 Livros: ${livroCount[0].count}`);
-        console.log(`🔢 Exemplares: ${exemplarCount[0].count}`);
+        console.log('Resumo dos dados inseridos:');
+        console.log(`Alunos: ${alunoCount[0].count}`);
+        console.log(`Livros: ${livroCount[0].count}`);
+        console.log(`Exemplares: ${exemplarCount[0].count}`);
 
     } catch (error) {
         console.error('Erro ao inicializar o banco de dados:', error);

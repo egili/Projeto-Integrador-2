@@ -195,7 +195,7 @@ A API REST está disponível em `http://localhost:3000/api` com os seguintes end
 
 ### Sistema do Bibliotecário
 - Cadastrar novos livros e exemplares
-- Gerenciar exemplares (status, observações)
+- Gerenciar exemplares (status)
 - Visualizar empréstimos pendentes
 - Acessar histórico de empréstimos
 - Visualizar relatório de leitores

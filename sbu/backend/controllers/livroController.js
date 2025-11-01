@@ -1,8 +1,9 @@
 const Livro = require('../models/livro');
+const Exemplar = require('../models/exemplar');
 
 exports.cadastrarLivro = async (req, res) => {
     try {
-        const { titulo, isbn, autor, editora, anoPublicacao, categoria } = req.body;
+        const { titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares } = req.body;
 
         if (!titulo || !autor) {
             return res.status(400).json({
@@ -20,15 +21,52 @@ exports.cadastrarLivro = async (req, res) => {
             categoria
         });
 
+        const idLivro = result.insertId;
+        const quantidadeExemplares = numeroExemplares ? parseInt(numeroExemplares) : 1;
+        
+        let resultadoExemplares = null;
+        
+        if (quantidadeExemplares > 0 && quantidadeExemplares <= 100) {
+            try {
+                resultadoExemplares = await Exemplar.criarMultiplos(idLivro, quantidadeExemplares);
+            } catch (error) {
+                resultadoExemplares = {
+                    exemplares: [],
+                    totalCriados: 0,
+                    totalErros: quantidadeExemplares,
+                    erros: [{ erro: error.message }]
+                };
+            }
+        } else {
+            resultadoExemplares = {
+                exemplares: [],
+                totalCriados: 0,
+                totalErros: 0,
+                erros: []
+            };
+        }
+
+        const exemplaresCriados = resultadoExemplares ? resultadoExemplares.totalCriados : 0;
+        
         res.status(201).json({
             success: true,
-            message: 'Livro cadastrado com sucesso',
-            data: { id: result.insertId, ...req.body }
+            message: `Livro cadastrado com sucesso. ${exemplaresCriados} exemplar(es) criado(s).`,
+            data: { 
+                id: idLivro, 
+                titulo,
+                isbn,
+                autor,
+                editora,
+                anoPublicacao,
+                categoria,
+                exemplaresCriados: exemplaresCriados,
+                exemplaresSolicitados: quantidadeExemplares,
+                exemplaresComErro: resultadoExemplares ? resultadoExemplares.totalErros : 0,
+                erros: resultadoExemplares && resultadoExemplares.erros.length > 0 ? resultadoExemplares.erros : undefined
+            }
         });
 
     } catch (error) {
-        console.error('Erro ao cadastrar livro:', error);
-
         if (error.code === 'ER_DUP_ENTRY') {
             return res.status(400).json({
                 success: false,
@@ -38,7 +76,8 @@ exports.cadastrarLivro = async (req, res) => {
 
         res.status(500).json({
             success: false,
-            error: 'Erro interno do servidor'
+            error: 'Erro interno do servidor',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
         });
     }
 };
@@ -54,7 +93,6 @@ exports.listarTodosLivros = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao listar todos os livros:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'
@@ -73,7 +111,6 @@ exports.listarLivrosDisponiveis = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao listar livros disponíveis:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'
@@ -101,7 +138,6 @@ exports.buscarLivros = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao buscar livros:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'
@@ -127,7 +163,6 @@ exports.buscarLivroPorId = async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Erro ao buscar livro:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor'
