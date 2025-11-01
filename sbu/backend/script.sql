@@ -51,40 +51,6 @@ CREATE TABLE IF NOT EXISTS classificacao (
     FOREIGN KEY (idAluno) REFERENCES aluno(id)
 );
 
--- Inserir dados iniciais
-INSERT INTO semestre (descricao, dataInicio, dataFim) VALUES 
-('2025-1', '2025-02-01', '2025-07-31'),
-('2025-2', '2025-08-01', '2025-12-20');
-
-INSERT INTO aluno (nome, ra) VALUES 
-('Eduardo Fagundes Silva', '25008024'),
-('Lucas Athanasio Bueno de Andrade', '25002731'),
-('Pietra Façanha Bortolatto', '25002436'),
-('Eliseu Gili', '250099281');
-
-INSERT INTO livro (titulo, isbn, autor, editora, anoPublicacao, categoria) VALUES 
-('Introdução à Programação', '978-85-12345-01-1', 'João Silva', 'Tecnologia Press', 2023, 'Programação'),
-('Banco de Dados Relacional', '978-85-12345-02-2', 'Maria Santos', 'Data Books', 2022, 'Banco de Dados'),
-('Desenvolvimento Web Moderno', '978-85-12345-03-3', 'Pedro Costa', 'Web Publishing', 2024, 'Desenvolvimento Web'),
-('Algoritmos e Estruturas de Dados', '978-85-12345-04-4', 'Ana Oliveira', 'Computação Ltda', 2023, 'Algoritmos'),
-('Engenharia de Software', '978-85-12345-05-5', 'Carlos Mendes', 'SoftPress', 2022, 'Engenharia de Software');
-
-INSERT INTO exemplar (idLivro, status) VALUES
-(1, 'disponivel'),
-(1, 'disponivel'),
-(1, 'disponivel'),
-(2, 'disponivel'),
-(2, 'disponivel'),
-(2, 'disponivel'),
-(3, 'disponivel'),
-(3, 'disponivel'),
-(3, 'emprestado'),
-(4, 'disponivel'),
-(4, 'disponivel'),
-(4, 'disponivel'),
-(5, 'disponivel'),
-(5, 'disponivel'),
-
 select * from biblioteca.livro;
 select * from biblioteca.exemplar;
 select * from biblioteca.emprestimo;

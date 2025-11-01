@@ -62,57 +62,7 @@ async function initDatabase() {
             )
         `);
 
-        console.log('Todas as tabelas criadas/verificadas');
-
-        // console.log('Inserindo dados iniciais...');
-
-        // await connection.query(`
-        //     INSERT IGNORE INTO aluno (nome, ra) VALUES 
-        //     ('Eduardo Fagundes Silva', '25008024'),
-        //     ('Lucas Athanasio Bueno de Andrade', '25002731'),
-        //     ('Pietra Façanha Bortolatto', '25002436'),
-        //     ('Eliseu Gili', '25009281')
-        // `);
-
-        // await connection.query(`
-        //     INSERT IGNORE INTO livro (titulo, isbn, autor, editora, anoPublicacao, categoria) VALUES 
-        //     ('Introdução à Programação', '978-85-12345-01-1', 'João Silva', 'Tecnologia Press', 2023, 'Programação'),
-        //     ('Banco de Dados Relacional', '978-85-12345-02-2', 'Maria Santos', 'Data Books', 2022, 'Banco de Dados'),
-        //     ('Desenvolvimento Web Moderno', '978-85-12345-03-3', 'Pedro Costa', 'Web Publishing', 2024, 'Desenvolvimento Web'),
-        //     ('Algoritmos e Estruturas de Dados', '978-85-12345-04-4', 'Ana Lima', 'Ciência & Tech', 2023, 'Programação'),
-        //     ('Engenharia de Software', '978-85-12345-05-5', 'Carlos Mendes', 'Software Publishing', 2022, 'Engenharia de Software')
-        // `);
-
-        // await connection.query(`
-        //     INSERT IGNORE INTO exemplar (idLivro, status) VALUES 
-        //     (1, 'disponivel'),
-        //     (1, 'disponivel'),
-        //     (1, 'disponivel'),
-        //     (2, 'disponivel'),
-        //     (2, 'disponivel'),
-        //     (2, 'disponivel'),
-        //     (3, 'disponivel'),
-        //     (3, 'disponivel'),
-        //     (3, 'disponivel'),
-        //     (4, 'disponivel'),
-        //     (4, 'disponivel'),
-        //     (4, 'disponivel'),
-        //     (5, 'disponivel'),
-        //     (5, 'disponivel'),
-        //     (5, 'disponivel')
-        // `);
-
-        // console.log('Banco de dados inicializado com sucesso!');
-
-        // // Contar registros inseridos
-        // const [alunoCount] = await connection.query('SELECT COUNT(*) as count FROM aluno');
-        // const [livroCount] = await connection.query('SELECT COUNT(*) as count FROM livro');
-        // const [exemplarCount] = await connection.query('SELECT COUNT(*) as count FROM exemplar');
-
-        // console.log('Resumo dos dados inseridos:');
-        // console.log(`Alunos: ${alunoCount[0].count}`);
-        // console.log(`Livros: ${livroCount[0].count}`);
-        // console.log(`Exemplares: ${exemplarCount[0].count}`);
+        console.log('Todas as tabelas criadas/verificadas');;
 
     } catch (error) {
         console.error('Erro ao inicializar o banco de dados:', error);
