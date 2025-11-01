@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const nome = document.getElementById('fullName').value.trim();
             const ra = document.getElementById('ra').value.trim();
             
-            // Validações básicas
             if (!nome) {
                 showError('Por favor, digite seu nome completo');
                 return;
@@ -38,16 +37,12 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const result = await BibliotecaAPI.cadastrarAluno(alunoData);
                 
-                // Se chegou aqui sem exceção, o cadastro foi bem-sucedido
-                // Mostrar tela de sucesso
                 document.getElementById('step1-form').classList.remove('active');
                 document.getElementById('step2-success').classList.add('active');
                 
-                // Preencher dados de sucesso
                 document.getElementById('success-nome').textContent = nome;
                 document.getElementById('success-ra').textContent = ra;
                 
-                // Configurar botões de sucesso
                 document.getElementById('home-btn').addEventListener('click', function() {
                     window.location.href = '../index.html';
                 });
@@ -59,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
             } catch (error) {
-                // Trata erros específicos
                 if (error.message.includes('já cadastrado')) {
                     showError('Este RA já está cadastrado no sistema.');
                 } else {
@@ -74,11 +68,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Validação em tempo real do RA
     const raInput = document.getElementById('ra');
     if (raInput) {
         raInput.addEventListener('input', function() {
-            // Permite apenas números e letras no RA
             this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
         });
     }

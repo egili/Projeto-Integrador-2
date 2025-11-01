@@ -1,4 +1,3 @@
-// Detectar a porta correta baseada na URL atual
 const getApiBaseUrl = () => {
     const port = window.location.port || '3000';
     return `http://localhost:${port}/api`;

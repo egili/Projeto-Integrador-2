@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoriaSelect = document.getElementById('categoria');
     const outrosCategoriaGroup = document.getElementById('outros-categoria-group');
 
-    // Mostrar/ocultar campo "Outros" para categoria
     if (categoriaSelect && outrosCategoriaGroup) {
         categoriaSelect.addEventListener('change', function() {
             if (this.value === 'Outros') {
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Submissão do formulário
     if (registrationForm) {
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -42,11 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 const result = await BibliotecaAPI.cadastrarLivro(livroData);
                 
                 if (result.success) {
-                    // Mostrar tela de sucesso
                     document.getElementById('cadastro-form').style.display = 'none';
                     document.getElementById('step2-success').style.display = 'block';
                     
-                    // Configurar botões de sucesso
                     document.getElementById('new-register-btn').addEventListener('click', function() {
                         document.getElementById('step2-success').style.display = 'none';
                         document.getElementById('cadastro-form').style.display = 'block';

@@ -23,13 +23,13 @@ app.use('/aluno', express.static(path.join(__dirname, '../sistema-aluno')));
 app.use('/bibliotecario', express.static(path.join(__dirname, '../sistema-bibliotecario')));
 app.use('/totem', express.static(path.join(__dirname, '../totem')));
 
-// Rotas da API
+// Rotas 
 const alunosRoutes = require('./routes/alunos');
 const livrosRoutes = require('./routes/livros');
 const emprestimosRoutes = require('./routes/emprestimos');
 const exemplaresRoutes = require('./routes/exemplares');
 
-// Rota raiz da API - documentação
+// Rota raiz 
 app.get('/api', (req, res) => {
     res.json({
         success: true,
@@ -119,15 +119,12 @@ function findAvailablePort(startPort, maxAttempts = 10) {
 // Iniciar servidor
 async function startServer() {
     try {
-        // Testar conexão com o banco
         await connection.query('SELECT 1');
         console.log('Conectado ao MySQL com sucesso!');
         
-        // Tentar usar a porta especificada ou encontrar uma alternativa
         let portToUse = PORT;
         
         try {
-            // Verificar se a porta está disponível
             await findAvailablePort(PORT, 1);
         } catch (error) {
             console.warn(`Porta ${PORT} está em uso. Tentando encontrar uma porta alternativa...`);
@@ -160,7 +157,6 @@ async function startServer() {
             console.log('============================================================');
         });
 
-        // Tratar erros do servidor
         server.on('error', (error) => {
             if (error.code === 'EADDRINUSE') {
                 console.error(`\nErro: A porta ${portToUse} já está em uso!`);
