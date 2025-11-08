@@ -55,7 +55,6 @@ class BibliotecaAPI {
         const response = await fetch(url);
 
         if (!response.ok) {
-            // Tenta extrair a mensagem de erro amigável retornada pela API
             const errorData = await response.json().catch(() => null);
             const mensagem = errorData?.error || 'Classificação indisponível';
             throw new Error(mensagem);

@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Focar no campo de busca quando a página carregar
         campoBuscaLeitor.focus();
     }
 });
@@ -27,16 +26,13 @@ async function buscarPontuacao() {
     }
 
     try {
-        // Primeiro busca o aluno por RA
         const alunoResult = await BibliotecaAPI.buscarAlunoPorRA(ra);
         
-        // Verifica se retornou dados
         if (!alunoResult || !alunoResult.success || !alunoResult.data) {
             exibirMensagemErro('Aluno não encontrado. Verifique o RA digitado.');
             return;
         }
         
-        // Garante que temos o RA do aluno
         const raAluno = alunoResult.data.ra;
         if (!raAluno) {
             console.error('Dados do aluno:', alunoResult.data);
@@ -46,10 +42,8 @@ async function buscarPontuacao() {
         
         console.log('Buscando classificação para o aluno RA:', raAluno);
         
-        // Agora busca a classificação (a API espera RA, não ID)
         const classificacaoResult = await BibliotecaAPI.obterClassificacaoAluno(raAluno);
         
-        // Verifica se retornou dados
         if (!classificacaoResult || !classificacaoResult.success || !classificacaoResult.data) {
             exibirMensagemErro('Erro ao buscar classificação do aluno.');
             return;
@@ -58,7 +52,6 @@ async function buscarPontuacao() {
         exibirPontuacao(classificacaoResult.data);
         
     } catch (error) {
-        // Trata erros HTTP e de conexão
         if (error.message.includes('não encontrado') || error.message.includes('404')) {
             exibirMensagemErro('Aluno não encontrado. Verifique o RA digitado.');
         } else {
@@ -72,23 +65,22 @@ function exibirPontuacao(dados) {
     
     console.log('Dados recebidos para exibição:', dados);
     
-    // A API retorna: { aluno: {...}, estatisticas: {...} }
     const aluno = dados.aluno || dados;
     const stats = dados.estatisticas || dados;
     
-    const livrosLidos = stats.livros_devolvidos || 0;
+    const livrosLidos       = stats.livros_devolvidos || 0;
     const livrosEmAndamento = stats.livros_em_andamento || 0;
-    const totalEmprestimos = stats.total_emprestimos || (livrosLidos + livrosEmAndamento);
+    const totalEmprestimos  = stats.total_emprestimos || (livrosLidos + livrosEmAndamento);
     const classificacaoNome = stats.classificacao || determinarClassificacaoLocal(livrosLidos);
-    const proximaMeta = typeof stats.proxima_meta === 'number' ? stats.proxima_meta : null;
-    const ultimaLeitura = stats.ultima_devolucao ? formatDate(stats.ultima_devolucao) : '—';
-    const ultimoEmprestimo = stats.ultimo_emprestimo ? formatDate(stats.ultimo_emprestimo) : '—';
+    const proximaMeta       = typeof stats.proxima_meta === 'number' ? stats.proxima_meta : null;
+    const ultimaLeitura     = stats.ultima_devolucao ? formatDate(stats.ultima_devolucao) : '—';
+    const ultimoEmprestimo  = stats.ultimo_emprestimo ? formatDate(stats.ultimo_emprestimo) : '—';
     
     const nivelCores = {
         'Leitor Iniciante': 'beginner',
-        'Leitor Regular': 'regular',
-        'Leitor Ativo': 'active',
-        'Leitor Extremo': 'extreme'
+        'Leitor Regular':   'regular',
+        'Leitor Ativo':     'active',
+        'Leitor Extremo':   'extreme'
     };
     
     const corClasse = nivelCores[classificacaoNome] || 'beginner';

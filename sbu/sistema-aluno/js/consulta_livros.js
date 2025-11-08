@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     carregarLivrosDisponiveis();
     
-    // Configurar busca
     const botaoBuscar = document.getElementById('botaoBuscar');
     const campoBusca = document.getElementById('campoBusca');
     
@@ -17,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Configurar navegação do carrossel
     const setaEsquerda = document.querySelector('.seta-esquerda');
     const setaDireita = document.querySelector('.seta-direita');
     const carrossel = document.getElementById('carrosselLivros');
@@ -39,7 +37,6 @@ async function carregarLivrosDisponiveis() {
     try {
         const result = await BibliotecaAPI.listarLivrosDisponiveis();
         
-        // Se chegou aqui sem exceção, a busca foi bem-sucedida
         if (result && result.success && Array.isArray(result.data)) {
             exibirLivrosNoCarrossel(result.data, 'Nenhum livro disponível no momento.');
         } else {
@@ -62,7 +59,6 @@ async function buscarLivros() {
     try {
         const result = await BibliotecaAPI.buscarLivros(termo);
         
-        // Se chegou aqui sem exceção, a busca foi bem-sucedida
         if (result && result.success && Array.isArray(result.data)) {
             exibirLivrosNoCarrossel(result.data, 'Nenhum livro encontrado.');
         } else {
