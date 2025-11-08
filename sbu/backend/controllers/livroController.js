@@ -120,10 +120,12 @@ exports.listarLivrosDisponiveis = async (req, res) => {
 
 exports.buscarLivros = async (req, res) => {
     try {
-        const { titulo, autor } = req.query;
+        const { titulo, autor, q } = req.query;
         let livros;
 
-        if (titulo) {
+        if (q) {
+            livros = await Livro.buscarPorTermo(q);
+        } else if (titulo) {
             livros = await Livro.buscarPorTitulo(titulo);
         } else if (autor) {
             livros = await Livro.buscarPorAutor(autor);

@@ -28,6 +28,7 @@ const alunosRoutes = require('./routes/alunos');
 const livrosRoutes = require('./routes/livros');
 const emprestimosRoutes = require('./routes/emprestimos');
 const exemplaresRoutes = require('./routes/exemplares');
+const classificacaoRoutes = require('./routes/classificacao');
 
 // Rota raiz 
 app.get('/api', (req, res) => {
@@ -56,6 +57,10 @@ app.get('/api', (req, res) => {
                 'GET /api/emprestimos/aluno/:ra': 'Empréstimos de um aluno',
                 'POST /api/emprestimos': 'Registrar empréstimo',
                 'PUT /api/emprestimos/:id/devolver': 'Registrar devolução'
+            },
+            classificacao: {
+                'GET /api/classificacao/aluno/:ra': 'Pontuação individual de um aluno',
+                'GET /api/classificacao/geral': 'Ranking geral de leitores'
             }
         }
     });
@@ -66,6 +71,7 @@ app.use('/api/alunos', alunosRoutes);
 app.use('/api/livros', livrosRoutes);
 app.use('/api/emprestimos', emprestimosRoutes);
 app.use('/api/exemplares', exemplaresRoutes);
+app.use('/api/classificacao', classificacaoRoutes);
 
 // Rota 404 para APIs
 app.use('/api/*', (req, res) => {
