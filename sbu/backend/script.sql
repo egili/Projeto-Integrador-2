@@ -1,13 +1,6 @@
 CREATE DATABASE IF NOT EXISTS biblioteca;
 USE biblioteca;
 
-CREATE TABLE IF NOT EXISTS semestre (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    descricao VARCHAR(20) NOT NULL UNIQUE,
-    dataInicio DATE,
-    dataFim DATE
-);
-
 CREATE TABLE IF NOT EXISTS aluno (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -45,9 +38,7 @@ CREATE TABLE IF NOT EXISTS classificacao (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo VARCHAR(20) UNIQUE NOT NULL,
     descricao TEXT,
-    idSemestre INT,
     idAluno INT,
-    FOREIGN KEY (idSemestre) REFERENCES semestre(id),
     FOREIGN KEY (idAluno) REFERENCES aluno(id)
 );
 
