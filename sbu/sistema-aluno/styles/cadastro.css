@@ -1,6 +1,6 @@
 /* Estilos específicos para a página de cadastro */
 .general-screen {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #ffffff;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
 }
 
 .general-header {
-    background: #2c3e50;
+    background: #2874A6;
     color: white;
     padding: 20px;
     text-align: center;
@@ -66,7 +66,7 @@
 }
 
 .welcome-section h2 {
-    color: #2c3e50;
+    color: #2874A6;
     margin-bottom: 10px;
 }
 
@@ -117,7 +117,7 @@
 }
 
 .btn-primary {
-    background: #3498db;
+    background: #2874A6;
     color: white;
     border: none;
     padding: 14px 20px;
@@ -219,10 +219,10 @@
 }
 
 .general-footer {
-    background: #ecf0f1;
+    background: #2874A6;
     padding: 20px;
     text-align: center;
-    color: #7f8c8d;
+    color: #ffffff;
     border-top: 1px solid #bdc3c7;
 }
 

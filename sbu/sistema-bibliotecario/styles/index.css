@@ -46,7 +46,7 @@ body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     line-height: 1.6;
     color: var(--gray-800);
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%);
     min-height: 100vh;
 }
 
@@ -60,7 +60,7 @@ main {
 }
 
 .cabecalho {
-    background: rgba(255, 255, 255, 0.95);
+    background-color: #2874A6;
     padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-xl);
     margin-bottom: var(--space-xl);
@@ -75,13 +75,10 @@ main {
 }
 
 .cabecalho h1 {
-    color: var(--primary-blue);
+    color: #ffffff;
     font-size: 2.5rem;
     font-weight: 700;
     text-align: center;
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
 }
 
 .conteudo {
@@ -104,10 +101,11 @@ main {
 .artigo-principal h2 {
     font-size: 2rem;
     font-weight: 600;
+    color: #2874A6;
     margin-bottom: var(--space-sm);
-    background: linear-gradient(135deg, var(--gray-900), var(--gray-600));
+    /*background: linear-gradient(135deg, var(--gray-900), var(--gray-600));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;*/
 }
 
 .artigo-principal p {
@@ -142,7 +140,7 @@ main {
     align-items: center;
     justify-content: center;
     padding: var(--space-lg);
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+    background-color:#2E86C1;
     color: var(--white);
     text-decoration: none;
     border-radius: var(--radius-lg);
@@ -165,7 +163,7 @@ main {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    background: #2E86C1;
     transition: left 0.5s ease;
 }
 
@@ -174,7 +172,7 @@ main {
 }
 
 .menu a:hover {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-blue));
+    background: #2E86C1;
     box-shadow: var(--shadow-xl);
 }
 
@@ -201,7 +199,7 @@ main {
 }
 
 .cadastro-header {
-    background: rgba(255, 255, 255, 0.95);
+    background-color: #2874A6;
     padding: var(--space-lg) var(--space-xl);
     border-radius: var(--radius-xl);
     margin-bottom: var(--space-xl);
@@ -214,10 +212,11 @@ main {
 
 .cadastro-header h1 {
     font-size: 2.2rem;
-    color: var(--primary-blue);
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+    color: #ffffff;
+    /*color: var(--primary-blue);
+    /*background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
     -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;*/
 }
 
 .cadastro-main {
@@ -233,7 +232,7 @@ main {
 
 .cadastro-section h2 {
     font-size: 1.75rem;
-    color: var(--gray-900);
+    color: #2874A6;
 }
 
 .cadastro-section p {
@@ -273,7 +272,7 @@ label {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+    background: #2E86C1;
     color: var(--white);
     border: none;
     padding: var(--space-sm) var(--space-lg);
@@ -290,7 +289,7 @@ label {
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary-blue));
+    background: #2874A6;
     transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
@@ -302,9 +301,8 @@ label {
 
 /* Botão secundário - SEMPRE VISÍVEL */
 .btn-secondary {
-    background: var(--gray-200);
-    color: var(--gray-800);
-    border: none;
+    background: #2874A6;
+    color: #ffffff;
     padding: var(--space-sm) var(--space-lg);
     border-radius: var(--radius-md);
     cursor: pointer;
@@ -320,7 +318,7 @@ label {
 }
 
 .btn-secondary:hover {
-    background: var(--gray-300);
+    background: #2E86C1;
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
@@ -389,15 +387,16 @@ label {
     margin-top: var(--space-xl);
     width: 100%;
     max-width: 1200px;
+    background-color: var(--white);
 }
 
 .rodape-conteudo {
-    background: rgba(255, 255, 255, 0.1);
+    background-color: #2874A6;
     backdrop-filter: blur(10px);
     border-radius: var(--radius-lg);
     padding: var(--space-md);
     text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid #2874A6;
     box-shadow: var(--shadow-md);
 }
 
@@ -460,13 +459,13 @@ label {
 }
 
 .tab-button:hover:not(.active) {
-    color: var(--primary-blue);
+    color:#2874A6;
 }
 
 .tab-button.active {
     color: var(--primary-dark);
     font-weight: 600;
-    border-bottom-color: var(--primary-blue);
+    border-bottom-color: #2874A6;
 }
 
 .tab-content-area {
@@ -508,7 +507,7 @@ label {
 .table-info h3 {
     font-size: 1.25rem;
     margin-bottom: var(--space-sm);
-    color: var(--primary-dark);
+    color: var(--gray-600);
     text-align: center;
 }
 
@@ -526,7 +525,7 @@ label {
 }
 
 .classification-table th {
-    background-color: var(--primary-light);
+    background-color: #2874A6;
     color: var(--white);
     font-weight: 600;
 }
@@ -574,7 +573,7 @@ label {
 }
 
 .classification-table th {
-    background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
+    background: #2874A6;
     color: var(--white);
     font-weight: 600;
     padding: var(--space-sm);

@@ -1,7 +1,10 @@
-const API_BASE_URL = 'http://localhost:3000/api';
+const getApiBaseUrl = () => {
+    const port = window.location.port || '3000';
+    return `http://localhost:${port}/api`;
+};
+const API_BASE_URL = getApiBaseUrl();
 
 class BibliotecaAPI {
-    // Método auxiliar para tratar erros HTTP
     static async handleResponse(response) {
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({ error: 'Erro ao processar resposta' }));
@@ -10,7 +13,6 @@ class BibliotecaAPI {
         return await response.json();
     }
 
-    // Alunos
     static async cadastrarAluno(alunoData) {
         const response = await fetch(`${API_BASE_URL}/alunos`, {
             method: 'POST',
@@ -25,7 +27,6 @@ class BibliotecaAPI {
         return await this.handleResponse(response);
     }
 
-    // Livros
     static async listarLivrosDisponiveis() {
         const response = await fetch(`${API_BASE_URL}/livros/disponiveis`);
         return await this.handleResponse(response);
@@ -35,20 +36,8 @@ class BibliotecaAPI {
         const response = await fetch(`${API_BASE_URL}/livros/busca?titulo=${encodeURIComponent(termo)}`);
         return await this.handleResponse(response);
     }
-
-    // Classificação
-    static async obterClassificacaoAluno(ra) {
-        const response = await fetch(`${API_BASE_URL}/classificacao/aluno/${ra}`);
-        return await this.handleResponse(response);
-    }
-
-    static async obterClassificacaoGeral() {
-        const response = await fetch(`${API_BASE_URL}/classificacao/geral`);
-        return await this.handleResponse(response);
-    }
 }
 
-// Utilitários
 function showError(message) {
     console.error('Erro:', message);
     alert(`Erro: ${message}`);

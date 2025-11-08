@@ -1,6 +1,6 @@
 /* Estilos específicos para a página inicial do sistema do aluno */
 .general-screen {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #ffffff;
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -18,7 +18,7 @@
 }
 
 .general-header {
-    background: #2c3e50;
+    background: #2874A6;
     color: white;
     padding: 30px 20px;
     text-align: center;
@@ -46,7 +46,7 @@
 }
 
 .welcome-section h2 {
-    color: #2c3e50;
+    color: #2874A6;
     margin-bottom: 10px;
     font-size: 1.8rem;
 }
@@ -65,7 +65,7 @@
 }
 
 .action-card {
-    background: #f8f9fa;
+    background: #2E86C1;
     border: 2px solid #e9ecef;
     border-radius: 12px;
     padding: 30px 25px;
@@ -80,7 +80,7 @@
 
 .action-card:hover {
     transform: translateY(-5px);
-    border-color: #3498db;
+    border-color: #2E86C1;
     box-shadow: 0 10px 25px rgba(52, 152, 219, 0.15);
 }
 
@@ -91,13 +91,13 @@
 }
 
 .action-card h3 {
-    color: #2c3e50;
+    color: #ffffff;
     margin: 0 0 15px 0;
     font-size: 1.3rem;
 }
 
 .action-card p {
-    color: #7f8c8d;
+    color: #ffffff;
     margin: 0;
     line-height: 1.5;
 }
@@ -161,11 +161,11 @@
 }
 
 .general-footer {
-    background: #ecf0f1;
+    background: #2874A6;
     padding: 20px;
     text-align: center;
-    color: #7f8c8d;
-    border-top: 1px solid #bdc3c7;
+    color: #ffffff;
+    border-top: 1px solid #2874A6;
 }
 
 .general-footer p {

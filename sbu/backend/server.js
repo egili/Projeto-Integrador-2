@@ -1,8 +1,8 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-require('dotenv').config();
-const { testConnection } = require('./database/connection');
+const { connection } = require('./database/connection');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -12,23 +12,29 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Log de requisições (útil para debug)
+// Middleware de log de requisições
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
 });
 
-// Servir arquivos estáticos para cada frontend
+// Servir arquivos estáticos dos frontends
 app.use('/aluno', express.static(path.join(__dirname, '../sistema-aluno')));
 app.use('/bibliotecario', express.static(path.join(__dirname, '../sistema-bibliotecario')));
 app.use('/totem', express.static(path.join(__dirname, '../totem')));
 
-// Rota raiz da API - documentação
+// Rotas 
+const alunosRoutes = require('./routes/alunos');
+const livrosRoutes = require('./routes/livros');
+const emprestimosRoutes = require('./routes/emprestimos');
+const exemplaresRoutes = require('./routes/exemplares');
+
+// Rota raiz 
 app.get('/api', (req, res) => {
     res.json({
         success: true,
         message: 'API do Sistema de Gestão de Biblioteca Universitária',
-        version: '2.0',
+        version: '3.0',
         endpoints: {
             alunos: {
                 'GET /api/alunos': 'Listar todos os alunos',
@@ -44,89 +50,132 @@ app.get('/api', (req, res) => {
             },
             exemplares: {
                 'GET /api/exemplares/livro/:idLivro': 'Listar exemplares de um livro',
-                'POST /api/exemplares': 'Cadastrar novo exemplar',
-                'GET /api/exemplares/codigo/:codigo': 'Buscar exemplar por código'
+                'POST /api/exemplares': 'Cadastrar novo exemplar'
             },
             emprestimos: {
-                'GET /api/emprestimos/pendentes': 'Listar empréstimos pendentes',
-                'GET /api/emprestimos/historico': 'Listar histórico',
                 'GET /api/emprestimos/aluno/:ra': 'Empréstimos de um aluno',
                 'POST /api/emprestimos': 'Registrar empréstimo',
                 'PUT /api/emprestimos/:id/devolver': 'Registrar devolução'
-            },
-            classificacao: {
-                'GET /api/classificacao/geral': 'Ranking de leitores',
-                'GET /api/classificacao/semestre/:id': 'Classificação por semestre',
-                'GET /api/classificacao/aluno/:ra': 'Pontuação de um aluno',
-                'GET /api/classificacao/semestres': 'Listar semestres'
             }
         }
     });
 });
 
-// Rotas da API
-app.use('/api/alunos', require('./routes/alunos'));
-app.use('/api/livros', require('./routes/livros'));
-app.use('/api/exemplares', require('./routes/exemplares'));
-app.use('/api/emprestimos', require('./routes/emprestimos'));
-app.use('/api/classificacao', require('./routes/classificacao'));
+// Usar as rotas
+app.use('/api/alunos', alunosRoutes);
+app.use('/api/livros', livrosRoutes);
+app.use('/api/emprestimos', emprestimosRoutes);
+app.use('/api/exemplares', exemplaresRoutes);
 
-// Rota raiz - redirecionar para sistema do aluno
-app.get('/', (req, res) => {
-    res.redirect('/aluno');
-});
-
-// Fallback para SPA - garantir que rotas frontend funcionem
-app.get('/aluno/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../sistema-aluno/index.html'));
-});
-
-app.get('/bibliotecario/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../sistema-bibliotecario/index.html'));
-});
-
-app.get('/totem/*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../totem/index.html'));
-});
-
-// Middleware para rotas não encontradas
-app.use('*', (req, res) => {
+// Rota 404 para APIs
+app.use('/api/*', (req, res) => {
     res.status(404).json({ 
-        success: false, 
+        success: false,
         error: 'Rota não encontrada' 
     });
 });
 
-// Middleware de tratamento de erros
-app.use((error, req, res, next) => {
-    console.error('Erro não tratado:', error);
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Erro não tratado:', err);
     res.status(500).json({ 
-        success: false, 
+        success: false,
         error: 'Erro interno do servidor' 
     });
 });
 
-// Testar conexão com o banco antes de iniciar o servidor
-testConnection().then((connected) => {
-    if (connected) {
-        app.listen(PORT, () => {
-            console.log('\n' + '='.repeat(60));
-            console.log('🚀 Servidor iniciado com sucesso!');
-            console.log('='.repeat(60));
-            console.log(`📍 Porta: ${PORT}`);
-            console.log(`🌐 Ambiente: ${process.env.NODE_ENV || 'development'}`);
-            console.log('\n📱 Sistemas disponíveis:');
-            console.log(`   👨‍🎓 Sistema do Aluno:        http://localhost:${PORT}/aluno`);
-            console.log(`   📚 Sistema do Bibliotecário: http://localhost:${PORT}/bibliotecario`);
-            console.log(`   🖥️  Totem:                   http://localhost:${PORT}/totem`);
-            console.log('\n🔌 API:');
-            console.log(`   http://localhost:${PORT}/api`);
-            console.log('='.repeat(60) + '\n');
+// Função para encontrar uma porta disponível
+function findAvailablePort(startPort, maxAttempts = 10) {
+    return new Promise((resolve, reject) => {
+        const net = require('net');
+        let attempts = 0;
+
+        function tryPort(port) {
+            const server = net.createServer();
+            
+            server.listen(port, () => {
+                server.once('close', () => resolve(port));
+                server.close();
+            });
+
+            server.on('error', (err) => {
+                if (err.code === 'EADDRINUSE') {
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        reject(new Error(`Não foi possível encontrar uma porta disponível após ${maxAttempts} tentativas`));
+                    } else {
+                        tryPort(port + 1);
+                    }
+                } else {
+                    reject(err);
+                }
+            });
+        }
+
+        tryPort(startPort);
+    });
+}
+
+async function startServer() {
+    try {
+        await connection.query('SELECT 1');
+        console.log('Conectado ao MySQL com sucesso!');
+        
+        let portToUse = PORT;
+        
+        try {
+            await findAvailablePort(PORT, 1);
+        } catch (error) {
+            console.warn(`Porta ${PORT} está em uso. Tentando encontrar uma porta alternativa...`);
+            try {
+                portToUse = await findAvailablePort(PORT + 1, 10);
+                console.log(`Usando porta alternativa: ${portToUse}`);
+            } catch (altError) {
+                console.error('Erro ao encontrar porta disponível:', altError.message);
+                console.error('\nSoluções possíveis:');
+                console.error('   1. Encerre o processo que está usando a porta 3000');
+                console.error('   2. Use uma porta diferente definindo PORT no arquivo .env');
+                console.error('   3. No Windows, execute: netstat -ano | findstr :3000');
+                console.error('   4. No Linux/Mac, execute: lsof -i :3000');
+                process.exit(1);
+            }
+        }
+
+        const server = app.listen(portToUse, () => {
+            console.log('============================================================');
+            console.log('Servidor iniciado com sucesso!');
+            console.log('============================================================');
+            console.log(`Porta: ${portToUse}`);
+            console.log(`Ambiente: ${process.env.NODE_ENV || 'development'}`);
+            console.log('Sistemas disponíveis:');
+            console.log(`   Sistema do Aluno:        http://localhost:${portToUse}/aluno`);
+            console.log(`   Sistema do Bibliotecário: http://localhost:${portToUse}/bibliotecario`);
+            console.log(`   Totem:                   http://localhost:${portToUse}/totem`);
+            console.log('API:');
+            console.log(`   http://localhost:${portToUse}/api`);
+            console.log('============================================================');
         });
-    } else {
-        console.error('❌ Não foi possível conectar ao banco de dados. Verifique as configurações.');
+
+        server.on('error', (error) => {
+            if (error.code === 'EADDRINUSE') {
+                console.error(`\nErro: A porta ${portToUse} já está em uso!`);
+                console.error('\nSoluções possíveis:');
+                console.error('   1. Encerre o processo que está usando a porta');
+                console.error('   2. Use uma porta diferente definindo PORT no arquivo .env');
+                console.error('   3. No Windows, execute: netstat -ano | findstr :3000');
+                console.error('   4. No Linux/Mac, execute: lsof -i :3000');
+                process.exit(1);
+            } else {
+                console.error('Erro ao iniciar servidor:', error);
+                process.exit(1);
+            }
+        });
+    } catch (error) {
+        console.error('Erro ao iniciar servidor:', error);
         process.exit(1);
     }
-});
+}
+
+startServer();
 
 module.exports = app;
