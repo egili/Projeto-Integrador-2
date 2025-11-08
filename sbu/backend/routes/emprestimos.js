@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { connection } = require('../database/connection');
 
-// Realizar empréstimo
 router.post('/', async (req, res) => {
     try {
         const { idAluno, idExemplar } = req.body;
@@ -14,7 +13,6 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // Verificar se o exemplar está disponível
         const [exemplar] = await connection.execute(
             'SELECT * FROM exemplar WHERE id = ? AND status = "disponivel"',
             [idExemplar]
@@ -27,13 +25,11 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // Registrar empréstimo
         const [result] = await connection.execute(
             'INSERT INTO emprestimo (idAluno, idExemplar, dataEmprestimo) VALUES (?, ?, NOW())',
             [idAluno, idExemplar]
         );
 
-        // Atualizar status do exemplar
         await connection.execute(
             'UPDATE exemplar SET status = "emprestado" WHERE id = ?',
             [idExemplar]
@@ -54,12 +50,10 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Realizar devolução
 router.put('/:id/devolver', async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Buscar empréstimo
         const [emprestimo] = await connection.execute(
             'SELECT * FROM emprestimo WHERE id = ? AND dataDevolucaoReal IS NULL',
             [id]
@@ -72,13 +66,11 @@ router.put('/:id/devolver', async (req, res) => {
             });
         }
 
-        // Registrar devolução
         await connection.execute(
             'UPDATE emprestimo SET dataDevolucaoReal = NOW() WHERE id = ?',
             [id]
         );
 
-        // Atualizar status do exemplar
         await connection.execute(
             'UPDATE exemplar SET status = "disponivel" WHERE id = ?',
             [emprestimo[0].idExemplar]
@@ -98,7 +90,6 @@ router.put('/:id/devolver', async (req, res) => {
     }
 });
 
-// Listar empréstimos de um aluno
 router.get('/aluno/:ra', async (req, res) => {
     try {
         const { ra } = req.params;
@@ -123,7 +114,7 @@ router.get('/aluno/:ra', async (req, res) => {
                 e.dataEmprestimo,
                 l.titulo,
                 l.autor,
-                ex.codigo as codigo_exemplar
+                ex.id as id_exemplar
             FROM emprestimo e
             INNER JOIN exemplar ex ON e.idExemplar = ex.id
             INNER JOIN livro l ON ex.idLivro = l.id

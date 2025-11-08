@@ -1,4 +1,8 @@
-const API_BASE_URL = 'http://localhost:3000/api';
+const getApiBaseUrl = () => {
+    const port = window.location.port || '3000';
+    return `http://localhost:${port}/api`;
+};
+const API_BASE_URL = getApiBaseUrl();
 
 class BibliotecaAPI {
     static async cadastrarLivro(livroData) {
