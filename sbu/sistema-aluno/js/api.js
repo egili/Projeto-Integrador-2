@@ -33,7 +33,34 @@ class BibliotecaAPI {
     }
 
     static async buscarLivros(termo) {
-        const response = await fetch(`${API_BASE_URL}/livros/busca?titulo=${encodeURIComponent(termo)}`);
+        const queryParams = new URLSearchParams({
+            q: termo,
+            titulo: termo,
+            autor: termo
+        });
+
+        let response = await fetch(`${API_BASE_URL}/livros/busca?${queryParams.toString()}`);
+
+        if (!response.ok) {
+            // Fallback para backends que ainda esperam apenas o parâmetro "titulo"
+            const fallbackParams = new URLSearchParams({ titulo: termo });
+            response = await fetch(`${API_BASE_URL}/livros/busca?${fallbackParams.toString()}`);
+        }
+
+        return await this.handleResponse(response);
+    }
+
+    static async obterClassificacaoAluno(ra) {
+        const url = `${API_BASE_URL}/classificacao/aluno/${encodeURIComponent(ra)}`;
+        const response = await fetch(url);
+
+        if (!response.ok) {
+            // Tenta extrair a mensagem de erro amigável retornada pela API
+            const errorData = await response.json().catch(() => null);
+            const mensagem = errorData?.error || 'Classificação indisponível';
+            throw new Error(mensagem);
+        }
+
         return await this.handleResponse(response);
     }
 }

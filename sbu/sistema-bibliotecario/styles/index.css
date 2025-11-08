@@ -281,7 +281,6 @@ label {
     font-size: 1.125rem;
     font-weight: 600;
     box-shadow: var(--shadow-md);
-    transition: all 0.3s ease;
     align-self: center;
     text-decoration: none;
     display: inline-block;
@@ -290,7 +289,6 @@ label {
 
 .btn-primary:hover {
     background: #2874A6;
-    transform: translateY(-2px);
     box-shadow: var(--shadow-lg);
 }
 
@@ -309,7 +307,6 @@ label {
     font-size: 1rem;
     font-weight: 600;
     box-shadow: var(--shadow-sm);
-    transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
     text-align: center;
@@ -319,7 +316,6 @@ label {
 
 .btn-secondary:hover {
     background: #2E86C1;
-    transform: translateY(-1px);
     box-shadow: var(--shadow-md);
 }
 
@@ -454,7 +450,6 @@ label {
     font-weight: 500;
     color: var(--gray-600);
     border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
     white-space: nowrap;
 }
 

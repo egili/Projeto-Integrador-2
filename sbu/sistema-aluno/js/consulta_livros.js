@@ -40,12 +40,13 @@ async function carregarLivrosDisponiveis() {
         const result = await BibliotecaAPI.listarLivrosDisponiveis();
         
         // Se chegou aqui sem exceção, a busca foi bem-sucedida
-        if (result && result.data) {
-            exibirLivrosNoCarrossel(result.data);
+        if (result && result.success && Array.isArray(result.data)) {
+            exibirLivrosNoCarrossel(result.data, 'Nenhum livro disponível no momento.');
         } else {
-            showError('Nenhum livro disponível no momento.');
+            exibirLivrosNoCarrossel([], 'Nenhum livro disponível no momento.');
         }
     } catch (error) {
+        exibirLivrosNoCarrossel([], 'Erro ao carregar livros disponíveis.');
         showError('Erro ao carregar livros: ' + error.message);
     }
 }
@@ -62,21 +63,22 @@ async function buscarLivros() {
         const result = await BibliotecaAPI.buscarLivros(termo);
         
         // Se chegou aqui sem exceção, a busca foi bem-sucedida
-        if (result && result.data) {
-            exibirLivrosNoCarrossel(result.data);
+        if (result && result.success && Array.isArray(result.data)) {
+            exibirLivrosNoCarrossel(result.data, 'Nenhum livro encontrado.');
         } else {
-            showError('Nenhum livro encontrado.');
+            exibirLivrosNoCarrossel([], 'Nenhum livro encontrado para sua busca.');
         }
     } catch (error) {
+        exibirLivrosNoCarrossel([], 'Erro ao buscar livros.');
         showError('Erro ao buscar livros: ' + error.message);
     }
 }
 
-function exibirLivrosNoCarrossel(livros) {
+function exibirLivrosNoCarrossel(livros, mensagemVazia = 'Nenhum livro encontrado') {
     const carrossel = document.getElementById('carrosselLivros');
     
     if (livros.length === 0) {
-        carrossel.innerHTML = '<div class="no-results">Nenhum livro encontrado</div>';
+        carrossel.innerHTML = `<div class="no-results">${mensagemVazia}</div>`;
         return;
     }
 

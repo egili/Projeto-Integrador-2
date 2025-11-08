@@ -83,7 +83,6 @@ header h1 {
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: var(--transition);
     text-decoration: none;
     display: inline-block;
 }
@@ -95,7 +94,6 @@ header h1 {
 
 .btn-primary:hover {
     background: #2874A6;
-    transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 

@@ -31,8 +31,8 @@ async function buscarPontuacao() {
         const alunoResult = await BibliotecaAPI.buscarAlunoPorRA(ra);
         
         // Verifica se retornou dados
-        if (!alunoResult || !alunoResult.data) {
-            showError('Aluno não encontrado. Verifique o RA digitado.');
+        if (!alunoResult || !alunoResult.success || !alunoResult.data) {
+            exibirMensagemErro('Aluno não encontrado. Verifique o RA digitado.');
             return;
         }
         
@@ -40,7 +40,7 @@ async function buscarPontuacao() {
         const raAluno = alunoResult.data.ra;
         if (!raAluno) {
             console.error('Dados do aluno:', alunoResult.data);
-            showError('Erro: RA do aluno não encontrado nos dados retornados.');
+            exibirMensagemErro('Erro: RA do aluno não encontrado nos dados retornados.');
             return;
         }
         
@@ -50,8 +50,8 @@ async function buscarPontuacao() {
         const classificacaoResult = await BibliotecaAPI.obterClassificacaoAluno(raAluno);
         
         // Verifica se retornou dados
-        if (!classificacaoResult || !classificacaoResult.data) {
-            showError('Erro ao buscar classificação do aluno');
+        if (!classificacaoResult || !classificacaoResult.success || !classificacaoResult.data) {
+            exibirMensagemErro('Erro ao buscar classificação do aluno.');
             return;
         }
         
@@ -60,9 +60,9 @@ async function buscarPontuacao() {
     } catch (error) {
         // Trata erros HTTP e de conexão
         if (error.message.includes('não encontrado') || error.message.includes('404')) {
-            showError('Aluno não encontrado. Verifique o RA digitado.');
+            exibirMensagemErro('Aluno não encontrado. Verifique o RA digitado.');
         } else {
-            showError('Erro ao buscar pontuação: ' + error.message);
+            exibirMensagemErro('Erro ao buscar pontuação: ' + error.message);
         }
     }
 }
@@ -76,18 +76,13 @@ function exibirPontuacao(dados) {
     const aluno = dados.aluno || dados;
     const stats = dados.estatisticas || dados;
     
-    // Calcular livros lidos (livros devolvidos)
     const livrosLidos = stats.livros_devolvidos || 0;
-    
-    // Determinar classificação baseada em livros lidos
-    let classificacao = 'Leitor Iniciante';
-    if (livrosLidos > 20) {
-        classificacao = 'Leitor Extremo';
-    } else if (livrosLidos > 10) {
-        classificacao = 'Leitor Ativo';
-    } else if (livrosLidos > 5) {
-        classificacao = 'Leitor Regular';
-    }
+    const livrosEmAndamento = stats.livros_em_andamento || 0;
+    const totalEmprestimos = stats.total_emprestimos || (livrosLidos + livrosEmAndamento);
+    const classificacaoNome = stats.classificacao || determinarClassificacaoLocal(livrosLidos);
+    const proximaMeta = typeof stats.proxima_meta === 'number' ? stats.proxima_meta : null;
+    const ultimaLeitura = stats.ultima_devolucao ? formatDate(stats.ultima_devolucao) : '—';
+    const ultimoEmprestimo = stats.ultimo_emprestimo ? formatDate(stats.ultimo_emprestimo) : '—';
     
     const nivelCores = {
         'Leitor Iniciante': 'beginner',
@@ -96,7 +91,8 @@ function exibirPontuacao(dados) {
         'Leitor Extremo': 'extreme'
     };
     
-    const corClasse = nivelCores[classificacao] || 'beginner';
+    const corClasse = nivelCores[classificacaoNome] || 'beginner';
+    const livrosParaMeta = proximaMeta ? Math.max(proximaMeta - livrosLidos, 0) : null;
     
     container.innerHTML = `
         <div class="pontuacao-card ${corClasse}">
@@ -107,13 +103,44 @@ function exibirPontuacao(dados) {
             <div class="pontuacao-info">
                 <div class="nivel-leitor">
                     <strong>Classificação:</strong>
-                    <span class="nivel ${corClasse}">${classificacao}</span>
+                    <span class="nivel ${corClasse}">${classificacaoNome}</span>
                 </div>
                 <div class="livros-lidos">
                     <strong>Livros lidos:</strong>
                     <span class="quantidade">${livrosLidos}</span>
                 </div>
+                <div class="livros-ativos">
+                    <strong>Em andamento:</strong>
+                    <span class="quantidade">${livrosEmAndamento}</span>
+                </div>
+                <div class="livros-total">
+                    <strong>Total de empréstimos:</strong>
+                    <span class="quantidade">${totalEmprestimos}</span>
+                </div>
+            </div>
+            <div class="meta-info">
+                <p><strong>Último empréstimo:</strong> ${ultimoEmprestimo}</p>
+                <p><strong>Última devolução:</strong> ${ultimaLeitura}</p>
+                ${livrosParaMeta !== null ? `<p class="proxima-meta">Faltam ${livrosParaMeta} livro(s) para o próximo nível.</p>` : ''}
             </div>
         </div>
     `;
+}
+
+function determinarClassificacaoLocal(livrosLidos) {
+    let classificacao = 'Leitor Iniciante';
+    if (livrosLidos > 20) {
+        classificacao = 'Leitor Extremo';
+    } else if (livrosLidos > 10) {
+        classificacao = 'Leitor Ativo';
+    } else if (livrosLidos > 5) {
+        classificacao = 'Leitor Regular';
+    }
+    return classificacao;
+}
+
+function exibirMensagemErro(mensagem) {
+    const container = document.getElementById('resultadoPontuacao');
+    container.innerHTML = `<div class="no-results">${mensagem}</div>`;
+    showError(mensagem);
 }

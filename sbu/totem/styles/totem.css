@@ -228,13 +228,11 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
     background-color: #2E86C1;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
 }
 
 .btn-success {
@@ -247,13 +245,11 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
 }
 
 .btn-success:hover {
     background-color: #229954;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -266,13 +262,11 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
     background-color: #7F8C8D;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
 }
 
 .action-buttons {
