@@ -1,4 +1,4 @@
-/* Estilos específicos para a página de pontuação do leitor */
+
 .general-screen {
     background: var(--light-background);
     min-height: 100vh;
@@ -218,7 +218,7 @@
     color: var(--dark-text);
 }
 
-/* Estados vazios */
+
 .meta-info {
     margin-top: 20px;
     color: var(--muted-text);
@@ -241,7 +241,7 @@
     font-style: italic;
 }
 
-/* Responsividade */
+
 @media (max-width: 768px) {
     .container {
         margin: 10px;

@@ -1,8 +1,3 @@
-/* =======================================================*/
-/* ARQUIVO DA CONSULTA DE LIVROS (consulta_livros.css)    */
-/* Estilos que se aplicam APENAS ao consulta_livros.html. */
-/* =======================================================*/
-
 .general-screen {
   background: var(--light-background);
   min-height: 100vh;
@@ -203,7 +198,6 @@
   font-style: italic;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
   .container {
     margin: 10px;

@@ -269,6 +269,11 @@ h2 {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
+.btn-full {
+    width: 100%;
+    margin-top: 10px;
+}
+
 .action-buttons {
     display: flex;
     justify-content: center;
@@ -429,7 +434,7 @@ h2 {
     margin-top: 10px;
 }
 
-/* Sem resultados */
+
 .no-results {
     text-align: center;
     padding: 50px;
@@ -444,22 +449,6 @@ h2 {
     margin-bottom: 20px;
 }
 
-/* Seção de cadastro */
-.cadastro-section {
-    background-color: #FEF9E7;
-    border: 2px solid #F4D03F;
-    border-radius: 8px;
-    padding: 25px;
-    margin: 25px auto;
-    max-width: 600px;
-    text-align: center;
-}
-
-.cadastro-section p {
-    font-size: 18px;
-    color: #7D6608;
-    margin-bottom: 20px;
-}
 
 .emprestimos-section {
     margin-top: 25px;

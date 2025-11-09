@@ -225,7 +225,6 @@
     margin: 5px 0;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
     .container {
         margin: 10px;
@@ -246,7 +245,6 @@
     }
 }
 
-/* Animações */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -256,7 +254,6 @@
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Estados de loading */
 .spinner {
     display: inline-block;
     width: 20px;

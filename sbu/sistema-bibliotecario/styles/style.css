@@ -1,16 +1,13 @@
-/* ========================
-   Biblioteca - Sistema Bibliotecário
-   Estilos Base
-   ======================== */
 
-/* Reset */
+
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Variáveis CSS */
+
 :root {
     --primary-color: #2c3e50;
     --secondary-color: #3498db;
@@ -37,7 +34,7 @@ body {
     padding: 20px;
 }
 
-/* Header */
+
 header {
     background: white;
     padding: 2rem;
@@ -53,7 +50,7 @@ header h1 {
     margin-bottom: 0.5rem;
 }
 
-/* Formulários */
+
 .form-input,
 .input-field,
 .search-input {
@@ -73,7 +70,7 @@ header h1 {
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
-/* Botões */
+
 .btn-primary,
 .btn-secondary,
 .btn-danger {
@@ -115,7 +112,7 @@ header h1 {
     background: #c0392b;
 }
 
-/* Tabelas */
+
 table {
     width: 100%;
     border-collapse: collapse;
@@ -144,7 +141,7 @@ tr:hover {
     background: #f8f9fa;
 }
 
-/* Cards */
+
 .card {
     background: white;
     border-radius: var(--border-radius);
@@ -153,7 +150,7 @@ tr:hover {
     margin-bottom: 1.5rem;
 }
 
-/* Footer */
+
 footer {
     margin-top: 3rem;
     text-align: center;
@@ -171,7 +168,7 @@ footer {
     margin: 0.5rem 0;
 }
 
-/* Utilitários */
+
 .text-center {
     text-align: center;
 }
@@ -181,7 +178,7 @@ footer {
 .mb-1 { margin-bottom: 1rem; }
 .mb-2 { margin-bottom: 2rem; }
 
-/* Responsividade */
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;
