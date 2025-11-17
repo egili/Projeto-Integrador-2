@@ -35,6 +35,8 @@ const alunosRoutes = require('./routes/alunos');
 const livrosRoutes = require('./routes/livros');
 const emprestimosRoutes = require('./routes/emprestimos');
 const exemplaresRoutes = require('./routes/exemplares');
+const classificacaoRoutes = require('./routes/classificacao');
+
 
 app.get('/api', (req, res) => {
     res.json({
@@ -71,6 +73,8 @@ app.use('/api/alunos', alunosRoutes);
 app.use('/api/livros', livrosRoutes);
 app.use('/api/emprestimos', emprestimosRoutes);
 app.use('/api/exemplares', exemplaresRoutes);
+app.use('/api/classificacao', classificacaoRoutes);
+
 
 /* ============================================================
    ROTA 404 PARA API
