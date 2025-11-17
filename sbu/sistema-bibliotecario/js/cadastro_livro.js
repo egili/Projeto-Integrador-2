@@ -1,8 +1,18 @@
 document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('registration-form');
+    const anoSelect = document.getElementById('anoPublicacao');
     const categoriaSelect = document.getElementById('categoria');
     const outrosCategoriaGroup = document.getElementById('outros-categoria-group');
 
+    // Preencher lista de anos de 0 até 2025
+    for (let i = 0; i <= 2025; i++) {
+        const option = document.createElement('option');
+        option.value = i;
+        option.textContent = i;
+        anoSelect.appendChild(option);
+    }
+
+    // Mostrar campo "Outros" se categoria = Outros
     if (categoriaSelect && outrosCategoriaGroup) {
         categoriaSelect.addEventListener('change', function() {
             if (this.value === 'Outros') {
@@ -13,10 +23,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Submit do formulário
     if (registrationForm) {
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();
-            
+
             const formData = new FormData(registrationForm);
             const livroData = {
                 titulo: formData.get('titulo'),
@@ -24,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 autor: formData.get('autor'),
                 editora: formData.get('editora'),
                 anoPublicacao: parseInt(formData.get('anoPublicacao')),
-                categoria: formData.get('categoria') === 'Outros' 
+                categoria: formData.get('categoria') === 'Outros'
                     ? (formData.get('outros-categoria') || 'Outros')
                     : formData.get('categoria'),
                 numeroExemplares: parseInt(formData.get('numeroExemplares'))
@@ -35,14 +46,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 registerBtn.disabled = true;
                 registerBtn.querySelector('.btn-text').textContent = 'Cadastrando...';
             }
-            
+
             try {
                 const result = await BibliotecaAPI.cadastrarLivro(livroData);
                 
                 if (result.success) {
                     document.getElementById('cadastro-form').style.display = 'none';
                     document.getElementById('step2-success').style.display = 'block';
-                    
+
                     document.getElementById('new-register-btn').addEventListener('click', function() {
                         document.getElementById('step2-success').style.display = 'none';
                         document.getElementById('cadastro-form').style.display = 'block';

@@ -24,9 +24,10 @@ function validarLivro({ titulo, isbn, autor, editora, anoPublicacao, numeroExemp
 
     // Ano: não pode ser futuro
     const anoAtual = new Date().getFullYear();
-    if (!anoPublicacao || anoPublicacao > anoAtual) {
-        erros.push("Ano de publicação inválido.");
-    }
+    if (!anoPublicacao || !/^\d{4}$/.test(anoPublicacao) || anoPublicacao > anoAtual) {
+        erros.push(`Ano de publicação inválido. Deve ter 4 dígitos e não pode ser maior que ${anoAtual}.`);
+}
+
 
     // Número de exemplares: apenas inteiro >= 0
     if (numeroExemplares == null || numeroExemplares < 0) {
