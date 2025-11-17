@@ -2,6 +2,68 @@ const express = require('express');
 const router = express.Router();
 const { connection } = require('../database/connection');
 
+/* ================================================
+   LISTAR EMPRÉSTIMOS PENDENTES
+================================================ */
+router.get('/pendentes', async (req, res) => {
+    try {
+        const [rows] = await connection.execute(`
+            SELECT 
+                e.id,
+                l.titulo AS livro,
+                a.nome AS aluno,
+                DATE_FORMAT(e.dataEmprestimo, '%Y-%m-%dT%H:%i:%s') AS data, 
+                ex.id AS id_exemplar
+            FROM emprestimo e
+            INNER JOIN aluno a ON e.idAluno = a.id
+            INNER JOIN exemplar ex ON e.idExemplar = ex.id
+            INNER JOIN livro l ON ex.idLivro = l.id
+            WHERE e.dataDevolucaoReal IS NULL
+            ORDER BY e.dataEmprestimo DESC
+        `);
+
+        console.log('Pendentes carregados via rota:', rows.length, 'registros');
+        res.json({ success: true, data: rows });
+
+    } catch (error) {
+        console.error("Erro ao carregar pendentes:", error);
+        res.status(500).json({ success: false, error: "Erro interno do servidor" });
+    }
+});
+
+/* ================================================
+   LISTAR HISTÓRICO DE EMPRÉSTIMOS
+================================================ */
+router.get('/historico', async (req, res) => {
+    try {
+        const [rows] = await connection.execute(`
+            SELECT 
+                e.id,
+                l.titulo AS livro,
+                a.nome AS aluno,
+                DATE_FORMAT(e.dataEmprestimo, '%Y-%m-%d %H:%i:%s') AS data_emprestimo,
+                DATE_FORMAT(e.dataDevolucaoReal, '%Y-%m-%d %H:%i:%s') AS data_devolucao,
+                ex.id AS id_exemplar
+            FROM emprestimo e
+            INNER JOIN aluno a ON e.idAluno = a.id
+            INNER JOIN exemplar ex ON e.idExemplar = ex.id
+            INNER JOIN livro l ON ex.idLivro = l.id
+            WHERE e.dataDevolucaoReal IS NOT NULL
+            ORDER BY e.dataEmprestimo DESC
+        `);
+
+        console.log('Histórico carregado via rota:', rows.length, 'registros');
+        res.json({ success: true, data: rows });
+
+    } catch (error) {
+        console.error("Erro ao carregar histórico:", error);
+        res.status(500).json({ success: false, error: "Erro interno do servidor" });
+    }
+});
+
+/* ================================================
+   REALIZAR EMPRÉSTIMO
+================================================ */
 router.post('/', async (req, res) => {
     try {
         const { idAluno, idExemplar } = req.body;
@@ -13,6 +75,7 @@ router.post('/', async (req, res) => {
             });
         }
 
+        // Verificar disponibilidade do exemplar
         const [exemplar] = await connection.execute(
             'SELECT * FROM exemplar WHERE id = ? AND status = "disponivel"',
             [idExemplar]
@@ -25,11 +88,13 @@ router.post('/', async (req, res) => {
             });
         }
 
+        // Registrar empréstimo
         const [result] = await connection.execute(
             'INSERT INTO emprestimo (idAluno, idExemplar, dataEmprestimo) VALUES (?, ?, NOW())',
             [idAluno, idExemplar]
         );
 
+        // Marcar exemplar como emprestado
         await connection.execute(
             'UPDATE exemplar SET status = "emprestado" WHERE id = ?',
             [idExemplar]
@@ -50,10 +115,14 @@ router.post('/', async (req, res) => {
     }
 });
 
+/* ================================================
+   DEVOLVER UM LIVRO
+================================================ */
 router.put('/:id/devolver', async (req, res) => {
     try {
         const { id } = req.params;
 
+        // Verificar empréstimo ativo
         const [emprestimo] = await connection.execute(
             'SELECT * FROM emprestimo WHERE id = ? AND dataDevolucaoReal IS NULL',
             [id]
@@ -66,11 +135,13 @@ router.put('/:id/devolver', async (req, res) => {
             });
         }
 
+        // Registrar devolução
         await connection.execute(
             'UPDATE emprestimo SET dataDevolucaoReal = NOW() WHERE id = ?',
             [id]
         );
 
+        // Liberar exemplar
         await connection.execute(
             'UPDATE exemplar SET status = "disponivel" WHERE id = ?',
             [emprestimo[0].idExemplar]
@@ -90,6 +161,9 @@ router.put('/:id/devolver', async (req, res) => {
     }
 });
 
+/* ================================================
+   LISTAR EMPRÉSTIMOS ATIVOS POR RA DE ALUNO
+================================================ */
 router.get('/aluno/:ra', async (req, res) => {
     try {
         const { ra } = req.params;
@@ -107,14 +181,14 @@ router.get('/aluno/:ra', async (req, res) => {
             });
         }
 
-        // Buscar empréstimos ativos
+        // Buscar empréstimos ativos do aluno
         const [emprestimos] = await connection.execute(`
             SELECT 
                 e.id,
                 e.dataEmprestimo,
                 l.titulo,
                 l.autor,
-                ex.id as id_exemplar
+                ex.id AS id_exemplar
             FROM emprestimo e
             INNER JOIN exemplar ex ON e.idExemplar = ex.id
             INNER JOIN livro l ON ex.idLivro = l.id
@@ -137,4 +211,3 @@ router.get('/aluno/:ra', async (req, res) => {
 });
 
 module.exports = router;
-
