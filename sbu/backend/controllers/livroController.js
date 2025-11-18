@@ -2,36 +2,23 @@ const Livro = require('../models/livro');
 const Exemplar = require('../models/exemplar');
 const { validarLivro } = require('../helpers/validations');
 
+// --- CADASTRO DE LIVRO ---
 exports.cadastrarLivro = async (req, res) => {
     try {
-        // 1. Receber dados da requisição
         let { titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares } = req.body;
 
-        // --- CORREÇÃO DE FLUXO E LIMPEZA DO ISBN ---
-        
-        // 2. Limpar o ISBN imediatamente
-        if (isbn) {
-            // Remove todos os não-dígitos para garantir que a validação e o BD recebam a forma pura
-            isbn = String(isbn).replace(/[^0-9]/g, '');
-        } else {
-            // Garante que o isbn é null se estiver vazio
-            isbn = null; 
-        }
-        
-        // Nota: O ISBN agora está LIMPO ou NULL.
-        // ------------------------------------------
+        // Limpeza e normalização do ISBN
+        if (isbn) { isbn = String(isbn).replace(/[^0-9]/g, ''); } else { isbn = null; }
 
-        // 3. Validar campos (usando o ISBN JÁ LIMPO)
-        const erros = validarLivro({ titulo, isbn, autor, editora, anoPublicacao, numeroExemplares });
-        if (erros.length > 0) {
-            return res.status(400).json({ success: false, error: erros.join(' ') });
-        }
+        // Validação
+        const erros = validarLivro({ titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares });
+        if (erros.length > 0) { return res.status(400).json({ success: false, error: erros.join(' ') }); }
 
-        // 4. Criar livro (usando o ISBN JÁ LIMPO)
+        // Criação do livro
         const result = await Livro.criar({ titulo, isbn, autor, editora, anoPublicacao, categoria });
         const idLivro = result.insertId;
 
-        // 5. Criar exemplares
+        // Criação de exemplares
         let quantidadeExemplares = parseInt(numeroExemplares);
         if (isNaN(quantidadeExemplares) || quantidadeExemplares < 0) quantidadeExemplares = 0;
 
@@ -42,36 +29,28 @@ exports.cadastrarLivro = async (req, res) => {
             resultadoExemplares = { exemplares: [], totalCriados: 0, totalErros: 0, erros: [] };
         }
 
-        // 6. Resposta
+        // Resposta
         res.status(201).json({
             success: true,
             message: `Livro cadastrado com sucesso. ${resultadoExemplares.totalCriados} exemplar(es) criado(s).`,
-            data: { 
-                id: idLivro,
-                titulo,
-                isbn, // O ISBN aqui é o valor LIMPO ou null
-                autor,
-                editora,
-                anoPublicacao,
-                categoria,
-                exemplaresCriados: resultadoExemplares.totalCriados,
-                exemplaresSolicitados: quantidadeExemplares,
-                exemplaresComErro: resultadoExemplares.totalErros,
-                erros: resultadoExemplares.erros.length > 0 ? resultadoExemplares.erros : undefined
-            }
+            data: { id: idLivro, titulo, isbn, autor, editora, anoPublicacao, categoria, exemplaresCriados: resultadoExemplares.totalCriados }
         });
 
     } catch (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(400).json({ success: false, error: 'ISBN já cadastrado' });
-        }
+        if (error.code === 'ER_DUP_ENTRY') { return res.status(400).json({ success: false, error: 'ISBN já cadastrado' }); }
+        
+        const errorMessage = error.message; 
+        console.error("Erro no cadastro:", error); 
+        
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            details: errorMessage
         });
     }
 };
+
+// --- LISTAGEM E BUSCA ---
 
 exports.listarTodosLivros = async (req, res) => {
     try {
@@ -117,57 +96,38 @@ exports.buscarLivroPorId = async (req, res) => {
     }
 };
 
+// --- ATUALIZAÇÃO E REMOÇÃO ---
+
 exports.atualizarLivro = async (req, res) => {
     try {
         const { id } = req.params;
         let { titulo, isbn, autor, editora, anoPublicacao, categoria } = req.body;
         
-        // 1. Limpar ISBN (como feito no cadastro)
-        if (isbn) {
-            isbn = String(isbn).replace(/[^0-9]/g, '');
-        } else {
-            isbn = null;
-        }
+        if (isbn) { isbn = String(isbn).replace(/[^0-9]/g, ''); } else { isbn = null; }
 
-        // 2. Validar campos (Reutilizamos a mesma validação!)
-        // Nota: numeroExemplares não é obrigatório na edição do livro, apenas na criação
-        const erros = validarLivro({ titulo, isbn, autor, editora, anoPublicacao, numeroExemplares: 1 }); // Passamos 1 para satisfazer a validação >= 0
+        const erros = validarLivro({ titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares: 1 }); 
 
-        if (erros.length > 0) {
-            return res.status(400).json({ success: false, error: erros.join(' ') });
-        }
+        if (erros.length > 0) { return res.status(400).json({ success: false, error: erros.join(' ') }); }
 
-        // 3. Atualizar livro
         const result = await Livro.atualizar(id, { titulo, isbn, autor, editora, anoPublicacao, categoria });
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ success: false, error: 'Livro não encontrado.' });
-        }
+        if (result.affectedRows === 0) { return res.status(404).json({ success: false, error: 'Livro não encontrado.' }); }
 
         res.json({ success: true, message: 'Livro atualizado com sucesso.' });
 
     } catch (error) {
-        // Tratar erro de duplicidade de ISBN, se aplicável
-        if (error.code === 'ER_DUP_ENTRY') {
-            return res.status(400).json({ success: false, error: 'ISBN já cadastrado em outro livro.' });
-        }
+        if (error.code === 'ER_DUP_ENTRY') { return res.status(400).json({ success: false, error: 'ISBN já cadastrado em outro livro.' }); }
         res.status(500).json({ success: false, error: 'Erro interno do servidor na atualização.' });
     }
 };
 
-// Função para remover um livro (DELETE /api/livros/:id)
 exports.removerLivro = async (req, res) => {
     try {
         const { id } = req.params;
         
-        // **IMPORTANTE**: Você deve verificar se existem empréstimos pendentes para qualquer exemplar deste livro.
-        // Se houver, a remoção deve ser bloqueada. (Requisita lógica extra no Exemplar/Emprestimo Model)
-        
         const result = await Livro.remover(id);
 
-        if (result.affectedRows === 0) {
-            return res.status(404).json({ success: false, error: 'Livro não encontrado.' });
-        }
+        if (result.affectedRows === 0) { return res.status(404).json({ success: false, error: 'Livro não encontrado.' }); }
 
         res.json({ success: true, message: `Livro ID ${id} e exemplares relacionados removidos.` });
 
@@ -175,4 +135,3 @@ exports.removerLivro = async (req, res) => {
         res.status(500).json({ success: false, error: 'Erro interno do servidor na remoção.' });
     }
 };
-
