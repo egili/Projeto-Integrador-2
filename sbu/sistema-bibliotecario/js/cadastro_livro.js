@@ -29,9 +29,12 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
 
             const formData = new FormData(registrationForm);
+            const isbnValue = formData.get('isbn');
+            const normalizedIsbn = isbnValue ? isbnValue.trim() : null;
+
             const livroData = {
                 titulo: formData.get('titulo'),
-                isbn: formData.get('isbn'),
+                isbn: normalizedIsbn,
                 autor: formData.get('autor'),
                 editora: formData.get('editora'),
                 anoPublicacao: parseInt(formData.get('anoPublicacao')),

@@ -4,19 +4,34 @@ const { validarLivro } = require('../helpers/validations');
 
 exports.cadastrarLivro = async (req, res) => {
     try {
-        const { titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares } = req.body;
+        // 1. Receber dados da requisição
+        let { titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares } = req.body;
 
-        // Validar campos
+        // --- CORREÇÃO DE FLUXO E LIMPEZA DO ISBN ---
+        
+        // 2. Limpar o ISBN imediatamente
+        if (isbn) {
+            // Remove todos os não-dígitos para garantir que a validação e o BD recebam a forma pura
+            isbn = String(isbn).replace(/[^0-9]/g, '');
+        } else {
+            // Garante que o isbn é null se estiver vazio
+            isbn = null; 
+        }
+        
+        // Nota: O ISBN agora está LIMPO ou NULL.
+        // ------------------------------------------
+
+        // 3. Validar campos (usando o ISBN JÁ LIMPO)
         const erros = validarLivro({ titulo, isbn, autor, editora, anoPublicacao, numeroExemplares });
         if (erros.length > 0) {
             return res.status(400).json({ success: false, error: erros.join(' ') });
         }
 
-        // Criar livro
+        // 4. Criar livro (usando o ISBN JÁ LIMPO)
         const result = await Livro.criar({ titulo, isbn, autor, editora, anoPublicacao, categoria });
         const idLivro = result.insertId;
 
-        // Criar exemplares
+        // 5. Criar exemplares
         let quantidadeExemplares = parseInt(numeroExemplares);
         if (isNaN(quantidadeExemplares) || quantidadeExemplares < 0) quantidadeExemplares = 0;
 
@@ -27,13 +42,14 @@ exports.cadastrarLivro = async (req, res) => {
             resultadoExemplares = { exemplares: [], totalCriados: 0, totalErros: 0, erros: [] };
         }
 
+        // 6. Resposta
         res.status(201).json({
             success: true,
             message: `Livro cadastrado com sucesso. ${resultadoExemplares.totalCriados} exemplar(es) criado(s).`,
             data: { 
                 id: idLivro,
                 titulo,
-                isbn,
+                isbn, // O ISBN aqui é o valor LIMPO ou null
                 autor,
                 editora,
                 anoPublicacao,

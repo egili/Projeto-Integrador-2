@@ -1,31 +1,50 @@
 // helpers/validations.js
 function validarLivro({ titulo, isbn, autor, editora, anoPublicacao, numeroExemplares }) {
     const erros = [];
+    const anoAtual = new Date().getFullYear();
+    const regexApenasTexto = /^[A-Za-zÀ-ÿ\s]+$/;
 
     // Título: letras, espaços, acentos, mínimo 5 caracteres
-    if (!titulo || !/^[A-Za-zÀ-ÿ\s]{5,}$/.test(titulo)) {
-        erros.push("Título inválido (mínimo 5 letras, apenas letras e espaços).");
+    const tituloLimpo = titulo ? titulo.trim() : '';
+    if (tituloLimpo.length < 5) {
+        erros.push("Título inválido (mínimo 5 caracteres obrigatórios).");
+    } else if (!regexApenasTexto.test(tituloLimpo)) {
+        erros.push("Título deve conter apenas letras, acentos e espaços.");
     }
 
     // ISBN: apenas 13 dígitos ou formato com "-"
-    if (isbn && !/^\d{13}$|^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$/.test(isbn)) {
-        erros.push("ISBN inválido (deve ter 13 números ou formato com '-').");
+    if (isbn) {
+        const isbnApenasNumeros = String(isbn).replace(/[^0-9]/g, ''); // Limpa qualquer coisa que não seja dígito (hífens, espaços, etc.)
+
+        if (isbnApenasNumeros.length !== 13) {
+            erros.push("ISBN inválido (deve ter exatamente 13 números, desconsiderando hífens).");
+        }
     }
 
     // Autor: letras, espaços, acentos, mínimo 5 caracteres
-    if (!autor || !/^[A-Za-zÀ-ÿ\s]{5,}$/.test(autor)) {
-        erros.push("Autor inválido (mínimo 5 letras).");
+    const autorLimpo = autor ? autor.trim() : '';
+    if (autorLimpo.length < 4) {
+        erros.push("Autor inválido (mínimo 4 caracteres obrigatórios).");
+    } else if (!regexApenasTexto.test(autorLimpo)) {
+        erros.push("Autor deve conter apenas letras, acentos e espaços.");
     }
 
     // Editora: letras, espaços, acentos, mínimo 2 caracteres
-    if (!editora || !/^[A-Za-zÀ-ÿ\s]{2,}$/.test(editora)) {
-        erros.push("Editora inválida (mínimo 2 letras).");
+    const editoraLimpa = editora ? editora.trim() : '';
+    if (editoraLimpa.length < 2) {
+        erros.push("Editora inválida (mínimo 2 caracteres obrigatórios).");
+    } else if (!regexApenasTexto.test(editoraLimpa)) {
+        erros.push("Editora deve conter apenas letras, acentos e espaços.");
     }
 
     // Ano: não pode ser futuro
-    const anoAtual = new Date().getFullYear();
-    if (!anoPublicacao || !/^\d{4}$/.test(anoPublicacao) || anoPublicacao > anoAtual) {
-        erros.push(`Ano de publicação inválido. Deve ter 4 dígitos e não pode ser maior que ${anoAtual}.`);
+    if (anoPublicacao === undefined || 
+        anoPublicacao === null || 
+        isNaN(anoPublicacao) ||          
+        anoPublicacao > anoAtual ||      
+        anoPublicacao < 0                
+    ) {
+        erros.push(`Ano de publicação inválido. Não pode ser maior que ${anoAtual}.`);
 }
 
 
