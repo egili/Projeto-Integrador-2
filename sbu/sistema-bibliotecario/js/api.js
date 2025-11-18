@@ -50,6 +50,40 @@ class BibliotecaAPI {
         }
     }
 
+    static async buscarLivroPorId(id) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/livros/${id}`);
+            const data = await handleResponse(response);
+            return data?.data || null; // Retorna o objeto do livro
+        } catch (error) {
+            console.error(`Erro ao buscar livro ${id}:`, error);
+            throw error;
+        }
+    }
+    
+    static async atualizarLivro(id, livroData) {
+        const response = await fetch(`${API_BASE_URL}/livros/${id}`, {
+            method: 'PUT', // Usamos PUT para atualizar um recurso existente
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(livroData)
+        });
+        return await handleResponse(response);
+    }
+
+    static async removerLivroCompleto(id) {
+        const response = await fetch(`${API_BASE_URL}/livros/${id}`, {
+            method: 'DELETE',
+        });
+        return await handleResponse(response);
+    }
+
+    static async removerExemplar(idExemplar) {
+        const response = await fetch(`${API_BASE_URL}/exemplares/${idExemplar}`, {
+            method: 'DELETE',
+        });
+        return await handleResponse(response);
+    }
+
     static async cadastrarExemplar(exemplarData) {
         const response = await fetch(`${API_BASE_URL}/exemplares`, {
             method: 'POST',

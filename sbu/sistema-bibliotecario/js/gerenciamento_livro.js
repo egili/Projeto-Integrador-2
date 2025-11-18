@@ -56,32 +56,64 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    window.removerLivro = async function(id, titulo) {
+        if (!confirm(`ATENÇÃO! Você tem certeza que deseja remover O LIVRO COMPLETO "${titulo}" (ID: ${id})? TODOS os exemplares serão apagados.`)) {
+            return;
+        }
+
+        try {
+            // Chamada à API para remoção (ENDPOINT QUE VOCÊ CRIARÁ NO BACK-END)
+            const result = await BibliotecaAPI.removerLivroCompleto(id); 
+
+            if (result.success) {
+                alert(`Livro "${titulo}" e todos os seus exemplares foram removidos com sucesso.`);
+                carregarLivros(); 
+            } else {
+                alert(`Erro ao remover livro: ${result.error || 'Erro desconhecido.'}`);
+            }
+
+        } catch (err) {
+            alert(`Erro na comunicação com a API ao remover livro: ${err.message}`);
+            console.error('Erro ao remover livro:', err);
+        }
+    }
+
     // Renderiza lista de livros
     function renderizarLivros(lista) {
-        let html = `
-            <table class="table-ranking">
-                <tr>
-                    <th>ID</th>
-                    <th>Título</th>
-                    <th>Autor</th>
-                    <th>Editora</th>
-                </tr>
-        `;
+    let html = `
+        <table class="table-ranking">
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Editora</th>
+                <th style="width: 150px;">Ações</th>
+            </tr>
+    `;
 
         lista.forEach(livro => {
-            html += `
-                <tr>
-                    <td>${livro.id}</td>
-                    <td>${livro.titulo}</td>
-                    <td>${livro.autor || "—"}</td>
-                    <td>${livro.editora || "—"}</td>
-                </tr>`;
-        });
+        // --- CORREÇÃO: DEFINIR A VARIÁVEL AQUI ---
+        // Garante que o título é seguro para ser passado como string em um onclick
+        const tituloEscapado = livro.titulo.replace(/'/g, "\\'");
+        // ------------------------------------------
 
-        html += "</table>";
+        html += `
+            <tr>
+                <td>${livro.id}</td>
+                <td>${livro.titulo}</td>
+                <td>${livro.autor || "—"}</td>
+                <td>${livro.editora || "—"}</td>
+                <td>
+                    <button class="btn-secondary-editar" onclick="window.location.href='editar_livro.html?id=${livro.id}'">Editar</button>
+                    <button class="btn-secondary-editar" onclick="removerLivro(${livro.id}, '${tituloEscapado}')">Remover</button>
+                </td>
+            </tr>`;
+    });
 
-        loadArea.livros.innerHTML = html;
-    }
+    html += "</table>";
+
+    loadArea.livros.innerHTML = html;
+}
 
     // -----------------------------------------
     // Pendentes

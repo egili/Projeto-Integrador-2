@@ -117,29 +117,62 @@ exports.buscarLivroPorId = async (req, res) => {
     }
 };
 
-// Adicionar exemplares depois do cadastro
-exports.adicionarExemplares = async (req, res) => {
+exports.atualizarLivro = async (req, res) => {
     try {
-        const idLivro = parseInt(req.params.idLivro);
-        const quantidade = parseInt(req.body.quantidade);
-
-        if (isNaN(quantidade) || quantidade <= 0) {
-            return res.status(400).json({ success: false, error: 'Quantidade inválida' });
+        const { id } = req.params;
+        let { titulo, isbn, autor, editora, anoPublicacao, categoria } = req.body;
+        
+        // 1. Limpar ISBN (como feito no cadastro)
+        if (isbn) {
+            isbn = String(isbn).replace(/[^0-9]/g, '');
+        } else {
+            isbn = null;
         }
 
-        const livro = await Livro.buscarPorId(idLivro);
-        if (!livro) return res.status(404).json({ success: false, error: 'Livro não encontrado' });
+        // 2. Validar campos (Reutilizamos a mesma validação!)
+        // Nota: numeroExemplares não é obrigatório na edição do livro, apenas na criação
+        const erros = validarLivro({ titulo, isbn, autor, editora, anoPublicacao, numeroExemplares: 1 }); // Passamos 1 para satisfazer a validação >= 0
 
-        const resultado = await Exemplar.criarMultiplos(idLivro, quantidade);
+        if (erros.length > 0) {
+            return res.status(400).json({ success: false, error: erros.join(' ') });
+        }
 
-        res.json({
-            success: true,
-            message: `${resultado.totalCriados} exemplar(es) adicionados.`,
-            data: resultado
-        });
+        // 3. Atualizar livro
+        const result = await Livro.atualizar(id, { titulo, isbn, autor, editora, anoPublicacao, categoria });
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, error: 'Livro não encontrado.' });
+        }
+
+        res.json({ success: true, message: 'Livro atualizado com sucesso.' });
 
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, error: 'Erro interno do servidor' });
+        // Tratar erro de duplicidade de ISBN, se aplicável
+        if (error.code === 'ER_DUP_ENTRY') {
+            return res.status(400).json({ success: false, error: 'ISBN já cadastrado em outro livro.' });
+        }
+        res.status(500).json({ success: false, error: 'Erro interno do servidor na atualização.' });
     }
 };
+
+// Função para remover um livro (DELETE /api/livros/:id)
+exports.removerLivro = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        // **IMPORTANTE**: Você deve verificar se existem empréstimos pendentes para qualquer exemplar deste livro.
+        // Se houver, a remoção deve ser bloqueada. (Requisita lógica extra no Exemplar/Emprestimo Model)
+        
+        const result = await Livro.remover(id);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, error: 'Livro não encontrado.' });
+        }
+
+        res.json({ success: true, message: `Livro ID ${id} e exemplares relacionados removidos.` });
+
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Erro interno do servidor na remoção.' });
+    }
+};
+

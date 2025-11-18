@@ -13,25 +13,40 @@ class Exemplar {
 
     // Criar múltiplos exemplares
     static async criarMultiplos(idLivro, quantidade) {
-        const exemplares = [];
-        const erros = [];
+    if (quantidade <= 0) {
+        return { totalCriados: 0, totalErros: 0, exemplares: [] };
+    }
 
-        for (let i = 1; i <= quantidade; i++) {
-            try {
-                const result = await Exemplar.criar({ idLivro, status: 'disponivel' });
-                exemplares.push({ id: result.insertId, status: 'disponivel' });
-            } catch (error) {
-                erros.push({ indice: i, erro: error.message });
-            }
-        }
+    const values = [];
+    const placeholders = [];
+    
+    // 1. Constrói a lista de valores e placeholders
+    for (let i = 0; i < quantidade; i++) {
+        placeholders.push('(?, ?)'); // Cada par representa (idLivro, status)
+        values.push(idLivro, 'disponivel');
+    }
 
-        return {
-            exemplares,
-            totalCriados: exemplares.length,
-            totalErros: erros.length,
-            erros
+    const query = `INSERT INTO exemplar (idLivro, status) VALUES ${placeholders.join(', ')}`;
+
+    try {
+        // 2. Executa UMA ÚNICA consulta no DB
+        const [result] = await connection.execute(query, values);
+        
+        // Retorna o resultado com base no número de linhas afetadas
+        return { 
+            totalCriados: result.affectedRows, 
+            totalErros: 0, 
+            exemplares: [] // Não podemos obter os IDs inseridos em massa facilmente, mas a contagem é precisa.
+        };
+    } catch (error) {
+        console.error("Erro ao criar múltiplos exemplares:", error);
+        return { 
+            totalCriados: 0, 
+            totalErros: quantidade, 
+            erros: [error.message] 
         };
     }
+}
 
     // Buscar exemplar por ID
     static async buscarPorId(id) {

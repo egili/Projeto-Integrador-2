@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/index.css">
+    <title>Editar Livro</title>
+</head>
+<body class="bibliotecario-screen">
+
+    <div class="container">
+        <header class="cadastro-header">
+            <h1>Editar Livro: <span id="livro-titulo-display">Carregando...</span></h1>
+        </header>
+
+        <main class="cadastro-main">
+            <div class="title-bar">
+                <a href="gerenciamento_livro.html" class="btn-secondary">
+                    ← Voltar ao Gerenciamento
+                </a>
+                <p id="livro-id-display" class="info-text">ID: —</p>
+            </div>
+
+            <div id="loading-message" class="info-text">Carregando dados do livro...</div>
+
+            <form id="edicao-form" class="hidden">
+                <h2>Dados Principais</h2>
+                
+                <div class="form-group">
+                    <label for="titulo">Título do Livro:</label>
+                    <input type="text" id="titulo" name="titulo" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="isbn">ISBN (Opcional - 13 dígitos):</label>
+                    <input type="text" id="isbn" name="isbn" class="form-input" placeholder="978-XXXXXXXXXXXX">
+                </div>
+
+                <div class="form-group">
+                    <label for="autor">Autor:</label>
+                    <input type="text" id="autor" name="autor" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editora">Editora:</label>
+                    <input type="text" id="editora" name="editora" class="form-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="anoPublicacao">Ano de Publicação:</label>
+                    <input type="number" id="anoPublicacao" name="anoPublicacao" class="form-input" required min="0" max="2025">
+                </div>
+
+                <div class="form-group">
+                    <label for="categoria">Categoria (Gênero):</label>
+                    <select id="categoria" name="categoria" class="form-input" required>
+                        <option value="">Selecione uma categoria</option>
+                        <option value="Ficção">Ficção</option>
+                        <option value="Não Ficção">Não Ficção</option>
+                        <option value="Técnico">Técnico</option>
+                        <option value="Didático">Didático</option>
+                        <option value="Literatura">Literatura</option>
+                        <option value="Ciências">Ciências</option>
+                        <option value="História">História</option>
+                        <option value="Arte">Arte</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary">Salvar Alterações do Livro</button>
+            </form>
+
+            <hr>
+
+            <div class="cadastro-section">
+                <h2>Gerenciar Exemplares (Inventário)</h2>
+                
+                <div id="exemplares-list" class="data-view table-ranking">
+                    <p>Carregando inventário...</p>
+                </div>
+                
+                <div class="form-inline">
+                    <input type="number" id="qtd-exemplares-add" placeholder="Qtd. a adicionar" min="1" value="1" class="form-input">
+                    <button id="add-exemplares-btn" class="btn-secondary">Adicionar Exemplares</button>
+                </div>
+            </div>
+
+        </main>
+
+        <footer class="rodape">
+            <p>Projeto Integrador 2 - Sistema de Biblioteca Universitária</p>
+        </footer>
+    </div>
+
+    <script src="../js/api.js"></script>
+    <script src="../js/editar_livro.js"></script> 
+</body>
+</html>

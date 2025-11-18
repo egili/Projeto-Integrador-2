@@ -3,6 +3,10 @@
    ============================================================ */
 
 /* =================== VARIÁVEIS =================== */
+.hidden {
+    display: none !important;
+}
+
 :root {
     --primary-blue: #2563eb;
     --primary-dark: #1e40af;
@@ -318,6 +322,29 @@ label {
 }
 
 .btn-secondary:hover {
+    background: #2E86C1;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary-editar {
+    background: #2874A6;
+    color: #ffffff;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.70rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: var(--space-md);
+    align-self: flex-start;
+}
+
+.btn-secondary-editar:hover {
     background: #2E86C1;
     transform: translateY(-1px);
     box-shadow: var(--shadow-md);
