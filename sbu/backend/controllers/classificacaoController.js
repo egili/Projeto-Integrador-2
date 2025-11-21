@@ -7,7 +7,6 @@ async function listarClassificacaoGeral(req, res) {
         const alunos = await Aluno.listar();
 
         const alunosComPontuacao = await Promise.all(alunos.map(async (aluno) => {
-            // Considerando livros efetivamente devolvidos como "lidos"
             const emprestimos = await Emprestimo.listarPorAluno(aluno.id);
             const livrosLidos = emprestimos.filter(e => e.dataDevolucaoReal !== null).length;
 
@@ -30,7 +29,6 @@ async function obterClassificacaoAluno(req, res) {
     try {
         const { ra } = req.params;
 
-        // Buscar aluno
         const aluno = await Aluno.buscarPorRa(ra);
         if (!aluno) {
             return res.status(404).json({
@@ -39,15 +37,12 @@ async function obterClassificacaoAluno(req, res) {
             });
         }
 
-        // Buscar todos os empréstimos do aluno
         const emprestimos = await Emprestimo.listarPorAluno(aluno.id);
         
-        // Calcular estatísticas
         const livrosDevolvidos = emprestimos.filter(e => e.dataDevolucaoReal !== null);
         const livrosEmAndamento = emprestimos.filter(e => e.dataDevolucaoReal === null);
         const totalEmprestimos = emprestimos.length;
         
-        // Determinar classificação baseado em livros devolvidos (lidos)
         const livrosLidos = livrosDevolvidos.length;
         let classificacao = 'Leitor Iniciante';
         
@@ -59,7 +54,6 @@ async function obterClassificacaoAluno(req, res) {
             classificacao = 'Leitor Regular';
         }
 
-        // Buscar últimas datas
         const ultimaDevolucao = livrosDevolvidos.length > 0 
             ? livrosDevolvidos.sort((a, b) => new Date(b.dataDevolucaoReal) - new Date(a.dataDevolucaoReal))[0].dataDevolucaoReal
             : null;

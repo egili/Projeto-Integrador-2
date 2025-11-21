@@ -54,7 +54,7 @@ class BibliotecaAPI {
         try {
             const response = await fetch(`${API_BASE_URL}/livros/${id}`);
             const data = await handleResponse(response);
-            return data?.data || null; // Retorna o objeto do livro
+            return data?.data || null;
         } catch (error) {
             console.error(`Erro ao buscar livro ${id}:`, error);
             throw error;
@@ -63,7 +63,7 @@ class BibliotecaAPI {
     
     static async atualizarLivro(id, livroData) {
         const response = await fetch(`${API_BASE_URL}/livros/${id}`, {
-            method: 'PUT', // Usamos PUT para atualizar um recurso existente
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(livroData)
         });
@@ -147,7 +147,6 @@ class BibliotecaAPI {
     }
 }
 
-// Funções utilitárias
 function showError(message) {
     alert(`Erro: ${message}`);
 }

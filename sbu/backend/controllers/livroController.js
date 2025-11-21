@@ -2,23 +2,19 @@ const Livro = require('../models/livro');
 const Exemplar = require('../models/exemplar');
 const { validarLivro } = require('../helpers/validations');
 
-// --- CADASTRO DE LIVRO ---
 exports.cadastrarLivro = async (req, res) => {
     try {
         let { titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares } = req.body;
 
-        // Limpeza e normalização do ISBN
+        // Remove tudo que não é número do ISBN
         if (isbn) { isbn = String(isbn).replace(/[^0-9]/g, ''); } else { isbn = null; }
 
-        // Validação
         const erros = validarLivro({ titulo, isbn, autor, editora, anoPublicacao, categoria, numeroExemplares });
         if (erros.length > 0) { return res.status(400).json({ success: false, error: erros.join(' ') }); }
 
-        // Criação do livro
         const result = await Livro.criar({ titulo, isbn, autor, editora, anoPublicacao, categoria });
         const idLivro = result.insertId;
 
-        // Criação de exemplares
         let quantidadeExemplares = parseInt(numeroExemplares);
         if (isNaN(quantidadeExemplares) || quantidadeExemplares < 0) quantidadeExemplares = 0;
 
@@ -29,7 +25,6 @@ exports.cadastrarLivro = async (req, res) => {
             resultadoExemplares = { exemplares: [], totalCriados: 0, totalErros: 0, erros: [] };
         }
 
-        // Resposta
         res.status(201).json({
             success: true,
             message: `Livro cadastrado com sucesso. ${resultadoExemplares.totalCriados} exemplar(es) criado(s).`,
@@ -49,8 +44,6 @@ exports.cadastrarLivro = async (req, res) => {
         });
     }
 };
-
-// --- LISTAGEM E BUSCA ---
 
 exports.listarTodosLivros = async (req, res) => {
     try {
@@ -95,8 +88,6 @@ exports.buscarLivroPorId = async (req, res) => {
         res.status(500).json({ success: false, error: 'Erro interno do servidor' });
     }
 };
-
-// --- ATUALIZAÇÃO E REMOÇÃO ---
 
 exports.atualizarLivro = async (req, res) => {
     try {

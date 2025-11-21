@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
         const data = await BibliotecaAPI.obterClassificacaoGeral();
 
-        // Se não houver aluno cadastrados
         if (!data.aluno || data.aluno.length === 0) {
             rankingContainer.innerHTML = `
                 <p style="text-align: center; font-weight: bold; color: #555;">
@@ -14,7 +13,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        // Se houver aluno, mesmo que 0 livros lidos
         let html = `
             <table class="classification-table">
                 <thead>

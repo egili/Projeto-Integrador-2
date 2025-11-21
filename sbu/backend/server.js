@@ -8,29 +8,19 @@ const { connection } = require('./database/connection');
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
 
-/* ============================================================
-   MIDDLEWARES
-============================================================ */
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Log de requisições
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
 });
 
-/* ============================================================
-   FRONT-ENDS ESTÁTICOS
-============================================================ */
 app.use('/aluno', express.static(path.join(__dirname, '../sistema-aluno')));
 app.use('/bibliotecario', express.static(path.join(__dirname, '../sistema-bibliotecario')));
 app.use('/totem', express.static(path.join(__dirname, '../totem')));
 
-/* ============================================================
-   ROTAS DA API
-============================================================ */
 const alunosRoutes = require('./routes/alunos');
 const livrosRoutes = require('./routes/livros');
 const emprestimosRoutes = require('./routes/emprestimos');
@@ -75,10 +65,6 @@ app.use('/api/emprestimos', emprestimosRoutes);
 app.use('/api/exemplares', exemplaresRoutes);
 app.use('/api/classificacao', classificacaoRoutes);
 
-
-/* ============================================================
-   ROTA 404 PARA API
-============================================================ */
 app.use('/api/*', (req, res) => {
     res.status(404).json({
         success: false,
@@ -86,9 +72,6 @@ app.use('/api/*', (req, res) => {
     });
 });
 
-/* ============================================================
-   ERROS GLOBAIS
-============================================================ */
 app.use((err, req, res, next) => {
     console.error('Erro não tratado:', err);
     res.status(500).json({
@@ -97,9 +80,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-/* ============================================================
-   FUNÇÃO PARA ACHAR PORTA LIVRE
-============================================================ */
 function findAvailablePort(startPort, maxAttempts = 10) {
     return new Promise((resolve, reject) => {
         let attempts = 0;
@@ -129,9 +109,6 @@ function findAvailablePort(startPort, maxAttempts = 10) {
     });
 }
 
-/* ============================================================
-   INICIAR SERVIDOR
-============================================================ */
 async function startServer() {
     try {
         await connection.query('SELECT 1');

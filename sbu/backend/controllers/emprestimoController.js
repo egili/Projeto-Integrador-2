@@ -12,7 +12,6 @@ exports.registrarEmprestimo = async (req, res) => {
             });
         }
 
-        // verifica exemplar
         const [exemplar] = await db.promise().query(
             'SELECT * FROM exemplar WHERE id = ? AND status = "disponivel"',
             [idExemplar]
@@ -22,13 +21,11 @@ exports.registrarEmprestimo = async (req, res) => {
             return res.status(404).json({ success: false, error: "Exemplar não encontrado ou não disponível" });
         }
 
-        // registra empréstimo
         const [result] = await db.promise().query(
             "INSERT INTO emprestimo (idExemplar, idAluno, dataEmprestimo, dataDevolucaoReal) VALUES (?, ?, NOW(), NULL)",
             [idExemplar, idAluno]
         );
 
-        // atualiza status
         await db.promise().query(
             'UPDATE exemplar SET status = "emprestado" WHERE id = ?',
             [idExemplar]
@@ -70,7 +67,6 @@ exports.registrarDevolucao = async (req, res) => {
             [id]
         );
 
-        // libera exemplar
         await db.promise().query(
             'UPDATE exemplar SET status = "disponivel" WHERE id = ?',
             [emprestimo.idExemplar]
@@ -120,7 +116,7 @@ exports.listarHistorico = async (req, res) => {
                 l.titulo AS livro,
                 a.nome AS aluno,
                 DATE_FORMAT(e.dataEmprestimo, '%Y-%m-%d %H:%i:%s') AS data_emprestimo,
-                DATE_FORMAT(e.dataDevolucaoReal, '%Y-%m-%d %H:%i:%s') AS data_devolucao -- CORREÇÃO: Padronizando para data_devolucao
+                DATE_FORMAT(e.dataDevolucaoReal, '%Y-%m-%d %H:%i:%s') AS data_devolucao
             FROM emprestimo e
             JOIN exemplar ex ON ex.id = e.idExemplar
             JOIN livro l ON l.id = ex.idLivro
