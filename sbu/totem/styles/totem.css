@@ -228,13 +228,11 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
 }
 
 .btn-primary:hover {
     background-color: #2E86C1;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
 }
 
 .btn-success {
@@ -247,13 +245,11 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
 }
 
 .btn-success:hover {
     background-color: #229954;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -266,13 +262,16 @@ h2 {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
     background-color: #7F8C8D;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+}
+
+.btn-full {
+    width: 100%;
+    margin-top: 10px;
 }
 
 .action-buttons {
@@ -435,7 +434,7 @@ h2 {
     margin-top: 10px;
 }
 
-/* Sem resultados */
+
 .no-results {
     text-align: center;
     padding: 50px;
@@ -450,22 +449,6 @@ h2 {
     margin-bottom: 20px;
 }
 
-/* Seção de cadastro */
-.cadastro-section {
-    background-color: #FEF9E7;
-    border: 2px solid #F4D03F;
-    border-radius: 8px;
-    padding: 25px;
-    margin: 25px auto;
-    max-width: 600px;
-    text-align: center;
-}
-
-.cadastro-section p {
-    font-size: 18px;
-    color: #7D6608;
-    margin-bottom: 20px;
-}
 
 .emprestimos-section {
     margin-top: 25px;
