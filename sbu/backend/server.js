@@ -44,16 +44,27 @@ app.get('/api', (req, res) => {
                 'POST /api/livros': 'Cadastrar novo livro',
                 'GET /api/livros/disponiveis': 'Listar livros disponíveis',
                 'GET /api/livros/busca?titulo=X': 'Buscar livros',
-                'GET /api/livros/:id': 'Buscar livro por ID'
+                'GET /api/livros/:id': 'Buscar livro por ID',
+                'PUT /api/livros/:id': 'Atualizar livro',
+                'DELETE /api/livros/:id': 'Remover livro'
             },
             exemplares: {
                 'GET /api/exemplares/livro/:idLivro': 'Listar exemplares de um livro',
-                'POST /api/exemplares': 'Cadastrar novo exemplar'
+                'GET /api/exemplares/livro/:idLivro/disponiveis': 'Listar exemplares disponíveis de um livro',
+                'POST /api/exemplares': 'Cadastrar novo exemplar',
+                'PUT /api/exemplares/:id/status': 'Atualizar status do exemplar',
+                'DELETE /api/exemplares/:id': 'Deletar exemplar'
             },
             emprestimos: {
-                'GET /api/emprestimos/aluno/:ra': 'Empréstimos de um aluno',
+                'GET /api/emprestimos/pendentes': 'Listar empréstimos pendentes',
+                'GET /api/emprestimos/historico': 'Listar histórico de empréstimos',
+                'GET /api/emprestimos/aluno/:ra': 'Empréstimos ativos de um aluno',
                 'POST /api/emprestimos': 'Registrar empréstimo',
                 'PUT /api/emprestimos/:id/devolver': 'Registrar devolução'
+            },
+            classificacao: {
+                'GET /api/classificacao/geral': 'Classificação geral dos leitores',
+                'GET /api/classificacao/aluno/:ra': 'Classificação de um aluno específico'
             }
         }
     });
