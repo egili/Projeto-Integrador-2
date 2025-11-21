@@ -43,7 +43,10 @@
                     </div>
                     <div class="form-group">
                         <label for="anoPublicacao">Ano de Publicação:</label>
-                        <input type="number" id="anoPublicacao" name="anoPublicacao" class="form-input" required min="1000" max="2025">
+                        <select id="anoPublicacao" name="anoPublicacao" class="form-input" required>
+                            <option value="">Selecione o ano</option>
+                            <!-- JS vai preencher os anos aqui -->
+                        </select>
                     </div>
                     <div class="form-group">
                         <label for="categoria">Categoria (Gênero):</label>

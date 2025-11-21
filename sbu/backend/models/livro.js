@@ -24,6 +24,29 @@ class Livro {
         return rows;
     }
 
+    static async atualizar(id, dados) {
+        const { titulo, isbn, autor, editora, anoPublicacao, categoria } = dados;
+        const [result] = await connection.execute(
+            `UPDATE livro 
+             SET titulo = ?, isbn = ?, autor = ?, editora = ?, anoPublicacao = ?, categoria = ?
+             WHERE id = ?`,
+            [titulo, isbn || null, autor, editora, anoPublicacao, categoria || null, id]
+        );
+        return result;
+    }
+
+    static async remover(id) {
+        // NOTA: Para remover um livro, você DEVE remover primeiro todos os exemplares
+        // que fazem referência a ele (ou configurar CASCADE DELETE no DB).
+        
+        // 1. Remover Exemplares:
+        await connection.execute('DELETE FROM exemplar WHERE idLivro = ?', [id]);
+        
+        // 2. Remover Livro:
+        const [result] = await connection.execute('DELETE FROM livro WHERE id = ?', [id]);
+        return result;
+    }
+
     static async listarDisponiveis() {
         const [rows] = await connection.execute(`
             SELECT 

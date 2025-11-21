@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const classificacaoController = require('../controllers/classificacaoController');
+const { listarClassificacaoGeral } = require('../controllers/classificacaoController');
 
-router.get('/aluno/:ra', classificacaoController.obterClassificacaoAluno);
-router.get('/geral', classificacaoController.listarClassificacaoGeral);
+router.get('/geral', listarClassificacaoGeral);
 
 module.exports = router;
-

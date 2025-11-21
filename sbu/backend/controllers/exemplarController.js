@@ -1,14 +1,23 @@
 const Exemplar = require('../models/exemplar');
 const Livro = require('../models/livro');
 
+// Rota POST /api/exemplares (Unificado para adicionar 1 ou N exemplares)
 exports.cadastrarExemplar = async (req, res) => {
     try {
-        const { idLivro } = req.body;
+        // Agora aceita idLivro e quantidade. Usa 1 como padrão se quantidade não for fornecida.
+        const { idLivro, quantidade } = req.body;
+        const quantidadeNumerica = parseInt(quantidade) || 1; 
 
         if (!idLivro) {
             return res.status(400).json({
                 success: false,
-                error: 'ID do livro é obrigatório'
+                error: 'ID do livro é obrigatório.'
+            });
+        }
+        if (quantidadeNumerica <= 0 || isNaN(quantidadeNumerica)) {
+             return res.status(400).json({
+                success: false,
+                error: 'A quantidade de exemplares deve ser um número inteiro maior que zero.'
             });
         }
 
@@ -16,33 +25,32 @@ exports.cadastrarExemplar = async (req, res) => {
         if (!livro) {
             return res.status(404).json({
                 success: false,
-                error: 'Livro não encontrado'
+                error: 'Livro não encontrado.'
             });
         }
 
-        const result = await Exemplar.criar({
-            idLivro,
-            status: 'disponivel'
-        });
+        // Usa a função de criação múltipla otimizada
+        const resultado = await Exemplar.criarMultiplos(idLivro, quantidadeNumerica);
 
         res.status(201).json({
             success: true,
-            message: 'Exemplar cadastrado com sucesso',
+            message: `${resultado.totalCriados} exemplar(es) cadastrado(s) com sucesso.`,
             data: {
-                id: result.insertId,
                 idLivro,
-                status: 'disponivel'
+                totalCriados: resultado.totalCriados
             }
         });
 
     } catch (error) {
+        console.error('Erro no cadastrarExemplar:', error);
         res.status(500).json({
             success: false,
-            error: 'Erro interno do servidor'
+            error: 'Erro interno do servidor ao cadastrar exemplares.'
         });
     }
 };
 
+// Rota GET /api/exemplares/livro/:idLivro
 exports.listarExemplaresPorLivro = async (req, res) => {
     try {
         const { idLivro } = req.params;
@@ -76,6 +84,7 @@ exports.listarExemplaresPorLivro = async (req, res) => {
     }
 };
 
+// Rota GET /api/exemplares/livro/:idLivro/disponiveis
 exports.listarExemplaresDisponiveisPorLivro = async (req, res) => {
     try {
         const { idLivro } = req.params;
@@ -96,6 +105,7 @@ exports.listarExemplaresDisponiveisPorLivro = async (req, res) => {
     }
 };
 
+// Rota PUT /api/exemplares/:id/status
 exports.atualizarStatusExemplar = async (req, res) => {
     try {
         const { id } = req.params;
@@ -136,6 +146,7 @@ exports.atualizarStatusExemplar = async (req, res) => {
     }
 };
 
+// Rota DELETE /api/exemplares/:id (Com checagem de segurança)
 exports.deletarExemplar = async (req, res) => {
     try {
         const { id } = req.params;
@@ -147,8 +158,16 @@ exports.deletarExemplar = async (req, res) => {
                 error: 'Exemplar não encontrado'
             });
         }
-
-        await Exemplar.deletar(id);
+        
+        // **CORREÇÃO DE SEGURANÇA:** Bloqueia a remoção se estiver emprestado
+        if (exemplar.status === 'emprestado') {
+            return res.status(400).json({
+                success: false,
+                error: 'Não é possível deletar um exemplar que está emprestado.'
+            });
+        }
+        
+        await Exemplar.deletar(id); 
 
         res.json({
             success: true,
