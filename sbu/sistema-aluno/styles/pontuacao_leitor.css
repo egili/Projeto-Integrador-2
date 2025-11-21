@@ -229,11 +229,6 @@
     margin: 6px 0;
 }
 
-.meta-info .proxima-meta {
-    color: var(--highlight-blue);
-    font-weight: 600;
-}
-
 .no-results {
     text-align: center;
     padding: 40px 20px;

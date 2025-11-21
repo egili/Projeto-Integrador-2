@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { connection } = require('../database/connection');
 
-/* ================================================
-   LISTAR EMPRÉSTIMOS PENDENTES
-================================================ */
 router.get('/pendentes', async (req, res) => {
     try {
         const [rows] = await connection.execute(`
@@ -31,9 +28,6 @@ router.get('/pendentes', async (req, res) => {
     }
 });
 
-/* ================================================
-   LISTAR HISTÓRICO DE EMPRÉSTIMOS
-================================================ */
 router.get('/historico', async (req, res) => {
     try {
         const [rows] = await connection.execute(`
@@ -61,9 +55,6 @@ router.get('/historico', async (req, res) => {
     }
 });
 
-/* ================================================
-   REALIZAR EMPRÉSTIMO
-================================================ */
 router.post('/', async (req, res) => {
     try {
         const { idAluno, idExemplar } = req.body;
@@ -115,9 +106,6 @@ router.post('/', async (req, res) => {
     }
 });
 
-/* ================================================
-   DEVOLVER UM LIVRO
-================================================ */
 router.put('/:id/devolver', async (req, res) => {
     try {
         const { id } = req.params;
@@ -161,9 +149,6 @@ router.put('/:id/devolver', async (req, res) => {
     }
 });
 
-/* ================================================
-   LISTAR EMPRÉSTIMOS ATIVOS POR RA DE ALUNO
-================================================ */
 router.get('/aluno/:ra', async (req, res) => {
     try {
         const { ra } = req.params;

@@ -1,7 +1,7 @@
 const Exemplar = require('../models/exemplar');
 const Livro = require('../models/livro');
 
-// Rota POST /api/exemplares (Unificado para adicionar 1 ou N exemplares)
+// Rota POST /api/exemplares 
 exports.cadastrarExemplar = async (req, res) => {
     try {
         // Agora aceita idLivro e quantidade. Usa 1 como padrão se quantidade não for fornecida.
@@ -146,7 +146,7 @@ exports.atualizarStatusExemplar = async (req, res) => {
     }
 };
 
-// Rota DELETE /api/exemplares/:id (Com checagem de segurança)
+// Rota DELETE /api/exemplares/:id 
 exports.deletarExemplar = async (req, res) => {
     try {
         const { id } = req.params;
@@ -159,7 +159,6 @@ exports.deletarExemplar = async (req, res) => {
             });
         }
         
-        // **CORREÇÃO DE SEGURANÇA:** Bloqueia a remoção se estiver emprestado
         if (exemplar.status === 'emprestado') {
             return res.status(400).json({
                 success: false,

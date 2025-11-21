@@ -72,7 +72,6 @@ function exibirPontuacao(dados) {
     const livrosEmAndamento = stats.livros_em_andamento || 0;
     const totalEmprestimos  = stats.total_emprestimos || (livrosLidos + livrosEmAndamento);
     const classificacaoNome = stats.classificacao || determinarClassificacaoLocal(livrosLidos);
-    const proximaMeta       = typeof stats.proxima_meta === 'number' ? stats.proxima_meta : null;
     const ultimaLeitura     = stats.ultima_devolucao ? formatDate(stats.ultima_devolucao) : '—';
     const ultimoEmprestimo  = stats.ultimo_emprestimo ? formatDate(stats.ultimo_emprestimo) : '—';
     
@@ -84,7 +83,6 @@ function exibirPontuacao(dados) {
     };
     
     const corClasse = nivelCores[classificacaoNome] || 'beginner';
-    const livrosParaMeta = proximaMeta ? Math.max(proximaMeta - livrosLidos, 0) : null;
     
     container.innerHTML = `
         <div class="pontuacao-card ${corClasse}">
@@ -113,7 +111,6 @@ function exibirPontuacao(dados) {
             <div class="meta-info">
                 <p><strong>Último empréstimo:</strong> ${ultimoEmprestimo}</p>
                 <p><strong>Última devolução:</strong> ${ultimaLeitura}</p>
-                ${livrosParaMeta !== null ? `<p class="proxima-meta">Faltam ${livrosParaMeta} livro(s) para o próximo nível.</p>` : ''}
             </div>
         </div>
     `;

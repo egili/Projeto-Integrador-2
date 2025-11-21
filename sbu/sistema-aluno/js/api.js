@@ -40,6 +40,11 @@ class BibliotecaAPI {
     );
     return await this.handleResponse(response);
   }
+
+  static async obterClassificacaoAluno(ra) {
+    const response = await fetch(`${API_BASE_URL}/classificacao/aluno/${ra}`);
+    return await this.handleResponse(response);
+  }
 }
 
 function showError(message) {

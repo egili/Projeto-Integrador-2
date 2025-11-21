@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { listarClassificacaoGeral } = require('../controllers/classificacaoController');
+const { listarClassificacaoGeral, obterClassificacaoAluno } = require('../controllers/classificacaoController');
 
 router.get('/geral', listarClassificacaoGeral);
+router.get('/aluno/:ra', obterClassificacaoAluno);
 
 module.exports = router;
