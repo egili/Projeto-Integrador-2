@@ -90,6 +90,22 @@ class Livro {
         return rows;
     }
 
+    static async buscarPorTermo(termo) {
+        const parametro = `%${termo}%`;
+        const [rows] = await connection.execute(`
+            SELECT 
+                l.*,
+                COUNT(CASE WHEN e.status = 'disponivel' THEN 1 END) as exemplares_disponiveis,
+                COUNT(e.id) as total_exemplares
+            FROM livro l
+            LEFT JOIN exemplar e ON l.id = e.idLivro
+            WHERE l.titulo LIKE ? OR l.autor LIKE ? OR l.categoria LIKE ?
+            GROUP BY l.id
+            ORDER BY l.titulo
+        `, [parametro, parametro, parametro]);
+        return rows;
+    }
+
     static async buscarPorId(id) {
         const [rows] = await connection.execute(`
             SELECT 

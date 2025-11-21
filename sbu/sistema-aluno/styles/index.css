@@ -1,4 +1,3 @@
-/* Estilos específicos para a página inicial do sistema do aluno */
 .general-screen {
     background: #ffffff;
     min-height: 100vh;
@@ -172,7 +171,6 @@
     margin: 5px 0;
 }
 
-/* Animações */
 @keyframes slideUp {
     to {
         opacity: 1;
@@ -189,7 +187,6 @@
     }
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
     .container {
         margin: 10px;
