@@ -67,7 +67,6 @@
   white-space: nowrap;
 }
 
-/* Estilos para a tabela de livros disponíveis */
 .tabela-container {
   margin-top: 30px;
 }
@@ -112,7 +111,6 @@
   border-bottom: none;
 }
 
-/* Status dos livros */
 .status-disponivel {
   background: #2ecc71;
   color: white;
@@ -147,7 +145,6 @@
   margin: 0;
 }
 
-/* Responsividade da tabela */
 @media (max-width: 768px) {
   .tabela-container {
     margin-top: 20px;
