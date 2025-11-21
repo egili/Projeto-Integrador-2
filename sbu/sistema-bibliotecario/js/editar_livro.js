@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Captura o ID do livro da URL
     const params = new URLSearchParams(window.location.search);
     const idLivro = params.get('id');
 
@@ -8,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // Seleção dos elementos DOM
     const loadingMessage = document.getElementById('loading-message');
     const edicaoForm = document.getElementById('edicao-form');
     const livroTituloDisplay = document.getElementById('livro-titulo-display');
@@ -17,9 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const addExemplaresBtn = document.getElementById('add-exemplares-btn');
     const qtdExemplaresAddInput = document.getElementById('qtd-exemplares-add');
     
-    // -----------------------------------------
-    // Funções de Carregamento
-    // -----------------------------------------
     async function carregarDadosLivro() {
         try {
             const livro = await BibliotecaAPI.buscarLivroPorId(idLivro);
@@ -29,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // 1. Preencher Formulário Principal com os dados atuais
             livroTituloDisplay.textContent = livro.titulo;
             livroIdDisplay.textContent = `ID: ${livro.id}`;
             document.getElementById('titulo').value = livro.titulo;
@@ -39,12 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('anoPublicacao').value = livro.anoPublicacao;
             document.getElementById('categoria').value = livro.categoria;
 
-            // --- AÇÃO CRÍTICA: Esconder loading e mostrar formulário principal ---
-            loadingMessage.classList.add('hidden'); // Assume que .hidden existe no CSS
+            loadingMessage.classList.add('hidden');
             edicaoForm.classList.remove('hidden');
-            // -------------------------------------------------------------------
             
-            // 2. Carregar Inventário de Exemplares
             carregarExemplares();
 
         } catch (error) {
@@ -54,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     async function carregarExemplares() {
-        // Mensagem de loading da área de exemplares
         exemplaresList.innerHTML = '<p>Carregando inventário de exemplares...</p>'; 
         try {
             const exemplares = await BibliotecaAPI.listarExemplaresPorLivro(idLivro);
@@ -103,10 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
         exemplaresList.innerHTML = html;
     }
     
-    // -----------------------------------------
-    // Funções de Ação Global (Remover Exemplar Unitário)
-    // -----------------------------------------
-    
     window.removerExemplarUnitario = async function(idExemplar, status) {
         if (status === 'emprestado') {
              showError('Não é possível remover um exemplar que está emprestado.');
@@ -121,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (result.success) {
                 showSuccess(result.message || `Exemplar ID ${idExemplar} removido.`);
-                carregarExemplares(); // Recarrega a lista
+                carregarExemplares();
             } else {
                 showError(`Erro ao remover exemplar: ${result.error || 'Erro desconhecido.'}`);
             }
@@ -132,11 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // -----------------------------------------
-    // Eventos do Formulário
-    // -----------------------------------------
-
-    // 1. Adicionar Múltiplos Exemplares
     addExemplaresBtn.addEventListener('click', async (e) => {
         e.preventDefault();
         const quantidade = parseInt(qtdExemplaresAddInput.value);
@@ -147,13 +128,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Usa o método cadastrarExemplar, que agora suporta 'quantidade' no body
             const result = await BibliotecaAPI.cadastrarExemplar({ idLivro: idLivro, quantidade });
             
             if (result.success) {
                 showSuccess(result.message || `Adicionadas ${result.data.totalCriados} cópias.`);
-                qtdExemplaresAddInput.value = 1; // Reseta para 1
-                carregarExemplares(); // Recarrega a lista
+                qtdExemplaresAddInput.value = 1;
+                carregarExemplares();
             } else {
                 showError(`Erro ao adicionar exemplares: ${result.error || 'Erro desconhecido.'}`);
             }
@@ -163,14 +143,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 2. Salvar Edição do Livro
     edicaoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         
         const formData = new FormData(edicaoForm);
         const isbnValue = formData.get('isbn');
         
-        // Aplica a mesma limpeza do Controller de cadastro (Garantia de integridade do Front)
         const normalizedIsbn = isbnValue ? String(isbnValue).replace(/[^0-9]/g, '') : null;
 
         const livroData = {
@@ -187,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (result.success) {
                 showSuccess('Dados do livro atualizados com sucesso!');
-                carregarDadosLivro(); // Recarrega os dados para atualizar o título na tela
+                carregarDadosLivro();
             } else {
                 showError(`Erro de validação ou servidor: ${result.error || 'Erro desconhecido.'}`);
             }
@@ -196,6 +174,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Inicia o carregamento dos dados
     carregarDadosLivro();
 });

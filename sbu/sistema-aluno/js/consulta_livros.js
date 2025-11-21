@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   console.log("Página carregada - iniciando consulta de livros");
 
-  // Carregar livros disponíveis ao iniciar
   carregarLivrosDisponiveis();
 
   if (botaoBuscar) {
@@ -26,7 +25,6 @@ async function carregarLivrosDisponiveis() {
     const response = await BibliotecaAPI.buscarLivrosDisponiveis();
     console.log("Resposta recebida:", response);
 
-    // A API retorna { data: Array }
     let livros = response.data || [];
 
     console.log("Livros processados:", livros);
@@ -49,7 +47,6 @@ async function buscarLivros() {
       response = await BibliotecaAPI.buscarLivrosDisponiveis();
     }
 
-    // A API sempre retorna { data: Array }
     let livros = response.data || [];
 
     popularTabelaLivros(livros);
@@ -99,7 +96,6 @@ function popularTabelaLivros(livros) {
 }
 
 function calcularDisponibilidade(livro) {
-  // Converte para número para garantir a comparação
   const exemplares = Number(livro.exemplares_disponiveis);
   console.log(`📚 ${livro.titulo}: ${exemplares} exemplares disponíveis`);
   return exemplares > 0;

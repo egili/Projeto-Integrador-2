@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { connection } = require('../database/connection');
 
-/* ================================================
-   LISTAR EMPRÉSTIMOS PENDENTES
-================================================ */
 router.get('/pendentes', async (req, res) => {
     try {
         const [rows] = await connection.execute(`
@@ -31,9 +28,6 @@ router.get('/pendentes', async (req, res) => {
     }
 });
 
-/* ================================================
-   LISTAR HISTÓRICO DE EMPRÉSTIMOS
-================================================ */
 router.get('/historico', async (req, res) => {
     try {
         const [rows] = await connection.execute(`
@@ -61,9 +55,6 @@ router.get('/historico', async (req, res) => {
     }
 });
 
-/* ================================================
-   REALIZAR EMPRÉSTIMO
-================================================ */
 router.post('/', async (req, res) => {
     try {
         const { idAluno, idExemplar } = req.body;
@@ -75,7 +66,6 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // Verificar disponibilidade do exemplar
         const [exemplar] = await connection.execute(
             'SELECT * FROM exemplar WHERE id = ? AND status = "disponivel"',
             [idExemplar]
@@ -88,13 +78,11 @@ router.post('/', async (req, res) => {
             });
         }
 
-        // Registrar empréstimo
         const [result] = await connection.execute(
             'INSERT INTO emprestimo (idAluno, idExemplar, dataEmprestimo) VALUES (?, ?, NOW())',
             [idAluno, idExemplar]
         );
 
-        // Marcar exemplar como emprestado
         await connection.execute(
             'UPDATE exemplar SET status = "emprestado" WHERE id = ?',
             [idExemplar]
@@ -115,14 +103,10 @@ router.post('/', async (req, res) => {
     }
 });
 
-/* ================================================
-   DEVOLVER UM LIVRO
-================================================ */
 router.put('/:id/devolver', async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Verificar empréstimo ativo
         const [emprestimo] = await connection.execute(
             'SELECT * FROM emprestimo WHERE id = ? AND dataDevolucaoReal IS NULL',
             [id]
@@ -135,13 +119,11 @@ router.put('/:id/devolver', async (req, res) => {
             });
         }
 
-        // Registrar devolução
         await connection.execute(
             'UPDATE emprestimo SET dataDevolucaoReal = NOW() WHERE id = ?',
             [id]
         );
 
-        // Liberar exemplar
         await connection.execute(
             'UPDATE exemplar SET status = "disponivel" WHERE id = ?',
             [emprestimo[0].idExemplar]
@@ -161,14 +143,10 @@ router.put('/:id/devolver', async (req, res) => {
     }
 });
 
-/* ================================================
-   LISTAR EMPRÉSTIMOS ATIVOS POR RA DE ALUNO
-================================================ */
 router.get('/aluno/:ra', async (req, res) => {
     try {
         const { ra } = req.params;
 
-        // Buscar aluno
         const [aluno] = await connection.execute(
             'SELECT * FROM aluno WHERE ra = ?',
             [ra]
@@ -181,7 +159,6 @@ router.get('/aluno/:ra', async (req, res) => {
             });
         }
 
-        // Buscar empréstimos ativos do aluno
         const [emprestimos] = await connection.execute(`
             SELECT 
                 e.id,

@@ -1,18 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     const registrationForm = document.getElementById('registration-form');
-    const anoSelect = document.getElementById('anoPublicacao');
     const categoriaSelect = document.getElementById('categoria');
     const outrosCategoriaGroup = document.getElementById('outros-categoria-group');
 
-    // Preencher lista de anos de 0 até 2025
-    for (let i = 0; i <= 2025; i++) {
-        const option = document.createElement('option');
-        option.value = i;
-        option.textContent = i;
-        anoSelect.appendChild(option);
-    }
-
-    // Mostrar campo "Outros" se categoria = Outros
     if (categoriaSelect && outrosCategoriaGroup) {
         categoriaSelect.addEventListener('change', function() {
             if (this.value === 'Outros') {
@@ -23,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Submit do formulário
     if (registrationForm) {
         registrationForm.addEventListener('submit', async function(e) {
             e.preventDefault();

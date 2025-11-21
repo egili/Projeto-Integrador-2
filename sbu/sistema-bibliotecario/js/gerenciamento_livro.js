@@ -9,9 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
         historico: document.querySelector("#historico .data-view")
     };
 
-    // -----------------------------------------
-    // Troca de abas
-    // -----------------------------------------
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
             tabs.forEach(t => t.classList.remove("active"));
@@ -28,9 +25,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // -----------------------------------------
-    // Carregar estoque de livros
-    // -----------------------------------------
     async function carregarLivros() {
         loadArea.livros.innerHTML = `<p>Carregando dados...</p>`;
 
@@ -62,7 +56,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            // Chamada à API para remoção (ENDPOINT QUE VOCÊ CRIARÁ NO BACK-END)
             const result = await BibliotecaAPI.removerLivroCompleto(id); 
 
             if (result.success) {
@@ -78,7 +71,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Renderiza lista de livros
     function renderizarLivros(lista) {
     let html = `
         <table class="table-ranking">
@@ -92,10 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
 
         lista.forEach(livro => {
-        // --- CORREÇÃO: DEFINIR A VARIÁVEL AQUI ---
-        // Garante que o título é seguro para ser passado como string em um onclick
         const tituloEscapado = livro.titulo.replace(/'/g, "\\'");
-        // ------------------------------------------
 
         html += `
             <tr>
@@ -115,9 +104,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadArea.livros.innerHTML = html;
 }
 
-    // -----------------------------------------
-    // Pendentes
-    // -----------------------------------------
     async function carregarPendentes() {
         loadArea.pendentes.innerHTML = `<p>Carregando dados...</p>`;
 
@@ -170,9 +156,6 @@ document.addEventListener("DOMContentLoaded", () => {
         loadArea.pendentes.innerHTML = html;
     }
 
-    // -----------------------------------------
-    // Histórico
-    // -----------------------------------------
     async function carregarHistorico() {
         loadArea.historico.innerHTML = `<p>Carregando dados...</p>`;
 
@@ -226,6 +209,5 @@ document.addEventListener("DOMContentLoaded", () => {
         loadArea.historico.innerHTML = html;
     }
 
-    // Carregar a aba inicial
     carregarLivros();
 });

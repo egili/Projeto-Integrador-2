@@ -1,10 +1,8 @@
 const Exemplar = require('../models/exemplar');
 const Livro = require('../models/livro');
 
-// Rota POST /api/exemplares (Unificado para adicionar 1 ou N exemplares)
 exports.cadastrarExemplar = async (req, res) => {
     try {
-        // Agora aceita idLivro e quantidade. Usa 1 como padrão se quantidade não for fornecida.
         const { idLivro, quantidade } = req.body;
         const quantidadeNumerica = parseInt(quantidade) || 1; 
 
@@ -29,7 +27,6 @@ exports.cadastrarExemplar = async (req, res) => {
             });
         }
 
-        // Usa a função de criação múltipla otimizada
         const resultado = await Exemplar.criarMultiplos(idLivro, quantidadeNumerica);
 
         res.status(201).json({
@@ -50,7 +47,6 @@ exports.cadastrarExemplar = async (req, res) => {
     }
 };
 
-// Rota GET /api/exemplares/livro/:idLivro
 exports.listarExemplaresPorLivro = async (req, res) => {
     try {
         const { idLivro } = req.params;
@@ -84,7 +80,6 @@ exports.listarExemplaresPorLivro = async (req, res) => {
     }
 };
 
-// Rota GET /api/exemplares/livro/:idLivro/disponiveis
 exports.listarExemplaresDisponiveisPorLivro = async (req, res) => {
     try {
         const { idLivro } = req.params;
@@ -105,7 +100,6 @@ exports.listarExemplaresDisponiveisPorLivro = async (req, res) => {
     }
 };
 
-// Rota PUT /api/exemplares/:id/status
 exports.atualizarStatusExemplar = async (req, res) => {
     try {
         const { id } = req.params;
@@ -146,7 +140,6 @@ exports.atualizarStatusExemplar = async (req, res) => {
     }
 };
 
-// Rota DELETE /api/exemplares/:id (Com checagem de segurança)
 exports.deletarExemplar = async (req, res) => {
     try {
         const { id } = req.params;
@@ -159,7 +152,6 @@ exports.deletarExemplar = async (req, res) => {
             });
         }
         
-        // **CORREÇÃO DE SEGURANÇA:** Bloqueia a remoção se estiver emprestado
         if (exemplar.status === 'emprestado') {
             return res.status(400).json({
                 success: false,
