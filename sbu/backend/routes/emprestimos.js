@@ -94,7 +94,6 @@ router.get('/aluno/:ra', async (req, res) => {
     try {
         const { ra } = req.params;
 
-        // Buscar aluno
         const [aluno] = await connection.execute(
             'SELECT * FROM aluno WHERE ra = ?',
             [ra]
@@ -107,7 +106,6 @@ router.get('/aluno/:ra', async (req, res) => {
             });
         }
 
-        // Buscar empréstimos ativos
         const [emprestimos] = await connection.execute(`
             SELECT 
                 e.id,
