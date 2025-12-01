@@ -1,6 +1,5 @@
-/* Estilos específicos para a página de cadastro */
 .general-screen {
-    background: #ffffff;
+    background: var(--light-background);
     min-height: 100vh;
     display: flex;
     align-items: center;
@@ -18,8 +17,8 @@
 }
 
 .general-header {
-    background: #2874A6;
-    color: white;
+    background: var(--primary-blue);
+    color: #ffffff;
     padding: 20px;
     text-align: center;
     position: relative;
@@ -41,7 +40,6 @@
     padding: 8px 12px;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.3s;
 }
 
 .btn-voltar:hover {
@@ -66,12 +64,12 @@
 }
 
 .welcome-section h2 {
-    color: #2874A6;
+    color: var(--primary-blue);
     margin-bottom: 10px;
 }
 
 .welcome-section p {
-    color: #7f8c8d;
+    color: var(--muted-text);
     margin: 0;
 }
 
@@ -89,12 +87,12 @@
 .form-group label {
     font-weight: 600;
     margin-bottom: 8px;
-    color: #2c3e50;
+    color: var(--dark-text);
 }
 
 .form-input {
     padding: 12px 16px;
-    border: 2px solid #e1e8ed;
+    border: 2px solid var(--border-light);
     border-radius: 8px;
     font-size: 16px;
     transition: border-color 0.3s, box-shadow 0.3s;
@@ -102,7 +100,7 @@
 
 .form-input:focus {
     outline: none;
-    border-color: #3498db;
+    border-color: var(--highlight-blue);
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
@@ -111,29 +109,27 @@
 }
 
 .form-hint {
-    color: #7f8c8d;
+    color: var(--muted-text);
     font-size: 0.875rem;
     margin-top: 5px;
 }
 
 .btn-primary {
-    background: #2874A6;
-    color: white;
+    background: var(--accent-blue);
+    color: #ffffff;
     border: none;
     padding: 14px 20px;
     border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
     text-align: center;
     text-decoration: none;
     display: inline-block;
 }
 
 .btn-primary:hover {
-    background: #2980b9;
-    transform: translateY(-1px);
+    background: var(--primary-blue);
 }
 
 .btn-primary:disabled {
@@ -150,7 +146,6 @@
     border-radius: 8px;
     font-size: 14px;
     cursor: pointer;
-    transition: background 0.3s;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -164,11 +159,11 @@
     text-align: center;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid #e1e8ed;
+    border-top: 1px solid var(--border-light);
 }
 
 .login-redirect a {
-    color: #3498db;
+    color: var(--highlight-blue);
     text-decoration: none;
     font-weight: 600;
 }
@@ -193,7 +188,7 @@
 }
 
 .success-details {
-    background: #f8f9fa;
+    background: var(--light-background);
     padding: 20px;
     border-radius: 8px;
     margin: 20px 0;
@@ -219,18 +214,17 @@
 }
 
 .general-footer {
-    background: #2874A6;
+    background: var(--primary-blue);
     padding: 20px;
     text-align: center;
     color: #ffffff;
-    border-top: 1px solid #bdc3c7;
+    border-top: 1px solid var(--primary-blue);
 }
 
 .general-footer p {
     margin: 5px 0;
 }
 
-/* Responsividade */
 @media (max-width: 768px) {
     .container {
         margin: 10px;
@@ -251,7 +245,6 @@
     }
 }
 
-/* Animações */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -261,7 +254,6 @@
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Estados de loading */
 .spinner {
     display: inline-block;
     width: 20px;

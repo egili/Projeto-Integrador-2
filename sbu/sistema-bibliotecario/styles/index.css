@@ -1,8 +1,7 @@
-/* ============================================================
-   style.css - Pagina index, cadastro de livros, gerenciamento e relatório
-   ============================================================ */
+.hidden {
+    display: none !important;
+}
 
-/* =================== VARIÁVEIS =================== */
 :root {
     --primary-blue: #2563eb;
     --primary-dark: #1e40af;
@@ -35,7 +34,6 @@
     --space-xl: 3rem;
 }
 
-/* =================== RESET =================== */
 * {
     margin: 0;
     padding: 0;
@@ -50,7 +48,6 @@ body {
     min-height: 100vh;
 }
 
-/* =================== INDEX =================== */
 main {
     min-height: 100vh;
     display: flex;
@@ -103,9 +100,6 @@ main {
     font-weight: 600;
     color: #2874A6;
     margin-bottom: var(--space-sm);
-    /*background: linear-gradient(135deg, var(--gray-900), var(--gray-600));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;*/
 }
 
 .artigo-principal p {
@@ -189,7 +183,6 @@ main {
     outline-offset: 2px;
 }
 
-/* =================== CADASTRO DE LIVROS =================== */
 .container {
     display: flex;
     flex-direction: column;
@@ -213,10 +206,6 @@ main {
 .cadastro-header h1 {
     font-size: 2.2rem;
     color: #ffffff;
-    /*color: var(--primary-blue);
-    /*background: linear-gradient(135deg, var(--primary-blue), var(--primary-dark));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;*/
 }
 
 .cadastro-main {
@@ -299,7 +288,6 @@ label {
     cursor: not-allowed;
 }
 
-/* Botão secundário - SEMPRE VISÍVEL */
 .btn-secondary {
     background: #2874A6;
     color: #ffffff;
@@ -323,7 +311,29 @@ label {
     box-shadow: var(--shadow-md);
 }
 
-/* =================== CAMPO DE PESQUISA =================== */
+.btn-secondary-editar {
+    background: #2874A6;
+    color: #ffffff;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-size: 0.70rem;
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    margin-bottom: var(--space-md);
+    align-self: flex-start;
+}
+
+.btn-secondary-editar:hover {
+    background: #2E86C1;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
 .search-container {
     display: flex;
     gap: var(--space-sm);
@@ -350,7 +360,6 @@ label {
     align-self: stretch;
 }
 
-/* tela de sucesso */
 .success-container {
     width: 100%;
     margin-top: var(--space-lg);
@@ -382,7 +391,6 @@ label {
     font-size: 1.125rem;
 }
 
-/* =================== RODAPÉ =================== */
 .rodape {
     margin-top: var(--space-xl);
     width: 100%;
@@ -417,7 +425,6 @@ label {
     font-weight: 600;
 }
 
-/* =================== ANIMAÇÕES =================== */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -432,8 +439,6 @@ label {
 .cabecalho, .conteudo, .cadastro-header, .cadastro-main {
     animation: fadeInUp 0.6s ease-out;
 }
-
-/* =================== GERENCIAMENTO DE LIVROS  =================== */
 
 .management-tabs {
     display: flex;
@@ -494,8 +499,6 @@ label {
     color: var(--gray-600);
 }
 
-/* =================== RELATÓRIO DE LEITORES =================== */
-
 .table-info {
     margin-bottom: var(--space-lg);
     padding: var(--space-md);
@@ -549,8 +552,6 @@ label {
     color: var(--gray-800);
     text-align: center;
 }
-
-/* =================== GERENCIAMENTO =================== */
 
 .title-bar {
     margin-bottom: var(--space-md);
@@ -611,8 +612,6 @@ label {
     color: #dc2626;
     font-weight: 600;
 }
-
-/* =================== RELATÓRIO DE LEITORES =================== */
 
 .status-beginner {
     color: #dc2626;
@@ -696,7 +695,6 @@ label {
     background: linear-gradient(135deg, #047857, #065f46);
 }
 
-/* =================== ADAPTAÇÕES =================== */
 @media (max-width: 768px) {
     main, .container {
         padding: var(--space-md);

@@ -1,0 +1,269 @@
+
+.general-screen {
+    background: var(--light-background);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    max-width: 700px;
+    margin: 20px;
+    overflow: hidden;
+}
+
+.general-header {
+    background: var(--primary-blue);
+    color: #ffffff;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.general-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+.btn-voltar {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn-voltar:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.general-main {
+    padding: 40px 30px;
+}
+
+.general-footer {
+    background: var(--primary-blue);
+    padding: 20px;
+    text-align: center;
+    color: #ffffff;
+    border-top: 1px solid var(--primary-blue);
+}
+
+.general-footer p {
+    margin: 5px 0;
+}
+
+.pontuacao-section {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.pontuacao-section h2 {
+    color: var(--primary-blue);
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--border-light);
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.search-bar input:focus {
+    outline: none;
+    border-color: var(--highlight-blue);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.btn-primary {
+    background: var(--accent-blue);
+    color: #ffffff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: var(--primary-blue);
+}
+
+.resultado-container {
+    min-height: 200px;
+}
+
+.pontuacao-card {
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-left: 6px solid;
+    animation: slideInFromBottom 0.5s ease-out;
+}
+
+.pontuacao-card.beginner {
+    border-left-color: var(--highlight-blue);
+    background: linear-gradient(135deg, #ffffff 0%, rgba(52, 152, 219, 0.12) 100%);
+}
+
+.pontuacao-card.regular {
+    border-left-color: #2ecc71;
+    background: linear-gradient(135deg, #ffffff 0%, #e8f8ef 100%);
+}
+
+.pontuacao-card.active {
+    border-left-color: #f39c12;
+    background: linear-gradient(135deg, #ffffff 0%, #fef9e7 100%);
+}
+
+.pontuacao-card.extreme {
+    border-left-color: #e74c3c;
+    background: linear-gradient(135deg, #ffffff 0%, #fbeeee 100%);
+}
+
+.pontuacao-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-light);
+}
+
+.pontuacao-header h3 {
+    margin: 0;
+    color: var(--dark-text);
+    font-size: 1.4rem;
+}
+
+.ra {
+    background: var(--light-background);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: var(--muted-text);
+    font-weight: 600;
+}
+
+.pontuacao-info {
+    display: grid;
+    gap: 15px;
+}
+
+.nivel-leitor, .livros-lidos, .livros-ativos, .livros-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: var(--light-background);
+    border-radius: 8px;
+}
+
+.nivel-leitor strong, .livros-lidos strong, .livros-ativos strong, .livros-total strong {
+    color: var(--dark-text);
+}
+
+.nivel {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.nivel.beginner {
+    background: var(--highlight-blue);
+    color: #ffffff;
+}
+
+.nivel.regular {
+    background: #2ecc71;
+    color: white;
+}
+
+.nivel.active {
+    background: #f39c12;
+    color: white;
+}
+
+.nivel.extreme {
+    background: #e74c3c;
+    color: white;
+}
+
+.quantidade {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--dark-text);
+}
+
+
+.meta-info {
+    margin-top: 20px;
+    color: var(--muted-text);
+    line-height: 1.5;
+}
+
+.meta-info p {
+    margin: 6px 0;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted-text);
+    font-style: italic;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        border-radius: 8px;
+    }
+    
+    .general-main {
+        padding: 20px 15px;
+    }
+    
+    .search-bar {
+        flex-direction: column;
+    }
+    
+    .pontuacao-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .nivel-leitor, .livros-lidos {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .pontuacao-card {
+        padding: 20px;
+    }
+}

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Programa do Aluno - Biblioteca Universitária</title>
+    <title>Consulta de Livros - Programa do Aluno</title>
     <link rel="stylesheet" href="../styles/style.css" />
     <link rel="stylesheet" href="../styles/consulta_livros.css" />
   </head>
@@ -16,27 +16,46 @@
         >
           ← Voltar
         </button>
-        <h1>Programa do Aluno</h1>
+        <h1>Consulta de livros</h1>
       </header>
 
       <main class="general-main">
         <section class="consulta-section">
-          <h2>Buscar Livros</h2>
-          <div class="search-bar">
-            <input
-              type="text"
-              id="campoBusca"
-              placeholder="Digite o título ou autor do livro..."
-            />
-            <button id="botaoBuscar" class="btn-primary">Buscar</button>
+          <div class="buscar-livros">
+            <h2>Buscar Livros</h2>
+            <div class="search-bar">
+              <input
+                type="text"
+                id="campoBusca"
+                placeholder="Digite o título ou autor do livro..."
+              />
+              <button id="botaoBuscar" class="btn-primary">Buscar</button>
+            </div>
           </div>
 
-          <div class="carrossel-container">
-            <button class="seta seta-esquerda">&#10094;</button>
-            <div id="carrosselLivros" class="carrossel">
-              <!-- Livros serão inseridos via JS -->
+          <div class="tabela-container">
+            <div id="sem-livros" class="sem-resultados hidden">
+              <p>Nenhum livro disponível no momento.</p>
             </div>
-            <button class="seta seta-direita">&#10095;</button>
+
+            <div id="container-tabela" class="tabela-livros">
+              <table class="tabela-disponiveis">
+                <thead>
+                  <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Editora</th>
+                    <th>Ano</th>
+                    <th>Categoria</th>
+                    <th>ISBN</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="lista-livros-disponiveis">
+                  <!-- Livros disponíveis serão inseridos via JS -->
+                </tbody>
+              </table>
+            </div>
           </div>
         </section>
       </main>

@@ -1,0 +1,166 @@
+.btn-primary {
+  background: #2874a6;
+  color: white;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.2s;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background: #2980b9;
+  transform: translateY(-1px);
+}
+
+.btn-voltar {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  color: white;
+  padding: 16px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.buscar-livros {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.buscar-livros h2 {
+  color: #2874a6;
+  margin-bottom: 20px;
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.search-bar input {
+  flex: 1;
+  padding: 12px 16px;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.search-bar input:focus {
+  outline: none;
+  border-color: #3498db;
+}
+
+.search-bar .btn-primary {
+  white-space: nowrap;
+}
+
+.tabela-container {
+  margin-top: 30px;
+}
+
+.tabela-livros {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.tabela-livros.hidden {
+  display: none;
+}
+
+.tabela-disponiveis {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela-disponiveis th {
+  background: #2874a6;
+  color: white;
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.tabela-disponiveis td {
+  padding: 12px;
+  border-bottom: 1px solid #e1e8ed;
+  color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.tabela-disponiveis tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.tabela-disponiveis tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.status-disponivel {
+  background: #2ecc71;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-indisponivel {
+  background: #e74c3c;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.sem-resultados {
+  text-align: center;
+  padding: 40px 20px;
+  color: #7f8c8d;
+  background: #f8f9fa;
+  border-radius: 8px;
+  margin: 20px 0;
+}
+
+.sem-resultados p {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .tabela-container {
+    margin-top: 20px;
+  }
+
+  .tabela-livros {
+    overflow-x: auto;
+  }
+
+  .tabela-disponiveis {
+    min-width: 700px;
+    font-size: 0.85rem;
+  }
+
+  .tabela-disponiveis th,
+  .tabela-disponiveis td {
+    padding: 10px 8px;
+  }
+}

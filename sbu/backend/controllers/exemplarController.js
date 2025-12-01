@@ -3,12 +3,19 @@ const Livro = require('../models/livro');
 
 exports.cadastrarExemplar = async (req, res) => {
     try {
-        const { idLivro } = req.body;
+        const { idLivro, quantidade } = req.body;
+        const quantidadeNumerica = parseInt(quantidade) || 1; 
 
         if (!idLivro) {
             return res.status(400).json({
                 success: false,
-                error: 'ID do livro é obrigatório'
+                error: 'ID do livro é obrigatório.'
+            });
+        }
+        if (quantidadeNumerica <= 0 || isNaN(quantidadeNumerica)) {
+             return res.status(400).json({
+                success: false,
+                error: 'A quantidade de exemplares deve ser um número inteiro maior que zero.'
             });
         }
 
@@ -16,29 +23,26 @@ exports.cadastrarExemplar = async (req, res) => {
         if (!livro) {
             return res.status(404).json({
                 success: false,
-                error: 'Livro não encontrado'
+                error: 'Livro não encontrado.'
             });
         }
 
-        const result = await Exemplar.criar({
-            idLivro,
-            status: 'disponivel'
-        });
+        const resultado = await Exemplar.criarMultiplos(idLivro, quantidadeNumerica);
 
         res.status(201).json({
             success: true,
-            message: 'Exemplar cadastrado com sucesso',
+            message: `${resultado.totalCriados} exemplar(es) cadastrado(s) com sucesso.`,
             data: {
-                id: result.insertId,
                 idLivro,
-                status: 'disponivel'
+                totalCriados: resultado.totalCriados
             }
         });
 
     } catch (error) {
+        console.error('Erro no cadastrarExemplar:', error);
         res.status(500).json({
             success: false,
-            error: 'Erro interno do servidor'
+            error: 'Erro interno do servidor ao cadastrar exemplares.'
         });
     }
 };
@@ -147,8 +151,15 @@ exports.deletarExemplar = async (req, res) => {
                 error: 'Exemplar não encontrado'
             });
         }
-
-        await Exemplar.deletar(id);
+        
+        if (exemplar.status === 'emprestado') {
+            return res.status(400).json({
+                success: false,
+                error: 'Não é possível deletar um exemplar que está emprestado.'
+            });
+        }
+        
+        await Exemplar.deletar(id); 
 
         res.json({
             success: true,

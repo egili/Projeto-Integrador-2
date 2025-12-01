@@ -2,6 +2,59 @@ const express = require('express');
 const router = express.Router();
 const { connection } = require('../database/connection');
 
+router.get('/pendentes', async (req, res) => {
+    try {
+        const [rows] = await connection.execute(`
+            SELECT 
+                e.id,
+                l.titulo AS livro,
+                a.nome AS aluno,
+                DATE_FORMAT(e.dataEmprestimo, '%Y-%m-%dT%H:%i:%s') AS data, 
+                ex.id AS id_exemplar
+            FROM emprestimo e
+            INNER JOIN aluno a ON e.idAluno = a.id
+            INNER JOIN exemplar ex ON e.idExemplar = ex.id
+            INNER JOIN livro l ON ex.idLivro = l.id
+            WHERE e.dataDevolucaoReal IS NULL
+            ORDER BY e.dataEmprestimo DESC
+        `);
+
+        console.log('Pendentes carregados via rota:', rows.length, 'registros');
+        res.json({ success: true, data: rows });
+
+    } catch (error) {
+        console.error("Erro ao carregar pendentes:", error);
+        res.status(500).json({ success: false, error: "Erro interno do servidor" });
+    }
+});
+
+router.get('/historico', async (req, res) => {
+    try {
+        const [rows] = await connection.execute(`
+            SELECT 
+                e.id,
+                l.titulo AS livro,
+                a.nome AS aluno,
+                DATE_FORMAT(e.dataEmprestimo, '%Y-%m-%d %H:%i:%s') AS data_emprestimo,
+                DATE_FORMAT(e.dataDevolucaoReal, '%Y-%m-%d %H:%i:%s') AS data_devolucao,
+                ex.id AS id_exemplar
+            FROM emprestimo e
+            INNER JOIN aluno a ON e.idAluno = a.id
+            INNER JOIN exemplar ex ON e.idExemplar = ex.id
+            INNER JOIN livro l ON ex.idLivro = l.id
+            WHERE e.dataDevolucaoReal IS NOT NULL
+            ORDER BY e.dataEmprestimo DESC
+        `);
+
+        console.log('Histórico carregado via rota:', rows.length, 'registros');
+        res.json({ success: true, data: rows });
+
+    } catch (error) {
+        console.error("Erro ao carregar histórico:", error);
+        res.status(500).json({ success: false, error: "Erro interno do servidor" });
+    }
+});
+
 router.post('/', async (req, res) => {
     try {
         const { idAluno, idExemplar } = req.body;
@@ -94,7 +147,6 @@ router.get('/aluno/:ra', async (req, res) => {
     try {
         const { ra } = req.params;
 
-        // Buscar aluno
         const [aluno] = await connection.execute(
             'SELECT * FROM aluno WHERE ra = ?',
             [ra]
@@ -107,14 +159,13 @@ router.get('/aluno/:ra', async (req, res) => {
             });
         }
 
-        // Buscar empréstimos ativos
         const [emprestimos] = await connection.execute(`
             SELECT 
                 e.id,
                 e.dataEmprestimo,
                 l.titulo,
                 l.autor,
-                ex.id as id_exemplar
+                ex.id AS id_exemplar
             FROM emprestimo e
             INNER JOIN exemplar ex ON e.idExemplar = ex.id
             INNER JOIN livro l ON ex.idLivro = l.id
@@ -137,4 +188,3 @@ router.get('/aluno/:ra', async (req, res) => {
 });
 
 module.exports = router;
-

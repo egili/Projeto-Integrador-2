@@ -108,7 +108,6 @@ body {
     font-weight: bold;
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transition: all 0.3s ease;
 }
 
 .btn-primary {
@@ -118,7 +117,6 @@ body {
 
 .btn-primary:hover {
     background-color: #2E86C1;
-    transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -128,7 +126,6 @@ body {
 
 .btn-secondary:hover {
     background-color: #7F8C8D;
-    transform: translateY(-2px);
 }
 
 .btn-success {
@@ -138,7 +135,6 @@ body {
 
 .btn-success:hover {
     background-color: #229954;
-    transform: translateY(-2px);
 }
 
 .btn-danger {
@@ -148,7 +144,6 @@ body {
 
 .btn-danger:hover {
     background-color: #C0392B;
-    transform: translateY(-2px);
 }
 
 .card {
